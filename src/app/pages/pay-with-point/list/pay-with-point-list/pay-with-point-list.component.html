@@ -1,0 +1,24 @@
+<app-header 
+    [screenTitle]="PAY_WITH_POINT.uiName"
+></app-header>
+
+<app-search-table
+    notFound="No data exists for the provided search filter."
+    sortActive="planName"
+    [tableId]="tableId"
+    [hideSelectAll]="true"
+    [hideSearchFieldFilters]="true"
+    [resetSort]="true"
+    [persistSearchFilters]="true"
+    [tableActions]="tableActions"
+    [columns]="tableColumns"
+    [searchFields]="searchFields"
+    [search]="advancedSearch.bind(this)"
+    [tableStyle]="{
+        height: '55vh',
+        overflow: 'auto'
+        }"
+    (searchFilterResetEmitter)="setDefaultSearchFilter(true)"
+></app-search-table>
+
+<app-footer [panelOpen]="isPanelOpen"></app-footer>

@@ -1,0 +1,24 @@
+.vds-grid {
+    max-width: unset;
+}
+
+.vertical-line {
+    border-left: thick solid
+}
+
+vds-form-field {
+    display: flex;
+    align-items: center;
+}
+
+@media (max-width: 960px) {
+    .vds-grid {
+        width: calc(100vw - 100px - 65px);
+    }
+}
+
+@media (max-width: 768px) {
+    .vds-grid {
+        width: calc(100vw - 100px - 65px);
+    }
+}

@@ -1,0 +1,34 @@
+<div class="overlay on " [cdkTrapFocus]="true">
+  <div class="overlay-header">
+    <div class="back-button">
+        <button role="button"
+          vds-button-icon
+          aria-labelledby="overlay-back-tooltip"
+          [iconType]="ButtonIconType.LIGHT_TINY"
+          [routerLink]="backLink"
+          [queryParams]="backQueryParams"
+          queryParamsHandling="merge"
+          [attr.aria-label]="'back to ' + backPage"
+          class="icon-button"
+          matTooltip="Back to {{ backPage }}"
+          matTooltipPosition="below"
+        >
+          <svg vds-icon icon="arrow-back" [tiny]="true"></svg>
+        </button>
+    </div>
+    <div class="title">{{ screenTitle }}</div>
+    <div class="close-btn" *ngIf="close">
+      <button role="button"
+        vds-button-icon
+        aria-label="Close"
+        [iconType]="ButtonIconType.LIGHT_TINY"
+        [routerLink]="backLink"
+      >
+        <svg vds-icon icon="close" [tiny]="true"></svg>
+      </button>
+    </div>
+  </div>
+  <div class="overlay-content">
+    <ng-content #name></ng-content>
+  </div>
+</div>

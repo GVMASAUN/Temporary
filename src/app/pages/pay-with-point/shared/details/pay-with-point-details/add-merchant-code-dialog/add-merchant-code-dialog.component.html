@@ -1,0 +1,80 @@
+<app-dialog
+    title="Add Merchant Category Code" 
+    [buttons]="dialogButtons"   
+
+>
+    <div dialogContent>
+      <div
+        vds-search
+        [variant]="searchVariant.DYNAMIC"
+      >
+        <vds-form-field>
+          <svg 
+            vdsPrefix
+            vds-icon
+            [icon]="visaIcon.SEARCH"
+            [low]="true"
+          ></svg>
+          <input
+            #searchInput
+            vdsInput
+            placeholder="Search By Merchant Category Name"
+            type="search"
+            (keyup)="performSearch(searchInput)"
+          />
+          <button
+            vdsSuffix
+            standard-search
+            vds-button-icon
+            aria-label="clear-search-input"
+            matTooltip="Clear Search"
+            [iconType]="buttonIconType.LIGHT_TINY"
+            (click)="clearSearchInput()"
+          >
+            <svg
+              vds-icon
+              [icon]="visaIcon.CLEAR"
+              [tiny]="true"
+            ></svg>
+          </button>
+          
+        </vds-form-field>
+      </div>
+      <div class="list-box-container">
+        <vds-listbox-container
+        *ngIf="initMccsListBox"
+        class="list-box"
+        name="multiselect-mccs"
+      >
+        <label
+            vdsLabel
+            id="listbox-label-multiselect-mccs"
+            attrFor="multiselectReactiveListbox"
+            
+        >Select Merchant Category Code
+        </label>
+
+        <ul
+            *ngIf="this.initMccsListBox"
+            vds-listbox
+            id="multiselect-mccs"
+            aria-labelledby="listbox-label-multiselect-mccs"
+            [multiselect]="true"
+            
+            [formControl]="form?.controls?.values! | controlConverter"
+        >
+            <li
+                *ngFor="let code of filteredMerchantCategoryCodes" 
+                [value]="code.mrchCatgCd.toString()"
+                vds-listbox-item
+                >
+                <label vdsCheckboxLabel>
+                    {{ code.mrchCatgNm }}
+                </label>
+            </li>
+        </ul>
+      </vds-listbox-container>
+      </div>
+
+    </div>
+</app-dialog>

@@ -1,0 +1,71 @@
+.vds-grid {
+    max-width: unset;
+
+    ::ng-deep div#accordion-body- {
+        background-color: #fafafa;
+    }
+}
+
+.custom-field-form-container {
+    background-color: #dfebff;
+}
+
+.input-section {
+    padding: 5px !important;
+    margin-left: 12px;
+}
+
+.list-container {
+    margin-top: 12px;
+    max-height: 250px;
+    overflow: auto;
+
+    ul {
+        padding: 0;
+
+        li {
+            margin: 0;
+            padding: 16px;
+            list-style: none;
+            background: #ffffff;
+
+            button {
+                float: right;
+            }
+        }
+
+        li:nth-child(even) {
+            background: #f5f5f5;
+        }
+    }
+}
+
+@media (max-width: 768px) {
+
+    .vds-grid [class^=col--][class*="-1"],
+    .vds-grid [class^=col--][class*="-2"],
+    .vds-grid [class^=col--][class*="-3"],
+    .vds-grid [class^=col--][class*="-4"],
+    .vds-grid [class^=col--][class*="-5"],
+    .vds-grid [class^=col--][class*="-6"],
+    .vds-grid [class^=col--][class*="-7"],
+    .vds-grid [class^=col--][class*="-8"],
+    .vds-grid [class^=col--][class*="-9"] {
+        width: 100% !important;
+    }
+}
+
+@media (max-width: 960px) {
+
+    .vds-grid [class^=col--][class*="-1"],
+    .vds-grid [class^=col--][class*="-2"],
+    .vds-grid [class^=col--][class*="-3"],
+    .vds-grid [class^=col--][class*="-4"],
+    .vds-grid [class^=col--][class*="-5"],
+    .vds-grid [class^=col--][class*="-6"],
+    .vds-grid [class^=col--][class*="-7"],
+    .vds-grid [class^=col--][class*="-8"],
+    .vds-grid [class^=col--][class*="-9"] {
+        width: 100% !important;
+    }
+}

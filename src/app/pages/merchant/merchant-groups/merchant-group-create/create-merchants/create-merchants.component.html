@@ -1,0 +1,204 @@
+<app-header>
+  <div class="sections">
+    Sections
+    <vds-badge [type]="BadgeType.STATUS">
+      <svg vds-icon icon="circle-filled" [tiny]="true"></svg>
+      Basics
+    </vds-badge>
+    <vds-badge [type]="BadgeType.NEUTRAL">
+      <svg
+        vds-icon
+        [icon]="addedMerchants.length ? 'circle-filled' : 'circle-empty'"
+        [tiny]="true"
+      ></svg>
+      Merchants
+    </vds-badge>
+  </div>
+</app-header>
+
+<vds-action-bar [active]="true" [class.inactive]="!selectedIndex.length">
+  <div class="wrapper-action-bar">
+    <div class="col col--xs-3 col--no-gutter">
+      <vds-button-group>
+        <button role="button" vds-button [color]="ButtonColor.SECONDARY">
+          <svg vds-icon icon="search" [low]="true"></svg>
+        </button>
+        <button role="button"
+          vds-button
+          [color]="ButtonColor.SECONDARY"
+          [routerLink]="
+            merchantType == 'MerchantInfo'
+              ? ['add-vmid-vsid']
+              : ['add-bin-caid']
+          "
+          queryParamsHandling="merge"
+        >
+          Add Merchants
+        </button>
+        <button role="button"
+          vds-button
+          [color]="ButtonColor.SECONDARY"
+          [disabled]="!selectedIndex.length"
+          (click)="activateMerchants()"
+        >
+          Activate
+        </button>
+        <button role="button"
+          vds-button
+          [color]="ButtonColor.SECONDARY"
+          [disabled]="!selectedIndex.length"
+          (click)="deactivateMerchants()"
+        >
+          Deactivate
+        </button>
+        <button role="button" vds-button [color]="ButtonColor.SECONDARY">
+          Download
+        </button>
+      </vds-button-group>
+      <div class="vl"></div>
+      Filter
+      <button role="button" vds-button-icon [iconType]="ButtonIconType.LIGHT">
+        <svg vds-icon icon="add-alt" [low]="true"></svg>
+      </button>
+    </div>
+
+    <div
+      class="col col--align-end col--no-gutter"
+      *ngIf="selectedIndex.length"
+    ></div>
+    <app-show-columns [columns]="columns"></app-show-columns>
+  </div>
+</vds-action-bar>
+
+<div class="table-wrapper">
+  <div class="table-container">
+    <table vdsDataTable>
+      <caption vdsScreenReader>
+        {{ caption }}
+      </caption>
+      <thead vdsThead>
+        <tr vdsTr>
+          <th vdsTh scope="col" width="5%">
+              <vds-checkbox
+                [matTooltip]="
+                  selectedIndex.length === addedMerchants.length
+                    ? 'Deselect All'
+                    : 'Select All'
+                "
+                [matTooltipPosition]="TooltipPosition.RIGHT"
+                label="Select"
+                (click)="selectAllHandler($event)"
+                [indeterminate]="
+                  selectedIndex.length > 0 &&
+                  selectedIndex.length < addedMerchants.length
+                "
+                [checked]="
+                  addedMerchants.length > 0 &&
+                  selectedIndex.length === addedMerchants.length
+                "
+              ></vds-checkbox>
+
+              <!-- Added label with 0 opacity for VGAR Requirement -->
+              <!-- Table Header shouldn't be empty -->
+              <label vdsLabel class="hidden-label">Select</label>
+          </th>
+
+          <ng-container *ngFor="let column of columns; let i = index">
+            <th vdsTh scope="col" *ngIf="column.checked">
+              <div class="sort-btn">
+                {{ column.label }}
+                  <button 
+                    *ngIf="column.sortable"
+                    [matTooltip]="'Sort ' + sortBy[i].slice(1) | titlecase"
+                    [matTooltipPosition]="TooltipPosition.RIGHT"
+                    role="button"
+                    vds-button-icon
+                    [iconType]="ButtonIconType.LIGHT_TINY"
+                    (click)="handleSort(column.value, i)"
+                    [attr.aria-label]="'sort ' + column.label + sortBy[i]"
+                  >
+                    <svg
+                      vds-icon
+                      [icon]="'sortable' + sortBy[i]"
+                      [tiny]="true"
+                    ></svg>
+                  </button>
+              </div>
+            </th>
+          </ng-container>
+        </tr>
+      </thead>
+
+      <tbody vdsTbody>
+        <tr
+          vdsTr
+          *ngFor="let row of addedMerchants; let i = index"
+          [class.selected-row]="selectedIndex.includes(i)"
+        >
+          <td vdsTd>
+            <vds-checkbox
+              label="Select"
+              (changed)="checkboxHandler($event, i, row)"
+              [checked]="selectedIndex.includes(i)"
+            ></vds-checkbox>
+          </td>
+          <td vdsTd *ngIf="columns[0].checked">
+            {{ row[columns[0].value] || "-" }}
+          </td>
+          <td vdsTd *ngIf="columns[1].checked">
+            {{ row[columns[1].value] || "-" }}
+          </td>
+          <td vdsTd *ngIf="columns[2].checked">
+            <vds-badge
+              [type]="
+                row[columns[2].value] ? BadgeType.STABLE : BadgeType.CRITICAL
+              "
+            >
+              {{ row[columns[2].value] ? "Active" : "Inactive" }}
+            </vds-badge>
+          </td>
+          <td vdsTd *ngIf="columns[3].checked">
+            {{ row[columns[3].value] || "-" }}
+          </td>
+          <td vdsTd *ngIf="columns[4].checked">
+            {{ row[columns[4].value] || "-" }}
+          </td>
+          <td vdsTd *ngIf="columns[5].checked">
+            {{ row[columns[5].value] || "-" }}
+          </td>
+
+          <td vdsTd *ngIf="columns[6].checked">
+            {{ (row.modifiedDate | date) || "-" }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="no-data-label" *ngIf="!addedMerchants.length && !loading">
+      This group has no merchants added.
+    </div>
+    <div *ngIf="loading" class="progress-container">
+      <vds-linear-progress></vds-linear-progress>
+    </div>
+  </div>
+</div>
+
+<app-footer>
+  <vds-button-group>
+    <button role="button"
+      vds-button
+      [color]="ButtonColor.PRIMARY"
+      [routerLink]="['/merchant/create/merchants']"
+      (click)="save()"
+    >
+      Save
+    </button>
+    <button role="button" vds-button [color]="ButtonColor.SECONDARY" (click)="saveAndExit()">
+      Save & Exit
+    </button>
+  </vds-button-group>
+  <vds-button-group>
+    <button role="button" vds-button [color]="ButtonColor.SECONDARY">
+      Cancel
+    </button>
+  </vds-button-group>
+</app-footer>

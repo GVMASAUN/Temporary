@@ -1,0 +1,171 @@
+<div class="page-content" [ngClass]="{ 'panel-open': isPanelOpen }">
+  <app-header screenTitle="Enrollment Collection"></app-header>
+
+  <div class="filter-bar" *ngIf="searchActivate">
+    <strong>Results for</strong>
+    <form></form>
+    <div class="clear-section">
+      <span>
+        Clear search
+      </span>
+      <button role="button"
+        vds-button-icon
+        [iconType]="buttonIconType.LIGHT_TINY"
+        (click)="clearSearch()"
+      >
+        <svg vds-icon [tiny]="true" icon="clear"></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="action-bar">
+    <div class="action-section">
+      <button role="button" vds-button [color]="buttonColor.TERTIARY" (click)="openPanel()">
+        <svg vds-icon icon="search" [low]="true"></svg>
+      </button>
+      <button role="button"
+        vds-button
+        [color]="buttonColor.SECONDARY"
+        routerLink="create"
+        queryParamsHandling="merge"
+      >
+        Create Collection
+      </button>
+    </div>
+    <div class="show-column-section">
+      <app-show-columns [columns]="tableHeader"></app-show-columns>
+    </div>
+  </div>
+  <div class="table-wrapper" [class.navOpen]="isNavOpen">
+    <div class="table-container">
+      <div class="model-table-container">
+        <table vdsDataTable>
+          <caption vdsScreenReader>
+            Pay with Points list
+          </caption>
+          <thead vdsThead>
+            <tr vdsTr>
+              <ng-container *ngFor="let col of tableHeader; let i = index">
+                <th vdsTh *ngIf="col.checked" [class.fix]="!i">
+                  {{ col.label }}
+                    <button
+                      *ngIf="col.sortable"
+                      [matTooltip]="'Sort ' + sortBy[i].slice(1) | titlecase"
+                      [matTooltipPosition]="tooltipPosition.RIGHT" 
+                      role="button"
+                      vds-button-icon
+                      [iconType]="buttonIconType.LIGHT_TINY"
+                      (click)="handleSort(col.value, i)"
+                      [attr.aria-label]="'sort ' + col.label + sortBy[i]"
+                    >
+                      <svg
+                        vds-icon
+                        [icon]="'sortable' + sortBy[i]"
+                        [tiny]="true"
+                      ></svg>
+                    </button>
+                </th>
+              </ng-container>
+            </tr>
+          </thead>
+          <tbody vdsTbody>
+            <tr vdsTr *ngFor="let row of tableList; let i = index">
+              <td vdsTd *ngIf="tableHeader[0].checked" class="fix">
+                <a role="link" vdsLink>
+                  {{ row.name }}
+                </a>
+              </td>
+              <td vdsTd *ngIf="tableHeader[1].checked">
+                <svg
+                  vds-icon
+                  [low]="true"
+                  icon="success"
+                  *ngIf="row.assign"
+                ></svg>
+              </td>
+              <td vdsTd *ngIf="tableHeader[2].checked">
+                {{ row.type }}
+              </td>
+
+              <td vdsTd *ngIf="tableHeader[3].checked">
+                {{ row.id }}
+              </td>
+              <td vdsTd *ngIf="tableHeader[4].checked">
+                {{ row.eligibility }}
+              </td>
+              <td vdsTd *ngIf="tableHeader[5].checked">
+                {{ convertTimeZone(row.sDate) }}
+                <vds-badge>
+                  {{ timeZone }}
+                </vds-badge>
+              </td>
+              <td vdsTd *ngIf="tableHeader[6].checked">
+                {{ convertTimeZone(row.eDate) }}
+                <vds-badge>
+                  {{ timeZone }}
+                </vds-badge>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <app-footer [panelOpen]="isPanelOpen"> </app-footer>
+</div>
+
+<div class="panel-content" *ngIf="isPanelOpen">
+  <app-panel [selectedTab]="0" [hideFilter]="true">
+    <div search>
+      <form>
+        <vds-form-field>
+          <label vdsLabel>Enrollment Collection Name</label>
+          <input vdsInput />
+        </vds-form-field>
+        <vds-form-field>
+          <label vdsLabel>Eligible Type </label>
+          <select vdsSelect>
+            <option value="" hidden selected>Select Option</option>
+          </select>
+        </vds-form-field>
+        <vds-form-field>
+          <label vdsLabel>Entity</label>
+          <select vdsSelect>
+            <option value="" hidden selected>Select Option</option>
+          </select>
+        </vds-form-field>
+        <vds-form-field>
+          <label vdsLabel>Entity ID</label>
+          <select vdsSelect>
+            <option value="" hidden selected>Select Option</option>
+          </select>
+        </vds-form-field>
+        <vds-date-selector
+          label="Start Date (MM/DD/YYYY)"
+          formatInputValue="MM/dd/yyyy"
+          [selectsStart]="true"
+        ></vds-date-selector>
+        <vds-date-selector
+          label="End Date (MM/DD/YYYY)"
+          formatInputValue="MM/dd/yyyy"
+          [selectsEnd]="true"
+        ></vds-date-selector>
+      </form>
+      <div class="panel-footer">
+        <vds-button-group>
+          <button role="button" vds-button [color]="buttonColor.PRIMARY" (click)="search()">
+            Search
+          </button>
+          <button role="button"
+            vds-button
+            [color]="buttonColor.SECONDARY"
+            (click)="clearSearch()"
+          >
+            Reset
+          </button>
+        </vds-button-group>
+      </div>
+    </div>
+  </app-panel>
+</div>

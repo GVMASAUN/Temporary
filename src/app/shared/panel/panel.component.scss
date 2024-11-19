@@ -1,0 +1,68 @@
+vds-panel.vds-panel.vds-state--open {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 511;
+
+  ::ng-deep {
+    .vds-panel-panel {
+      max-width: 640px;
+      min-width: 640px;
+      border-left: 1px solid #cacaca;
+      top: 0;
+
+      .vds-panel-content.vds-state--show {
+        max-width: unset;
+      }
+    }
+  }
+}
+
+.search-panel,
+.filter-panel {
+  margin-top: 25px;
+
+  ::ng-deep {
+
+    form {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px 10px;
+      align-items: normal;
+      margin-bottom: 55px;
+
+      vds-date-selector ::ng-deep .vds-input {
+        width: 100%;
+        min-width: unset;
+      }
+    }
+  }
+}
+
+.search-filters {
+  ::ng-deep {
+
+
+    vds-date-selector ::ng-deep .vds-input {
+      width: 100%;
+      min-width: unset;
+    }
+
+  }
+}
+
+.panel-tab-menu-btns {
+  border-bottom: 1px solid #cacaca;
+}
+
+.panel-footer,
+.search-panel ::ng-deep .panel-footer {
+  z-index: 106;
+  position: fixed;
+  border-top: 1px solid #cacaca;
+  background-color: #fff;
+  padding: 5px;
+  right: 0;
+  bottom: 0;
+  width: calc(640px - 15px);
+}

@@ -1,0 +1,20 @@
+<app-header 
+    screenTitle="Users"
+></app-header>
+
+<app-search-table
+    *ngIf="!!advancedSearchFields.length"
+    tableId="user-list"
+    [columns]="tableColumns"
+    [searchFields]="advancedSearchFields"
+    [hideSelectAll]="true"
+    [hideSearchFieldFilters]="true"
+    [search]="getUserList.bind(this)"
+    [tableStyle]="{
+        height: '63vh',
+        overflow: 'auto'
+        }"
+    notFound="No data exists for the provided search filter.">
+</app-search-table>
+
+<app-footer [panelOpen]="isPanelOpen"></app-footer>

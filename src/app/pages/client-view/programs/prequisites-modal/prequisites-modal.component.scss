@@ -1,0 +1,29 @@
+.prequisites-card {
+  width: MIN(50%, 728px);
+
+  .prequisites-card-body {
+    .setup-item {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+
+      .info-section {
+        display: flex;
+        flex-direction: column;
+        gap: 9px;
+
+        .info-header {
+          font-size: 14px;
+          font-weight: 600;
+          margin-bottom: 3px;
+        }
+        .info-description {
+          font-size: 12px;
+        }
+        .link {
+          cursor: pointer;
+        }
+      }
+    }
+  }
+}

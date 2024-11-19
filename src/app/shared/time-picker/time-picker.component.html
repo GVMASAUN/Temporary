@@ -1,0 +1,29 @@
+<div class="input">
+    <label
+        vdsLabel
+        [id]="placeholder.concat('label')"
+        [class.disabled]="disabled"
+        [class.error]="invalid"
+    >{{ placeholder }} {{!!isRequired ? '*' : ""}}
+        <ng-container [ngTemplateOutlet]="placeholderSuffix"></ng-container>
+    </label>
+    <div
+        class="input-bar"
+        [class.disabled-bar]="disabled"
+    >
+        <input
+            aria-label="time-picker"
+            type="time"
+            aria-labelledby="label"
+            aria-describedby="label"
+            [step]="step"
+            [class.invalid]="invalid"
+            [class.disabled]="disabled"
+            [required]="isRequired"
+            [value]="value"
+            [disabled]="disabled"
+            (change)="handleTimeChange($event)"
+            (keydown)="handleKeyEvents($event)"
+        />
+    </div>
+</div>

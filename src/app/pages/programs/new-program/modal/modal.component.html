@@ -1,0 +1,61 @@
+<div class="dialog-center">
+  <div vds-dialog-card class="new-program-card">
+    <vds-linear-progress *ngIf="isLoading"></vds-linear-progress>
+    <div vds-dialog-card-head>
+      <h2 vds-dialog-card-head-title>
+        Create New Program
+      </h2>
+    </div>
+    <div vds-dialog-card-body class="new-program-card-body">
+      <vds-error vdsErrorMessage [show]="!!errMsg"> {{ errMsg }} </vds-error>
+      <form [formGroup]="newProgramForm">
+        <vds-form-field>
+          <label vdsLabel>Program Name</label>
+          <input vdsInput formControlName="name" />
+        </vds-form-field>
+        <vds-form-field>
+          <label vdsLabel>Description</label>
+          <textarea vdsInput formControlName="description"></textarea>
+        </vds-form-field>
+        <!-- <vds-form-field>
+          <label vdsLabel>Program Type</label>
+          <select vdsSelect formControlName="type">
+            <option value="">Anything</option>
+          </select>
+        </vds-form-field> -->
+        <vds-form-field>
+          <label vdsLabel>My Collections/Saved Templates</label>
+          <select vdsSelect formControlName="collection">
+            <option value="">Anything</option>
+          </select>
+        </vds-form-field>
+      </form>
+    </div>
+    <div vds-dialog-card-footer>
+      <vds-button-group direction="right">
+        <button
+          vds-button
+          [color]="buttonColor.PRIMARY"
+          (click)="addNewProgram(true)"
+          [disabled]="newProgramForm.invalid"
+        >
+          continue
+        </button>
+        <button
+          vds-button
+          [color]="buttonColor.SECONDARY"
+          (click)="addNewProgram(false)"
+          [disabled]="newProgramForm.invalid"
+        >
+          save
+        </button>
+        <button vds-button [color]="buttonColor.SECONDARY">
+          explore templates
+        </button>
+        <button vds-button [color]="buttonColor.TERTIARY" (click)="close()">
+          Cancel
+        </button>
+      </vds-button-group>
+    </div>
+  </div>
+</div>

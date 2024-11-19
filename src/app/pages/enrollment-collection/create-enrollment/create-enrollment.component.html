@@ -1,0 +1,138 @@
+<div class="header-section">
+  <p>Enrollment Collection - Details</p>
+  <h3>PwP_Demo</h3>
+  <h4>
+    <small><strong>Plan Assignment:</strong></small>
+  </h4>
+</div>
+<hr vdsDivider />
+
+<div class="section">
+  <span class="title">Basics</span>
+
+  <form class="vds-grid">
+    <div class="row">
+      <div class="col">
+        <vds-form-field>
+          <label vdsLabel>Enrollment Collection Name*</label>
+          <input vdsInput />
+        </vds-form-field>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <div vds-combobox [type]="ComboboxType.AUTO">
+          <vds-form-field>
+            <label vdsLabel>Card Type</label>
+            <input vdsInput />
+            <button role="button"
+              vdsSuffix
+              vds-button-icon
+              [iconType]="ButtonIconType.LIGHT_TINY"
+            >
+              <svg vds-icon icon="arrow-expand" [tiny]="true"></svg>
+            </button>
+          </vds-form-field>
+          <vds-menu>
+            <ul vds-listbox>
+              <li vds-listbox-item value="sample">
+                Sample Text
+              </li>
+            </ul>
+          </vds-menu>
+        </div>
+      </div>
+      <div class="col col--sm-2">
+        <vds-form-field>
+          <label vdsLabel>Entity ID</label>
+          <input vdsInput [readonly]="true" [tabindex]="-1"/>
+        </vds-form-field>
+      </div>
+    </div>
+    <div class="row baseline">
+      <div class="col">
+        <vds-date-selector
+          label="Start Date (MM/DD/YYYY)*"
+          [selectsStart]="true"
+          formatInputValue="MM/dd/yyyy"
+        ></vds-date-selector>
+      </div>
+      <div class="col col--sm-2">
+        <vds-form-field>
+          <label vdsLabel>Time</label>
+          <input type="time" vdsInput />
+        </vds-form-field>
+      </div>
+      <div class="col col--sm-1">
+        <vds-badge>
+          {{ timeZone }}
+        </vds-badge>
+      </div>
+    </div>
+    <div class="row baseline">
+      <div class="col">
+        <vds-date-selector
+          label="End Date (MM/DD/YYYY)*"
+          [selectsStart]="true"
+          formatInputValue="MM/dd/yyyy"
+        ></vds-date-selector>
+      </div>
+      <div class="col col--sm-2">
+        <vds-form-field>
+          <label vdsLabel>Time</label>
+          <input type="time" vdsInput />
+        </vds-form-field>
+      </div>
+      <div class="col col--sm-1">
+        <vds-badge>
+          {{ timeZone }}
+        </vds-badge>
+      </div>
+    </div>
+  </form>
+</div>
+
+<hr vdsDivider />
+
+<div class="section">
+  <span class="title">Eligible Type</span>
+
+  <div class="box">
+    <form class="vds-grid">
+      <div class="row">
+        <div class="col">
+          <vds-form-field>
+            <label vdsLabel>Select Eligible Type*</label>
+            <select vdsSelect>
+              <option value="">Select Option</option>
+            </select>
+          </vds-form-field>
+        </div>
+      </div>
+
+      <hr vdsDivider />
+
+      <div class="row">
+        <div class="col">
+          <div class="title">Account Ranges</div>
+          <div class="sub-title">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit.
+          </div>
+          <vds-form-field>
+            <textarea vdsInput [autoGrow]="true" [rows]="5"></textarea>
+          </vds-form-field>
+          <button role="button" vds-button [color]="ButtonColor.SECONDARY" [disabled]="true">
+            Add Ranges
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<app-footer>
+  <vds-button-group>
+    <button role="button" vds-button [color]="ButtonColor.PRIMARY">Save & Exit</button>
+    <button role="button" vds-button [color]="ButtonColor.SECONDARY">Save</button>
+    <button role="button" vds-button [color]="ButtonColor.TERTIARY">Cancel</button>
+  </vds-button-group>
+</app-footer>

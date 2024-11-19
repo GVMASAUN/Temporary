@@ -1,0 +1,90 @@
+<div  class="vds-grid vds-grid--fluid">
+  <div class="col">
+    <div class="row" *ngIf="graphComponent"
+    >
+      <button
+        class="col--valign-center"
+        *ngIf="graphComponent"
+        vds-button
+        [color]="graphComponent.panning ? ButtonColor.PRIMARY : ButtonColor.SECONDARY"
+        (click)="$event.stopPropagation(); graphComponent.panning = !graphComponent.panning;"
+      >
+        <svg vds-icon [low]="true" icon="drag"></svg>
+        PAN
+      </button>
+   
+      <label class="col--valign-center col--align-start" id="viewLabel" vdsLabel>View</label>
+  
+      <vds-form-field>
+        <select vdsSelect [value]="defaultView" (changed)="zoom($event)" aria-labelledby="viewLabel">
+          <option 
+            *ngFor="let option of viewOptions" 
+            [value]="option.value"
+            >
+            {{option.label}}
+          </option>
+        </select>
+      </vds-form-field>
+  
+      <vds-radio
+        class="col--valign-center"
+        name="eventGroupType"
+        [label]="EventGroupType.PUBLISHED"
+        [radioValue]="EventGroupType.PUBLISHED"
+        [checked]="selectedEventGroupType === EventGroupType.PUBLISHED"
+        (change)="handleEventGroupChange($event)"
+      >
+      </vds-radio>
+  
+      <vds-radio
+        class="col--valign-center"
+        name="eventGroupType"
+        [label]="EventGroupType.UNPUBLISHED"
+        [radioValue]="EventGroupType.UNPUBLISHED"
+        [checked]="selectedEventGroupType === EventGroupType.UNPUBLISHED"
+        (change)="handleEventGroupChange($event)"
+      >
+      </vds-radio>
+  </div>
+</div>
+
+<div class="row .col--no-gutter">
+  <div class="col">
+    <app-program-builder-graph
+      *ngIf="!!programSummary"
+      #graphComponent
+      (onNodeClick)="onNodeClick($event)"
+      [panning]="true"
+      [programData]="programSummary" 
+      [zoomLevel]="defaultView" 
+    ></app-program-builder-graph>
+  </div>  
+  <div class="col--lg-3">
+    <!-- <app-program-builder-side-panel 
+      #sidePanelComponent
+      *ngIf="programSummary?.eventGroupList?.length"
+    ></app-program-builder-side-panel> -->
+  </div>
+</div>
+</div>
+<app-footer></app-footer>
+
+
+<app-panel
+  #panel
+  *ngIf="isImportPanelOpen"
+  [panelTabs]="getImportPanelTabs()"
+  [panelActions]="importPanelActions"
+>
+  <div search> 
+    <app-search-table
+      #importPanelTable
+      tableId="import-panel-list"
+      [hideSelectAll]="true"
+      [moreColumns]="false"
+      [canSelectMultipleRow]="false"
+      [columns]="getImportPanelTableColumns()"
+      [search]="getImportableItems.bind(this)"
+    ></app-search-table>
+  </div>
+</app-panel>

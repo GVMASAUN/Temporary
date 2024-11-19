@@ -1,0 +1,73 @@
+.vds-grid {
+  max-width: unset;
+  .col {
+    .form-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 12px 0 24px;
+    }
+    .search-action-bar ::ng-deep .vds-action-bar {
+      padding: 8px 0 8px 15px;
+    }
+    // .find-merchant-search-container {
+    //   margin-top: 4px;
+    //   padding: 24px;
+    //   border: solid 1px #797979;
+
+    //   .search-bar-container {
+    //     display: flex;
+    //     align-items: center;
+    //     gap: 24px;
+
+    //     .search-catagory {
+    //       ::ng-deep fieldset {
+    //         display: flex;
+    //       }
+    //     }
+    //     a {
+    //       cursor: pointer;
+    //     }
+    //   }
+    //   .merchant-search-divider {
+    //     margin: 16px 0 24px;
+    //   }
+    // }
+  }
+
+  .inactive {
+    &::ng-deep.vds-action-bar--active-controls {
+      background-color: unset;
+    }
+  }
+  .wrapper-action-bar {
+    min-height: 48px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+  }
+}
+
+.panel-content {
+  .find-merchant-search-container {
+    margin-top: 4px;
+
+    .search-bar-container {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+
+      .search-catagory {
+        ::ng-deep fieldset {
+          display: flex;
+        }
+      }
+      a {
+        cursor: pointer;
+      }
+    }
+    .merchant-search-divider {
+      margin: 16px 0 24px;
+    }
+  }
+}

@@ -1,0 +1,209 @@
+<div class="vds-grid">
+    <div class="col--lg-9">
+        <strong>
+            <label vdsLabel>Basics</label>
+        </strong>
+        <div class="form-container">
+            <form [formGroup]="form">
+                <vds-form-field>
+                    <label vdsLabel>Template Name *</label>
+                    <input 
+                        vdsInput 
+                        aria-required="true"
+                        [formControlName]="EpmTemplateField.TEMPLATE_MESSAGE_NAME"
+                        [invalid]="!!getErrorMessage(form, EpmTemplateField.TEMPLATE_MESSAGE_NAME)"
+                        [readonly]="mode !== MODE.Create"
+                        [tabindex]="mode !== MODE.Create ? -1 : 0"
+                    />
+                    <span vdsErrorMessage aria-atomic="true" aria-live="assertive">
+                        <ng-container *ngIf="!!getErrorMessage(form, EpmTemplateField.TEMPLATE_MESSAGE_NAME)">
+                            <svg vds-icon icon="error" [tiny]="true"></svg>
+                            Error: {{ getErrorMessage(form, EpmTemplateField.TEMPLATE_MESSAGE_NAME) }}
+                        </ng-container>
+                    </span>
+                </vds-form-field>
+
+                <vds-radio-group role="radiogroup" [formControlName]="EpmTemplateField.TEMPLATE_COMMUNITY_CODE" [required]="true">
+                    <legend vdsLegend class="radio-title">Association *</legend>
+                    <vds-radio 
+                        *ngFor="let option of associations"
+                        label="{{option.label}} - {{option.value}}"
+                        [checked]="option.value === epmTemplate?.[EpmTemplateField.TEMPLATE_COMMUNITY_CODE]"
+                        [radioValue]="option.value"
+                        [name]="EpmTemplateField.TEMPLATE_COMMUNITY_CODE"
+                        [disabled]="mode !== MODE.Create"
+                        [invalid]="!!getErrorMessage(form, EpmTemplateField.TEMPLATE_COMMUNITY_CODE)"
+                    >
+                    </vds-radio>
+                    <span vdsErrorMessage aria-atomic="true" aria-live="assertive" class="flex-container">
+                        <ng-container *ngIf="!!getErrorMessage(form, EpmTemplateField.TEMPLATE_COMMUNITY_CODE)">
+                            <svg vds-icon icon="error" [tiny]="true"></svg>
+                            Error: {{ getErrorMessage(form, EpmTemplateField.TEMPLATE_COMMUNITY_CODE) }}
+                        </ng-container>
+                    </span>
+                </vds-radio-group>
+
+                <div class="m-t-30">
+                    <vds-accordion>
+                        <vds-accordion-item class="m-t-20">
+                            <vds-accordion-heading>
+                                <vds-accordion-title>Required Message Fields</vds-accordion-title>
+                            </vds-accordion-heading>
+                            <vds-accordion-body>
+                                <p>
+                                    Manage Message Fields required
+                                    in the Endpoint Message Template:
+                                </p>
+        
+                                <vds-button-group>
+                                    <button role="button" 
+                                        *ngIf="!epmTemplate?.[EpmTemplateField.TEMPLATE_SYSTEM_DEFINED_FIELD_AS_LIST]?.length"
+                                        aria-label="add-field-button"
+                                        vds-button 
+                                        (click)="editMessageFields()"
+                                        [color]="ButtonColor.SECONDARY">
+                                            ADD FIELDS
+                                    </button>
+        
+                                    <button role="button" 
+                                        *ngIf="epmTemplate?.[EpmTemplateField.TEMPLATE_SYSTEM_DEFINED_FIELD_AS_LIST]?.length"
+                                        aria-label="edit-field-button"
+                                        vds-button 
+                                        (click)="editMessageFields()"
+                                        [color]="ButtonColor.SECONDARY">
+                                        EDIT FIELDS
+                                    </button>
+        
+                                    <button role="button" 
+                                        vds-button 
+                                        aria-label="clear-field-button"
+                                        [color]="ButtonColor.SECONDARY" 
+                                        [disabled]="!epmTemplate?.[EpmTemplateField.TEMPLATE_SYSTEM_DEFINED_FIELD_AS_LIST]?.length"
+                                        (click)="clearAllMessageFields()">
+                                        Clear All
+                                    </button>
+                                </vds-button-group>
+        
+                                <div class="list-container" *ngIf="epmTemplate?.[EpmTemplateField.TEMPLATE_SYSTEM_DEFINED_FIELD_AS_LIST]?.length">
+                                    <ul vdsList>
+                                        <li vdsListItem *ngFor="let systemDefinedField of epmTemplate?.[EpmTemplateField.TEMPLATE_SYSTEM_DEFINED_FIELD_AS_LIST]"
+                                            >{{ systemDefinedField }}
+                                        </li>
+                                    </ul>
+                                </div>
+                            </vds-accordion-body>
+                        </vds-accordion-item>
+                    </vds-accordion>
+                </div>
+
+
+                <div class="m-t-40">
+                    <vds-accordion>
+                        <vds-accordion-item >
+                            <vds-accordion-heading>
+                                <vds-accordion-title>Custom Fields</vds-accordion-title>
+                            </vds-accordion-heading>
+                            <vds-accordion-body>
+                                <p>
+                                    Enter any custom fields that you
+                                    want to pass in the endpoint message
+                                    below. Maximum 50 characters per custom
+                                    Field. You will specify the value(s) for
+                                    the custom field(s) at the time of the
+                                    Event Creation.
+                                </p>
+        
+                                <div class="m-b-12">
+                                    <vds-button-group>
+                                        <button role="button" 
+                                            aria-label="add-field-button"
+                                            vds-button 
+                                            [color]="ButtonColor.SECONDARY" 
+                                            (click)="showCustomFieldInputSection = true"
+                                            [disabled]="showCustomFieldInputSection">
+                                            ADD CUSTOM FIELDS
+                                        </button>
+        
+                                        <button role="button" 
+                                            aria-label="clear-field-button"
+                                            vds-button 
+                                            [color]="ButtonColor.SECONDARY" 
+                                            [disabled]="!epmTemplate?.[EpmTemplateField.TEMPLATE_USER_DEFINED_FIELD_AS_LIST]?.length"
+                                            (click)="clearAllCustomFields()">
+                                            Clear All
+                                        </button>
+                                    </vds-button-group>
+                                </div>
+    
+                                <div *ngIf="showCustomFieldInputSection">
+                                    <form [formGroup]="customFieldForm">
+                                        <div class="vds-grid">
+                                            <div class="row custom-field-form-container">
+                                                <div class="col--lg-10 input-section">
+                                                    <vds-form-field>
+                                                        <input vdsInput formControlName="customFieldInput" maxlength="50"/>
+                                                        <button role="button"
+                                                            vdsSuffix 
+                                                            vds-button-icon
+                                                            aria-label="Clear"
+                                                            [disabled]="!customField?.length"
+                                                            [iconType]="ButtonIconType.LIGHT_TINY"
+                                                            (click)="ResetCustomFieldForm()">
+                                                                <svg vds-icon [tiny]="true" icon="clear"></svg>
+                                                        </button>
+                                                    </vds-form-field>
+                                                </div>
+    
+                                                <div class="col--valign-center">
+                                                    <button role="button"
+                                                        aria-label="save-button"
+                                                        vds-button-icon
+                                                        [disabled]="!customField?.length"
+                                                        [iconType]="ButtonIconType.LIGHT_TINY"
+                                                        (click)="addCustomField()"
+                                                        >
+                                                            <svg vds-icon [tiny]="true" icon="checkmark"></svg>
+                                                    </button>
+                                                </div>
+    
+                                                <div class="col--valign-center">
+                                                    <button role="button"
+                                                        aria-label="close-button"
+                                                        vds-button-icon
+                                                        [iconType]="ButtonIconType.LIGHT_TINY"
+                                                        (click)="closeCustomFieldInputSection()"
+                                                        >
+                                                            <svg vds-icon [tiny]="true" icon="visa_close"></svg>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+    
+                                <div class="list-container" *ngIf="epmTemplate?.[EpmTemplateField.TEMPLATE_USER_DEFINED_FIELD_AS_LIST]?.length">
+                                    <ul vdsList>
+                                        <li
+                                            vdsListItem
+                                            *ngFor="let userDefinedField of epmTemplate?.[EpmTemplateField.TEMPLATE_USER_DEFINED_FIELD_AS_LIST]; let rowIndex = index"
+                                            > {{ userDefinedField }}
+                                            <button 
+                                                role="button"
+                                                vds-button-icon
+                                                aria-label="delete-button"
+                                                aria-label="Delete"
+                                                [iconType]="ButtonIconType.LIGHT_TINY"
+                                                (click)="deleteCustomField(rowIndex)">
+                                                <svg vds-icon [tiny]="true" icon="delete"></svg>
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </vds-accordion-body>
+                        </vds-accordion-item>
+                    </vds-accordion>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

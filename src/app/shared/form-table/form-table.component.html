@@ -1,0 +1,229 @@
+<div>
+  <vds-error
+    vdsErrorMessage
+    [show]="!!getErrorMessage(advanceTableForm ,advanceTableForm.get('formArray')!)">
+    {{ INVALID_ENTRY }}
+  </vds-error>
+</div>
+<form [formGroup]="advanceTableForm">
+    <div
+      *ngIf="formArray.controls.length && showTable"
+      class="table-wraper"
+    >
+        <table vdsDataTable >
+          <caption vdsScreenReader>
+            {{ caption }}
+          </caption>
+          <thead vdsThead>
+            <tr vdsTr>
+                <th
+                  *ngIf="(!hideSelectAll && !isDynamicTable)"
+                  vdsTh
+                  sticky
+                  scope="col"
+                >
+                    <vds-checkbox
+                      *ngIf="canSelectMultipleRow"
+                      label="select"
+                      class="hidden-label"
+                      id="form-table-head-select-all-checkbox"
+                      name="form-table-head-select-all-checkbox"
+                      matTooltipPosition="right"
+                      [matTooltip]="isAllSelected()? 'Deselect All': 'Select All'"
+                      [indeterminate]="selection.hasValue() && !isAllSelected()"
+                      [checked]="selection.hasValue() && isAllSelected()"
+                      (click)="masterToggle($event)"
+                    ></vds-checkbox>
+                </th>
+
+                <ng-container *ngFor="let column of columns; let columnIndex = index; trackBy:columnTrackBy">
+                    <th
+                      vdsTh
+                      sticky
+                      scope="col"
+                      [disableSticky]="!column.sticky"
+                    >
+                      <ng-container >
+                          <div class="sort-btn">
+                              {{ column.label }}
+                              <button
+                                *ngIf="(column.sortable !== false)"
+                                vds-button-icon
+                                role="button"
+                                matTooltipPosition="after"
+                                [iconType]="ButtonIconType.LIGHT_TINY"
+                                [attr.aria-label]="column.label?.concat(getSortDirectionDesc(column.sortDirection || SortDirection.DEFAULT))"
+                                [matTooltip]="getSortDirectionDesc(column.sortDirection || SortDirection.DEFAULT)"
+                                (click)="sort(column)"
+                              >
+                                <svg
+                                  vds-icon
+                                  [icon]="getSortDirectionIcon(column.sortDirection || SortDirection.DEFAULT)"
+                                  [tiny]="true"
+                                ></svg>
+                              </button>
+                          </div>
+                      </ng-container>
+                    </th>
+                </ng-container>
+
+                <ng-container *ngFor="let rowAction of rowActions">
+                  <ng-container>
+                    <th
+                      vdsTh
+                      scope="col"
+                      width="5%"
+                    >
+                      {{ rowAction.label }}
+                    </th>
+                  </ng-container>
+                </ng-container>
+
+            </tr>
+          </thead>
+          <tbody vdsTbody formArrayName="formArray">
+            <tr
+              vdsTr
+              *ngFor="let row of formArray.controls; let rowIndex = index; trackBy :rowTrackBy"
+              [ngClass]="{'selected-row' : selection.isSelected(row)}"
+            >
+              <ng-container [formGroupName]="rowIndex">
+                <td
+                  *ngIf="(!hideSelectAll || !canSelectMultipleRow) && !isDynamicTable"
+                  vdsTd
+                  sticky
+                >
+                  <vds-checkbox
+                    #checkbox
+                    *ngIf="!hideSelectAll"
+                    label="select"
+                    class="hidden-label"
+                    [checked]="selection.isSelected(row)"
+                    [name]="'form-row-checkbox'.concat(rowIndex.toString())"
+                    [id]="'form-row-checkbox'.concat(rowIndex.toString())"
+                    (click)="$event.stopPropagation()"
+                    (changed)="handleRowSelection($event, row)"
+                  ></vds-checkbox>
+                </td>
+
+                <ng-container *ngFor="let column of columns; trackBy:columnTrackBy" >
+
+                      <ng-container *ngIf="(column.type === FormTableColumnType.DATE_TIME_INPUT); else input">
+                          <td
+                            vdsTd
+                            sticky
+                            [disableSticky]="!column.sticky"
+                            [style]="column.cellStyle && column.cellStyle(row, this)"
+                          >
+                            <div class="table-cell">
+                              <div class="date-cell">
+                                <vds-date-selector
+                                  label="date-selector"
+                                  class="hidden-label"
+                                  [hint]="DateFormate.YYYY_MM_DD__HH_MM_SS"
+                                  [formControl]="(row | controlConverter: 'formGroup').get(column.key) | controlConverter"
+                                  [formatInputValue]="DateFormate.YYYY_MM_DD__HH_MM_SS"
+                                  [valid]="!getErrorMessage((row | controlConverter: 'formGroup'), (row.get(column.key)!))"
+                                  [disabled]="(column.disable && column.disable(row, this))!"
+                                >
+                                </vds-date-selector>
+                                <vds-badge class="m-l-10">
+                                  {{ getTimeZone() }}
+                                </vds-badge>
+                              </div>
+                              <vds-error
+                                vdsErrorMessage
+                                [show]="!!getErrorMessage((row | controlConverter: 'formGroup'), (row.get(column.key)!))"
+                              >
+                                {{ getErrorMessage((row | controlConverter: 'formGroup'), (row.get(column.key)!)) }}
+                              </vds-error>
+                            </div>
+                          </td>
+                      </ng-container>
+
+                      <ng-template #input>
+                          <ng-container *ngIf="(column.type === FormTableColumnType.INPUT); else default">
+                            <td
+                              vdsTd
+                              sticky
+                              [disableSticky]="!column.sticky"
+                              [style]="column.cellStyle && column.cellStyle(row, this)"
+                            >
+                              <div class="table-cell">
+                                <vds-form-field>
+                                  <label vdsLabel >label</label>
+                                  <input
+                                    vdsInput
+                                    placeholder="{{column.label}}"
+                                    [formControl]="row.get(column.key)! | controlConverter"
+                                    [disabled]="(column.disable && column.disable(row, this))!"
+                                    [invalid]="!!getErrorMessage((row | controlConverter: 'formGroup'),(row.get(column.key)!))"
+                                  />
+                                </vds-form-field>
+                                <vds-error
+                                  vdsErrorMessage
+                                  [show]="!!getErrorMessage((row | controlConverter: 'formGroup'),(row.get(column.key)!))"
+                                >
+                                  {{ getErrorMessage((row | controlConverter: 'formGroup'),(row.get(column.key)!)) }}
+                                </vds-error>
+                              </div>
+                            </td>
+                          </ng-container>
+                      </ng-template>
+
+                      <ng-template #default>
+                          <ng-container >
+                            <td
+                              vdsTd
+                              sticky
+                              [disableSticky]="!column.sticky"
+                              [style]="column.cellStyle && column.cellStyle(row, this)"
+                            >
+                              {{ row.get(column.key)?.value }}
+                            </td>
+                          </ng-container>
+                      </ng-template>
+
+                </ng-container>
+
+                <ng-container *ngFor="let rowAction of rowActions">
+                  <td vdsTd >
+                    <div class="row-action-cell">
+                      <button
+                        vds-button-icon
+                        role="button"
+                        aria-label="action-button"
+                        [iconType]="ButtonIconType.LIGHT_TINY"
+                        [disabled]="rowAction.disabled"
+                        (click)="rowAction.click && rowAction.click(rowIndex, this)"
+                      >
+                        <svg
+                          vds-icon 
+                          [icon]="rowAction.icon!" 
+                          [tiny]="true"
+                        ></svg>
+                      </button>
+                    </div>
+                  </td>
+                </ng-container>
+              </ng-container>
+            </tr>
+          </tbody>
+        </table>
+    </div>
+
+    <ng-container >
+      <button
+        *ngFor="let action of tableActions"
+        vds-button
+        role="button"
+        [attr.aria-label]="action?.label?.concat('-action-button')"
+        [color]="action.buttonColor"
+        [disabled]="action.disabled && action.disabled(this)"
+        (click)="action.click && action.click(this)"
+      >
+      {{action.label}}
+    </button>
+    </ng-container>
+
+</form>

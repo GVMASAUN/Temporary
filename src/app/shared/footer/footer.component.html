@@ -1,0 +1,34 @@
+<div 
+  class="footer-container vds-grid"   
+  id="vFooter"
+  [ngClass]="{
+    'overlay': overlay,
+    'nav-open': navOpen,
+    'row-selected': rowSelected,
+    'filter-open': panelOpen
+  }"
+  >
+  <div class="row action-bar">
+    <div #footerAction class="actions">
+      <ng-content></ng-content>
+    </div>
+  </div>
+
+  <div class="row m-l-30">
+    <div class="col-3 col--valign-center col--no-top-gutter col--no-bottom-gutter">
+      <img class="vds-footer-logo" src="assets/logos/visa/visa_vbm_blu.svg" width="62" height="20"/>
+    </div>
+
+    <div class="col col--valign-end col--no-top-gutter col--no-bottom-gutter col--no-left-gutter">
+      <p class="footer-info-text">
+        Copyright © 1996-{{currentYear}} Visa. All rights reserved.
+      </p>
+    </div>
+
+    <div class="col col--valign-end vds-text--end col--no-top-gutter col--no-bottom-gutter">
+      <p class="build-version footer-info-text">
+        Version: {{ revision }}, Built on: {{ date | date: "MMM d, y, h:mm a" }}
+      </p>
+    </div>
+  </div>
+</div>

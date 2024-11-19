@@ -1,0 +1,27 @@
+<app-dialog
+    buttonDirection="left"
+    [buttons]="dialogActions"
+    [close]="close.bind(this)"
+    [showProgressBar]="showLoader"
+    [title]="dialogTitle"
+    >
+    <div dialogContent>
+        <form class="comment-container" [formGroup]="form">
+            <vds-form-field>
+                <label vdsLabel>Comment *</label>
+                <input vdsInput 
+                    formControlName="comment" 
+                    aria-required="true"
+                    [invalid]="!!getErrorMessage('comment')"
+                />
+                <span vdsErrorMessage aria-atomic="true" aria-live="assertive">
+                    <ng-container *ngIf="!!getErrorMessage('comment')">
+                        <svg vds-icon icon="error" [tiny]="true"></svg>
+                        Error: {{ getErrorMessage('comment') }}
+                    </ng-container>
+                </span>
+            </vds-form-field>
+        </form>
+    </div>
+</app-dialog>
+

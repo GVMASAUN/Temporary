@@ -1,0 +1,20 @@
+<app-header 
+[screenTitle]="'Manage Merchant Group - ' + groupName"
+>
+</app-header>
+<div class="menu-container" *ngIf="initView">
+  <ul
+    vds-tab-list
+    aria-label="Vertical groupon tabs"
+    [orientation]="TabsOrientation.HORIZONTAL"
+    [selectedIndex]="selectedTab"
+  >
+    <li vds-tab-item *ngFor="let data of tabList">
+      <button role="button" vdsTab [routerLink]="data.value" queryParamsHandling="merge">
+        {{ data.name }} {{ data.count ? "(" + data.count + ")" : "" }}
+      </button>
+    </li>
+  </ul>
+</div>
+
+<router-outlet></router-outlet>

@@ -1,0 +1,37 @@
+<ng-container *ngFor="let field of fields">
+     <span *ngIf="field.label">{{field.label}}</span>
+    <ng-container *ngIf="field.type === 'checkbox'; else radio"></ng-container>
+    <ng-template #radio>
+        <ng-container *ngIf="field.type === 'radio'; else date"></ng-container>
+    </ng-template>
+    <ng-template #date>
+        <ng-container *ngIf="field.type === 'date'; else textArea">
+            <input
+                vdsInput
+                [value]="data[field.key] | date"
+                [readonly]="true"
+                [tabindex]="-1"
+            />
+        </ng-container>
+    </ng-template>
+    <ng-template #textArea>
+        <ng-container *ngIf="field.type === 'textArea'; else input">
+            <textarea
+                vdsInput
+                [autoGrow]="false"
+                [value]="data[field.key]"
+                [readonly]="true"
+                [tabindex]="-1"
+            ></textarea>
+        </ng-container>
+    </ng-template>
+
+    <ng-template #input>
+        <input
+            vdsInput
+            [value]="data[field.key]"
+            [readonly]="true"
+            [tabindex]="-1"
+        />
+    </ng-template>
+</ng-container>

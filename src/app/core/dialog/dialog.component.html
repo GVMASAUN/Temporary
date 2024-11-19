@@ -1,0 +1,50 @@
+<div>
+    <div class="vds-grid">
+      <div class="row dialog-header-bar">
+        <div class="col--align-end">
+          <button role="button"
+            vds-button-icon
+            [iconType]="ButtonIconType.LIGHT_TINY"
+            aria-label="close-button"
+            (click)="close()"
+          >
+            <svg
+              vds-icon
+              icon="visa_close"
+              [tiny]="true">
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+    <vds-linear-progress *ngIf="showProgressBar"></vds-linear-progress>
+
+    <div *ngIf="!!title" vds-dialog-card-head>
+      <span *ngIf="!!DialogIcon[type]" vds-dialog-card-head-icon>
+        <svg vds-icon [icon]="DialogIcon[type]" [low]="true"></svg>
+      </span>
+      <h2 vds-dialog-card-head-title>{{title}}</h2>
+    </div>
+
+    <div vds-dialog-card-body >
+        <p *ngIf="!!message">{{ message }}</p>
+        <ng-content select="[dialogContent]"></ng-content>
+        
+        <ng-container *ngIf="!!dialogContent" [ngTemplateOutlet]="dialogContent"></ng-container>
+    </div>
+
+    <div vds-dialog-card-footer class="dialog-footer m-t-10">
+      <vds-button-group [direction]="buttonDirection">
+        <button role="button"
+          *ngFor="let button of buttons"
+          vds-button
+          [color]="button.color"
+          [disabled]="button.disable && button.disable(this)"
+          (click)="button.click(this)"
+        >
+          {{button.label}}
+        </button>
+      </vds-button-group>
+    </div> 
+
+  </div>

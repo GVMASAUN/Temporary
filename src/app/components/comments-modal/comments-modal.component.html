@@ -1,0 +1,65 @@
+<div class="dialog-center">
+  <div class="comment-modal">
+    <div vds-dialog-card-head class="comment-modal-header">
+      <h2 vds-dialog-card-head-title>{{ dialogConfig?.dialogTitle }} - Comments</h2>
+    </div>
+    <div vds-dialog-card-body class="comment-modal-body">
+      <div class="add-comment-section" *ngIf="dialogConfig?.saveComments">
+        <form [formGroup]="form">
+          <vds-form-field>
+            <label vdsLabel>Add a comment</label>
+            <textarea vdsInput [autoGrow]="true"
+                formControlName="comment" 
+            ></textarea>
+          </vds-form-field>
+        </form>
+        <div class="comment-save-btn">
+          <button vds-button [disabled]="loading" (click)="saveComment()">
+            Save
+          </button>
+        </div>
+      </div>
+      <div class="comment-wrapper">
+        <div *ngIf="!comments.length && !loading" class="comment-not-found">
+          <p>
+            {{
+              'No comments exist for this' +
+                ( dialogConfig?.entityType === EntityType.EVENT
+                ? ' Event.'
+                : ' Event Group.' )
+            }}
+          </p>
+        </div>
+        <div class="comment-section" [ngClass]="{'loading': loading}" *ngFor="let comment of comments">
+          <hr vdsDivider/>
+          <div class="comment-card">
+            <div class="comment-header">
+              <h3 class="f-s-1">
+                {{ comment?.createdUserFullName | titlecase }}
+              </h3>
+              <span>
+                {{ formatDate(comment.createdDate!,
+                  DateFormat.MOMENT_MM_DD_YYYY_HH_MM_A) }}
+                <vds-badge>
+                  {{ getTimeZone() }}
+                </vds-badge>
+              </span>
+            </div>
+            <div class="comment-body">
+              <span>{{ comment?.comment }}</span>
+            </div>
+          </div>
+        </div>
+        <vds-spinner-progress
+          class="loading-spinner"
+          *ngIf="loading"
+        ></vds-spinner-progress>
+      </div>
+    </div>
+    <div vds-dialog-card-footer class="comment-modal-footer">
+      <vds-button-group [direction]="buttonDirection">
+        <button vds-button [disabled]="loading" (click)="close()">Done</button>
+      </vds-button-group>
+    </div>
+  </div>
+</div>

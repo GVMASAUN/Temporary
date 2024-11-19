@@ -1,0 +1,25 @@
+<div class="dialog-center">
+  <div vds-dialog-card class="prequisites-card">
+    <div vds-dialog-card-head>
+      <h2 vds-dialog-card-head-title>
+        Prerequisites
+      </h2>
+    </div>
+    <div vds-dialog-card-body class="prequisites-card-body">
+      <div class="setup-item">
+        <div class="info-section" *ngFor="let item of setupData">
+          <div class="info-header">{{ item.heading }}</div>
+          <div class="info-description">
+            {{ item.description }}
+          </div>
+          <a vdsLink class="link">{{ item.link }}</a>
+        </div>
+      </div>
+    </div>
+    <div vds-dialog-card-footer>
+      <vds-button-group direction="right">
+        <button vds-button (click)="close()">Close</button>
+      </vds-button-group>
+    </div>
+  </div>
+</div>

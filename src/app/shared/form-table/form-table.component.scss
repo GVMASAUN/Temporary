@@ -1,0 +1,74 @@
+
+.table-cell {
+    height: 100%;
+    padding-bottom: 12px;
+
+    .date-cell {
+        display: flex;
+        align-items: baseline;
+    }
+
+    vds-form-field {
+        width: 210px;
+    }
+
+    vds-date-selector,vds-form-field {
+        &::ng-deep .vds-input-label {
+            font-size: 0;
+        }
+    }
+
+}
+
+.sort-btn {
+    display: flex;
+    align-items: center;
+}
+
+.hidden-label {
+    &::ng-deep label {
+        font-size: 0;
+    }
+
+    &::ng-deep .vds-input-bar {
+        width: 210px;
+    }
+
+    &::ng-deep .vds-date-selector {
+        width: 210px;
+    }
+}
+
+.row-action-cell {
+    height: 100%;
+    margin-top: 60px;
+}
+
+table {
+    tr{
+        white-space: nowrap;
+        &:nth-child(even) {
+            td {
+              background-color: #f5f5f5;
+            }
+        }
+        &:nth-child(odd) {
+            td {
+              background-color: #ffffff;
+            }
+        }
+
+
+        &.selected-row {
+            background: #e1e1e1;
+            td {
+                background: #e1e1e1;
+            }
+        }
+    }
+}
+
+.table-wraper {
+    height: 610px;
+    overflow: scroll;
+}

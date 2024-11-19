@@ -1,0 +1,75 @@
+.dialog-center {
+  .comment-modal {
+    width: 120vh;
+    height: 90vh;
+    display: flex;
+    flex-direction: column;
+
+    .comment-modal-body {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+
+      .add-comment-section {
+        display: flex;
+        align-items: baseline;
+        background: #fafafa;
+        padding: 20px;
+
+        form {
+          flex: 1;
+        }
+      }
+
+      .comment-wrapper {
+        overflow: auto;
+
+        .loading {
+          position: relative;
+          opacity: 0.5;
+        }
+
+        .loading-spinner ::ng-deep .vds-progress--spinner {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+
+          &,
+          svg {
+            height: 40px;
+            width: 113px;
+          }
+        }
+
+        .comment-not-found {
+          padding: 20px;
+        }
+
+        .comment-section {
+          .comment-card {
+            margin: 15px;
+
+            .comment-header {
+              display: flex;
+              justify-content: space-between;
+
+              h3 {
+                color: #0052e1;
+              }
+
+              span {
+                color: #4a4a4a;
+                font-size: 12px;
+              }
+            }
+
+            .comment-body {
+              margin: 0 10px;
+            }
+          }
+        }
+      }
+    }
+  }
+}

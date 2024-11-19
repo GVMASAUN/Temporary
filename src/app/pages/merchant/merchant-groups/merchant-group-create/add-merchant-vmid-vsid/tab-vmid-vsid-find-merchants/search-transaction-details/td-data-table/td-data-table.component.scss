@@ -1,0 +1,70 @@
+.table-wrapper {
+  .table-container {
+    overflow-x: scroll;
+    height: 55vh;
+  }
+
+  .hidden-label {
+    opacity: 0;
+    font-size: 0;
+  }
+
+  table {
+
+    vds-checkbox,
+    vds-date-selector {
+      ::ng-deep label {
+        font-size: 0 !important;
+      }
+    }
+
+    .selected-row {
+      background: #e1e1e1;
+    }
+
+    .sort-btn {
+      display: flex;
+      align-items: center;
+    }
+
+    .options-menu {
+      right: 0;
+    }
+
+    th,
+    td {
+      white-space: nowrap;
+    }
+
+    vds-date-selector {
+      ::ng-deep {
+        .vds-date-selector .vds-input {
+          min-width: unset;
+          width: 150px;
+        }
+      }
+    }
+
+    vds-form-field {
+      ::ng-deep {
+        .vds-input {
+          width: 150px;
+        }
+      }
+    }
+
+    .date-selector {
+      display: flex;
+      align-items: center;
+
+      vds-date-selector {
+        flex: 1;
+
+        ::ng-deep .vds-input {
+          display: flex;
+          min-width: 210px;
+        }
+      }
+    }
+  }
+}

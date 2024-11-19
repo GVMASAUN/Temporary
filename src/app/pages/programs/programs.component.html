@@ -1,0 +1,349 @@
+<div class="page-content">
+  <app-header screenTitle="programs"> </app-header>
+
+  <div class="page-wrapper">
+    <div class="filter-bar" *ngIf="searchActivate">
+      <strong>Results for</strong>
+      <form [formGroup]="searchPanel">
+        <vds-form-field>
+          <input vdsInput formControlName="name" />
+        </vds-form-field>
+        <vds-form-field>
+          <select vdsSelect formControlName="type">
+            <option value="">Any</option>
+            <option value="1">Real Time</option>
+            <option value="3">Batch</option>
+          </select>
+        </vds-form-field>
+        <vds-form-field>
+          <select vdsSelect formControlName="status">
+            <option value="">Any</option>
+            <option value="1">Active</option>
+            <option value="2">Draft</option>
+            <option value="3">Pending</option>
+            <option value="4">Paused</option>
+            <option value="5">Rejected</option>
+            <option value="6">Archived</option>
+            <option value="7">Failed</option>
+          </select>
+        </vds-form-field>
+      </form>
+      <div class="clear-section">
+        <span>
+          Clear search
+        </span>
+        <button
+          vds-button-icon
+          [iconType]="buttonIconType.LIGHT_TINY"
+          (click)="clearSearch()"
+        >
+          <svg vds-icon [tiny]="true" icon="clear"></svg>
+        </button>
+      </div>
+    </div>
+    <div class="action-bar">
+      <div class="button-group">
+        <vds-button-group>
+          <button
+            vds-button
+            [color]="buttonColor.PRIMARY"
+            (click)="showTemplates()"
+            *ngIf="!showTemplateTable; else templateIcons"
+          >
+            Explore templates
+          </button>
+          <ng-template #templateIcons>
+            <button
+              vds-button
+              [color]="buttonColor.SECONDARY"
+              (click)="openPanel(0)"
+            >
+              <svg vds-icon [icon]="'search'" [low]="true"></svg>
+            </button>
+            <!-- <button
+              vds-button
+              [color]="buttonColor.SECONDARY"
+              (click)="openPanel(1)"
+            >
+              <svg vds-icon [icon]="'filter'" [low]="true"></svg>
+            </button> -->
+          </ng-template>
+          <button
+            vds-button
+            [color]="buttonColor.SECONDARY"
+            (click)="openNewProgramModal()"
+          >
+            create new program
+          </button>
+        </vds-button-group>
+      </div>
+      <app-show-columns
+        [columns]="templateTableHeader"
+        *ngIf="showTemplateTable"
+      ></app-show-columns>
+    </div>
+
+    <div class="setup-section" *ngIf="!showTemplateTable; else templateTable">
+      <h4 class="setup-title">Getting Started</h4>
+      <div class="setup-list-section">
+        <div class="setup-item" *ngFor="let item of setup">
+          <div class="icon-section">
+            <svg
+              vds-icon
+              [icon]="item.isdone ? 'checkmark' : 'circle-empty'"
+              [tiny]="true"
+            ></svg>
+          </div>
+          <div class="info-section">
+            <div class="info-header">{{ item.heading }}</div>
+            <div class="info-description">
+              {{ item.description }}
+            </div>
+            <a vdsLink class="link">{{ item.link }}</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <ng-template #templateTable>
+      <div class="table-wrapper">
+        <div class="table-container" [style.width]="tableWidth">
+          <table vdsDataTable>
+            <caption vdsScreenReader>
+              Template Programs List
+            </caption>
+            <thead vdsThead>
+              <tr vdsTr>
+                <th vdsTh scope="col" class="fix fix-left">
+                  <vds-tooltip
+                    tooltipId="select-all-tooltip"
+                    [text]="
+                      selectedIndex.length === templateTableData.length
+                        ? 'Deselect All'
+                        : 'Select All'
+                    "
+                    [position]="tooltipPosition.RIGHT"
+                  >
+                    <vds-checkbox
+                      label=""
+                      (click)="selectAllHandler($event)"
+                      [indeterminate]="
+                        selectedIndex.length > 0 &&
+                        selectedIndex.length < templateTableData.length
+                      "
+                      [checked]="
+                        templateTableData.length > 0 &&
+                        selectedIndex.length === templateTableData.length
+                      "
+                    ></vds-checkbox>
+                  </vds-tooltip>
+                </th>
+                <ng-container
+                  *ngFor="let column of templateTableHeader; let i = index"
+                >
+                  <th
+                    vdsTh
+                    scope="col"
+                    *ngIf="column.checked"
+                    [ngClass]="i == 0 ? 'fix fix-left-1' : ''"
+                  >
+                    <div class="sort-btn">
+                      {{ column.label }}
+                      <vds-tooltip
+                        *ngIf="column.sortable"
+                        [text]="'Sort ' + sortBy[i].slice(1) | titlecase"
+                        [position]="tooltipPosition.RIGHT"
+                      >
+                        <button
+                          vds-button-icon
+                          [iconType]="buttonIconType.LIGHT_TINY"
+                          (click)="handleSort(column.value, i)"
+                          [attr.aria-label]="'sort ' + column.label + sortBy[i]"
+                        >
+                          <svg
+                            vds-icon
+                            [icon]="'sortable' + sortBy[i]"
+                            [tiny]="true"
+                          ></svg>
+                        </button>
+                      </vds-tooltip>
+                    </div>
+                  </th>
+                </ng-container>
+                <th vdsTh scope="col" width="5%" class="fix fix-right">
+                  Actions
+                </th>
+              </tr>
+            </thead>
+            <tbody vdsTbody>
+              <tr
+                vdsTr
+                *ngFor="let row of templateTableData; let i = index"
+                [class.selected-row]="selectedIndex.includes(i)"
+              >
+                <td vdsTd class="fix fix-left">
+                  <vds-checkbox
+                    label=""
+                    (changed)="checkboxHandler($event, i)"
+                    [checked]="selectedIndex.includes(i)"
+                  ></vds-checkbox>
+                </td>
+                <td
+                  vdsTd
+                  *ngIf="templateTableHeader[0].checked"
+                  class="fix fix-left-1"
+                >
+                  <a
+                    vdsLink
+                    class="link"
+                    [routerLink]="'./' + row.programStageId + '/basics'"
+                    queryParamsHandling="merge"
+                  >
+                    {{ row.programName }}
+                  </a>
+                </td>
+                <td vdsTd *ngIf="templateTableHeader[1].checked">
+                  {{ row.programType == 1 ? "Real Time" : "Batch" }}
+                </td>
+                <td vdsTd *ngIf="templateTableHeader[2].checked">
+                  {{ row.programDescription || "-" }}
+                </td>
+                <td vdsTd *ngIf="templateTableHeader[3].checked">
+                  {{ row.startDate | date: "MM/dd/yyyy hh:mm a z" }}
+                </td>
+                <td vdsTd *ngIf="templateTableHeader[4].checked">
+                  {{ row.endDate | date: "MM/dd/yyyy hh:mm a z" }}
+                </td>
+                <td
+                  vdsTd
+                  *ngIf="templateTableHeader[5].checked"
+                  [ngSwitch]="row.statusCode"
+                >
+                  <vds-badge [type]="badgeType.STABLE" *ngSwitchCase="1">
+                    {{ "Active" }}
+                  </vds-badge>
+                  <vds-badge [type]="badgeType.STATUS" *ngSwitchCase="2">
+                    {{ "Draft" }}
+                  </vds-badge>
+                  <vds-badge [type]="badgeType.ACCENT" *ngSwitchCase="3">
+                    {{ "Pending" }}
+                  </vds-badge>
+                  <vds-badge [type]="badgeType.NEUTRAL" *ngSwitchCase="4">
+                    {{ "Paused" }}
+                  </vds-badge>
+                  <vds-badge [type]="badgeType.WARNING" *ngSwitchCase="5">
+                    {{ "Rejected" }}
+                  </vds-badge>
+                  <vds-badge [type]="badgeType.DISABLED" *ngSwitchCase="6">
+                    {{ "Archived" }}
+                  </vds-badge>
+                  <vds-badge [type]="badgeType.CRITICAL" *ngSwitchCase="7">
+                    {{ "Failed" }}
+                  </vds-badge>
+                </td>
+
+                <td vdsTd class="fix fix-right">
+                  <button
+                    vds-button-icon
+                    [iconType]="buttonIconType.LIGHT"
+                    (click)="openedMenu = i"
+                    class="ignore-host-blur"
+                  >
+                    <svg vds-icon icon="options" [low]="true"></svg>
+                  </button>
+                  <vds-menu
+                    class="vds-menu--absolute options-menu"
+                    [class.vds-menu--show]="openedMenu == i"
+                  >
+                    <ul vds-listbox>
+                      <li vds-listbox-item>
+                        <label>
+                          Edit
+                        </label>
+                      </li>
+                      <li vds-listbox-item>
+                        <label vdsLabel>
+                          Archive
+                        </label>
+                      </li>
+                    </ul>
+                  </vds-menu>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </ng-template>
+  </div>
+  <vds-pagination
+    ariaLabel="program-list-pagination"
+    [pageIndex]="page"
+    [pageSize]="size"
+    [length]="totalElements"
+    (paginationEvent)="handlePagination($event)"
+    [ariaFirstPage]="'First Page'"
+    [ariaPreviousPage]="'Previous Page'"
+    [ariaNextPage]="'Next Page'"
+    [ariaLastPage]="'Last Page'"
+  >
+  </vds-pagination>
+
+  <app-footer [panelOpen]="isPanelOpen">
+    <div class="footer-link link" (click)="openPrequisitesModal()">
+      <svg vds-icon icon="info" [tiny]="true"></svg>
+      <a vdsLink>Prequisites</a>
+    </div>
+  </app-footer>
+</div>
+<div class="panel-content" *ngIf="isPanelOpen">
+  <app-panel
+    [selectedTab]="panelSection"
+    [hideFilter]="true"
+    (activeSection)="panelSection = $event"
+  >
+    <div search>
+      <form [formGroup]="searchPanel">
+        <vds-form-field>
+          <label vdsLabel>Program Name</label>
+          <input vdsInput formControlName="name" />
+        </vds-form-field>
+        <vds-form-field>
+          <label vdsLabel>Type</label>
+          <select vdsSelect formControlName="type">
+            <option value="">Any</option>
+            <option value="1">Real Time</option>
+            <option value="3">Batch</option>
+          </select>
+        </vds-form-field>
+        <vds-form-field>
+          <label vdsLabel>Status</label>
+          <select vdsSelect formControlName="status">
+            <option value="">Any</option>
+            <option value="1">Active</option>
+            <option value="2">Draft</option>
+            <option value="3">Pending</option>
+            <option value="4">Paused</option>
+            <option value="5">Rejected</option>
+            <option value="6">Archived</option>
+            <option value="7">Failed</option>
+          </select>
+        </vds-form-field>
+      </form>
+      <div class="panel-footer">
+        <vds-button-group>
+          <button vds-button [color]="buttonColor.PRIMARY" (click)="search()">
+            Search
+          </button>
+          <button
+            vds-button
+            [color]="buttonColor.SECONDARY"
+            (click)="clearSearch()"
+          >
+            Reset
+          </button>
+        </vds-button-group>
+      </div>
+    </div>
+  </app-panel>
+</div>

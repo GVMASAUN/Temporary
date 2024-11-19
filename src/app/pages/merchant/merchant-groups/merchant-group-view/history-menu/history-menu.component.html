@@ -1,0 +1,245 @@
+<div class="page-content" [ngClass]="{ 'panel-open': isPanelOpen }">
+  <div class="filter-bar" *ngIf="searchActivate">
+    <strong>Results for</strong>
+    <form [formGroup]="filterForm">
+      <vds-form-field>
+        <label vdsLabel>Action Type</label>
+        <select vdsSelect formControlName="actionType">
+          <option value="" disabled hidden>Any</option>
+          <option value="updateMerchant">
+            Merchant Group Status Update
+          </option>
+          <option value="addMerchant">
+            Add Merchant
+          </option>
+          <option value="removeMerchant">
+            Remove Merchant
+          </option>
+          <option value="modifyMerchant">
+            Modify Merchant ID / Start & End Dates
+          </option>
+        </select>
+      </vds-form-field>
+      <vds-form-field>
+        <label vdsLabel>Responsible User</label>
+        <select vdsSelect>
+          <option value="" disabled hidden>Any</option>
+        </select>
+      </vds-form-field>
+      <div class="start-date-section">
+        <vds-date-selector
+          label="Action Date Time - Start"
+          [selectsStart]="true"
+          [startDate]="filterForm.getRawValue().sDate"
+          [endDate]="filterForm.getRawValue().eDate"
+          [valid]="!(isErrorOccured && planError.sDate.type)"
+          (change)="selectDate()"
+          formControlName="sDate"
+        ></vds-date-selector>
+        <vds-error
+          vdsErrorMessage
+          [show]="!!(isErrorOccured && planError.sDate.type)"
+        >
+          {{ planError.sDate.error }}
+        </vds-error>
+      </div>
+      <div class="end-date-section">
+        <vds-date-selector
+          label="Action Date Time - End"
+          [selectsEnd]="true"
+          [startDate]="filterForm.getRawValue().sDate"
+          [endDate]="filterForm.getRawValue().eDate"
+          [minDate]="filterForm.getRawValue().sDate"
+          [valid]="!(isErrorOccured && planError.eDate.type)"
+          (change)="selectDate()"
+          formControlName="eDate"
+        ></vds-date-selector>
+        <vds-error
+          vdsErrorMessage
+          [show]="!!(isErrorOccured && planError.eDate.type)"
+        >
+          {{ planError.eDate.error }}
+        </vds-error>
+      </div>
+    </form>
+    <div class="clear-section">
+      <span>
+        Clear search
+      </span>
+      <button role="button"
+        vds-button-icon
+        aria-label="Clear"
+        [iconType]="ButtonIconType.LIGHT_TINY"
+        (click)="clearSearch()"
+      >
+        <svg vds-icon [tiny]="true" icon="clear"></svg>
+      </button>
+    </div>
+  </div>
+
+  <vds-action-bar [active]="true" [class.inactive]="!selectedIndex.length">
+    <div class="wrapper-action-bar">
+      <div class="col col--xs-3 col--no-gutter">
+        <vds-button-group>
+          <button role="button"
+            vds-button
+            [color]="ButtonColor.SECONDARY"
+            (click)="openPanel()"
+          >
+            <svg vds-icon icon="filter" [low]="true"></svg>
+          </button>
+        </vds-button-group>
+      </div>
+
+      <div
+        class="col col--align-end col--no-gutter"
+        *ngIf="selectedIndex.length"
+      ></div>
+      <app-show-columns [columns]="columns"></app-show-columns>
+    </div>
+  </vds-action-bar>
+
+  <div class="table-wrapper" [ngClass]="{ 'body-panel-open': isPanelOpen }">
+    <div class="table-container">
+      <table vdsDataTable>
+        <caption vdsScreenReader>
+          {{ caption }}
+        </caption>
+        <thead vdsThead>
+          <tr vdsTr>
+            <ng-container
+              *ngFor="let column of columns; let i = index; let end = last"
+            >
+              <th vdsTh scope="col" *ngIf="column.checked">
+                <div class="sort-btn">
+                  {{ column.label }}
+                    <button 
+                      *ngIf="column.sortable"
+                      [matTooltip]="'Sort ' + sortBy[i].slice(1) | titlecase"
+                      [matTooltipPosition]="TooltipPosition.RIGHT"
+                      role="button"
+                      vds-button-icon
+                      [iconType]="ButtonIconType.LIGHT_TINY"
+                      (click)="handleSort(column.value, i)"
+                      [attr.aria-label]="'sort ' + column.label + sortBy[i]"
+                    >
+                      <svg
+                        vds-icon
+                        [icon]="'sortable' + sortBy[i]"
+                        [tiny]="true"
+                      ></svg>
+                    </button>
+                </div>
+              </th>
+            </ng-container>
+          </tr>
+        </thead>
+        <tbody vdsTbody></tbody>
+      </table>
+      <div *ngIf="loading" class="progress-container">
+        <vds-linear-progress></vds-linear-progress>
+      </div>
+    </div>
+  </div>
+
+  <vds-pagination
+    ariaLabel="History-pagination"
+    [pageIndex]="0"
+    [pageSize]="10"
+    [length]="30"
+    [ariaFirstPage]="'First Page'"
+    [ariaPreviousPage]="'Previous Page'"
+    [ariaNextPage]="'Next Page'"
+    [ariaLastPage]="'Last Page'"
+  >
+  </vds-pagination>
+  <app-footer [panelOpen]="isPanelOpen">
+    <vds-button-group> </vds-button-group>
+    <vds-button-group>
+      <button role="button" vds-button [color]="ButtonColor.TERTIARY" routerLink="/merchant">
+        Back
+      </button>
+    </vds-button-group>
+  </app-footer>
+</div>
+<div class="panel-content" *ngIf="isPanelOpen">
+  <app-panel [selectedTab]="0" [hideFilter]="true">
+    <div search>
+      <form [formGroup]="filterForm">
+        <vds-form-field>
+          <label vdsLabel>Action Type</label>
+          <select vdsSelect formControlName="actionType">
+            <option value="" disabled hidden>Any</option>
+            <option value="updateMerchant">
+              Merchant Group Status Update
+            </option>
+            <option value="addMerchant">
+              Add Merchant
+            </option>
+            <option value="removeMerchant">
+              Remove Merchant
+            </option>
+            <option value="modifyMerchant">
+              Modify Merchant ID / Start & End Dates
+            </option>
+          </select>
+        </vds-form-field>
+        <vds-form-field>
+          <label vdsLabel>Responsible User</label>
+          <select vdsSelect>
+            <option value="" disabled hidden>Any</option>
+          </select>
+        </vds-form-field>
+        <div class="start-date-section">
+          <vds-date-selector
+            label="Action Date Time - Start"
+            [selectsStart]="true"
+            [startDate]="filterForm.getRawValue().sDate"
+            [endDate]="filterForm.getRawValue().eDate"
+            [valid]="!(isErrorOccured && planError.sDate.type)"
+            (change)="selectDate()"
+            formControlName="sDate"
+          ></vds-date-selector>
+          <vds-error
+            vdsErrorMessage
+            [show]="!!(isErrorOccured && planError.sDate.type)"
+          >
+            {{ planError.sDate.error }}
+          </vds-error>
+        </div>
+        <div class="end-date-section">
+          <vds-date-selector
+            label="Action Date Time - End"
+            [selectsEnd]="true"
+            [startDate]="filterForm.getRawValue().sDate"
+            [endDate]="filterForm.getRawValue().eDate"
+            [minDate]="filterForm.getRawValue().sDate"
+            [valid]="!(isErrorOccured && planError.eDate.type)"
+            (change)="selectDate()"
+            formControlName="eDate"
+          ></vds-date-selector>
+          <vds-error
+            vdsErrorMessage
+            [show]="!!(isErrorOccured && planError.eDate.type)"
+          >
+            {{ planError.eDate.error }}
+          </vds-error>
+        </div>
+      </form>
+      <div class="panel-footer">
+        <vds-button-group>
+          <button role="button" vds-button [color]="ButtonColor.PRIMARY" (click)="search()">
+            Search
+          </button>
+          <button role="button"
+            vds-button
+            [color]="ButtonColor.SECONDARY"
+            (click)="clearSearch()"
+          >
+            Reset
+          </button>
+        </vds-button-group>
+      </div>
+    </div>
+  </app-panel>
+</div>

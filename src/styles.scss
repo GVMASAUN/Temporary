@@ -1,0 +1,124 @@
+@import url(./assets/fonts/Visa_Dialect_UI_Static_Desktop_TTF/Visa_Dialect_UI_Static_Desktop_TTF/fonts.css);
+@import "@angular/material/prebuilt-themes/indigo-pink.css";
+
+html {
+
+  &,
+  body {
+    background: #fff;
+  }
+
+  &>body {
+    font-family: "Visa Dialect UI", "OpenSans", "sans-serif";
+  }
+}
+
+.cdk-overlay-container {
+  .cdk-overlay-pane {
+    transform: none !important;
+
+    .mat-mdc-dialog-surface {
+      max-height: 100vh !important;
+      background: #ffffff;
+      padding: 0 !important;
+    }
+  }
+
+  .mat-mdc-dialog-surface::-webkit-scrollbar {
+    width: 0 !important;
+  }
+}
+
+.dialog-footer {
+  bottom: 0;
+  height: 26px;
+  background-color: #f5f5f5;
+  position: sticky;
+  z-index: 1;
+}
+
+.dialog-center {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.panel-open {
+  // margin-right: 600px;
+}
+
+.body-panel-open {
+  overflow: auto;
+  width: calc(100vw - 35px - 640px - 110px);
+}
+
+/* 200% Zoom Css started*/
+@media (max-width: 768px) {
+
+  .vds-grid [class^=col--][class*="-1"],
+  .vds-grid [class^=col--][class*="-2"],
+  .vds-grid [class^=col--][class*="-3"],
+  .vds-grid [class^=col--][class*="-4"],
+  .vds-grid [class^=col--][class*="-5"],
+  .vds-grid [class^=col--][class*="-6"],
+  .vds-grid [class^=col--][class*="-7"],
+  .vds-grid [class^=col--][class*="-8"],
+  .vds-grid [class^=col--][class*="-9"] {
+    width: 50% !important;
+  }
+
+  .mat-mdc-dialog-surface {
+    padding: 0 !important;
+    overflow-y: auto !important;
+  }
+}
+
+@media (max-width: 960px) {
+
+  .vds-grid [class^=col--][class*="-1"],
+  .vds-grid [class^=col--][class*="-2"],
+  .vds-grid [class^=col--][class*="-3"],
+  .vds-grid [class^=col--][class*="-4"],
+  .vds-grid [class^=col--][class*="-5"],
+  .vds-grid [class^=col--][class*="-6"],
+  .vds-grid [class^=col--][class*="-7"],
+  .vds-grid [class^=col--][class*="-8"],
+  .vds-grid [class^=col--][class*="-9"] {
+    width: 50% !important;
+  }
+
+  .mat-mdc-dialog-surface {
+    padding: 0 !important;
+    overflow-y: auto !important;
+  }
+}
+
+/********       200% Zoom Css END          ********************/
+
+.dialog-header-bar {
+  height: 56px;
+  background-color: #f5f5f5;
+  position: sticky;
+}
+
+a:hover {
+  cursor: pointer;
+}
+
+.mat-tooltip-panel {
+  .mat-tooltip {
+    box-shadow: 0 0 4px #797979;
+    background-color: #fff;
+    color: #1a1a1a;
+    font-size: .75rem;
+    font-weight: bold;
+    line-height: 1rem;
+
+  }
+}
+
+.tabs-section {
+  border-bottom: 1px solid #e1e1e1;
+  margin-bottom: 30px;
+}

@@ -1,0 +1,10 @@
+<app-search-table
+  tableId="event-actions-list"
+  [tableActions]="!disabled ? tableActions : []"
+  [columns]="tableColumns"
+  [dataSource]="actions"
+  [hideSelectAll]="true"
+  [hideSearchFieldFilters]="true"
+  [sorting]="SortType.STATIC"
+  notFound="No Actions are associated with this Event."
+></app-search-table>

@@ -1,0 +1,63 @@
+.detail-container {
+    width: 70%;
+
+    .status-container {
+        .vds-alert--relative {
+            position: unset !important;
+        }
+
+        background-color: #fafafa;
+        padding: 24px;
+    }
+
+    .date-field {
+        ::ng-deep {
+            .vds-input {
+                width: 100%;
+            }
+        }
+    }
+
+    .section-title {
+        display: flex;
+        align-items: end;
+        gap: 1rem;
+        margin-bottom: 1rem;
+        margin-top: 20px;
+
+        h3 {
+            margin: unset;
+        }
+    }
+
+    .vertical-line {
+        border-right: 3px solid #E4E4E4;
+        height: 45px;
+    }
+
+    .accordion-panel {
+        background-color: #fafafa;
+    }
+
+    .mcc-table-container {
+        width: 100%;
+
+        ::ng-deep {
+
+            .vds-btn-text,
+            .vds-btn-text--secondary {
+                text-transform: none;
+            }
+        }
+    }
+
+    .timezone-label {
+        padding: 8px 0 12px;
+        color: #4a4a4a;
+        cursor: pointer;
+        display: inline-block;
+        font-size: 12px;
+        line-height: 16px;
+        transition: 0.25s ease;
+    }
+}

@@ -1,0 +1,207 @@
+.page-content {
+  .filter-bar {
+    background: #dfebff;
+    display: flex;
+    align-items: baseline;
+    padding: 0 10px;
+    gap: 10px;
+
+    form {
+      display: flex;
+      gap: 10px;
+      flex: 1;
+      flex-wrap: wrap;
+
+      vds-form-field {
+        // flex: 1;
+
+        & ::ng-deep {
+          .vds-input-bar,
+          input,
+          select {
+            border-radius: 20px;
+            text-align: center;
+            width: fit-content;
+          }
+          & ::ng-deep {
+            .vds-input:hover,
+            .vds-input {
+              .vds-input-bar::before {
+                border-bottom: none;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .table-wrapper {
+    width: calc(100vw - 100px - 65px);
+
+    .table-container {
+      position: relative;
+      overflow: auto;
+
+      .hidden-label {
+        opacity: 0;
+        font-size: 0;
+      }
+
+      .fixed {
+        position: sticky;
+        z-index: 1;
+
+        &:nth-of-type(1) {
+          left: 0;
+        }
+        &:nth-of-type(2) {
+          left: 72px;
+        }
+        &:nth-of-type(3) {
+          left: 174px;
+        }
+        &:nth-of-type(4) {
+          left: 373px;
+        }
+      }
+  
+      table th:nth-child(n+3),
+      table td:nth-child(n+3) {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      table {
+        white-space: nowrap;
+        margin-top: 16px;
+
+        vds-radio, vds-checkbox {
+          ::ng-deep label {
+            font-size: 0 !important;
+          }
+        }
+
+        tbody {
+          tr {
+            &:nth-child(even) {
+              td.fixed {
+                background-color: #f5f5f5;
+              }
+            }
+            &:nth-child(odd) {
+              td.fixed {
+                background-color: #ffffff;
+              }
+            }
+
+            &.highlight > td {
+              background-color: #ffe7ce !important;
+              width: 100%;
+              box-sizing: border-box;
+            }
+
+            vds-date-selector {
+              ::ng-deep {
+                .vds-date-selector {
+                  position: relative;
+
+                  .vds-input {
+                    width: 200px;
+                    min-width: 200px;
+
+                    label {
+                      display: none;
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        .selected-row {
+          background: #e1e1e1;
+          td.fixed {
+            background: #e1e1e1 !important;
+          }
+        }
+        .sort-btn {
+          display: flex;
+          align-items: center;
+        }
+      }
+    }
+  }
+
+  .inactive {
+    &::ng-deep.vds-action-bar--active-controls {
+      background-color: unset;
+    }
+  }
+
+  .wrapper-action-bar {
+    min-height: 48px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .progress-container {
+    min-height: 100px;
+  }
+
+  .no-data-label {
+    margin-top: 16px;
+  }
+
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  input[type="number"] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+  }
+  .clear-section {
+    display: flex;
+    align-items: center;
+  }
+
+  @media (max-width: 768px) {
+    .progress-container {
+      display: none;
+    }
+  }
+}
+
+app-time-picker {
+  & ::ng-deep {
+    input {
+      width: 130px;
+      border-radius: 0.125rem;
+      height: 22px;
+    }
+  }
+}
+
+.panel-content {
+
+  app-time-picker {
+    & ::ng-deep {
+      input {
+        width: 291px;
+        border-radius: 0.125rem;
+        height: 22px;
+      }
+    }
+  }
+    ::ng-deep .search-panel form,
+    ::ng-deep .filter-panel form {
+      align-items: center;
+      margin-bottom: 0px;
+    }
+}

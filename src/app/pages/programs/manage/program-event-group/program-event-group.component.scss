@@ -1,0 +1,14 @@
+.alert-icon {
+    padding: 10px;
+    fill: #d65151 !important;
+}
+
+.hidden-label {
+    opacity: 0;
+}
+
+vds-radio {
+    ::ng-deep label {
+        font-size: 0 !important;
+    }
+}

@@ -1,0 +1,61 @@
+<div class="vds-grid">
+  <div class="row" *ngIf="placeholder">
+    <label vdsLabel [attr.aria-required]="isRequired">{{placeholder}}</label>
+  </div>
+  <div class="row">
+    <vds-error vdsErrorMessage [show]="!!error">{{ error }}</vds-error>
+  </div>
+  <br *ngIf="!!error">
+  <div class="row shuttle-box">
+    <div *ngIf="!disabled" class="col--lg-5 left-box">
+      <vds-form-field *ngIf="searchable">
+        <label vdsLabel>Available Options</label>
+        <img src="assets/imgs/search-icon.png" alt="search" width="16">
+        <input vdsInput placeholder="Search" (changed)="availableSearch = $event.value" tabindex="0">
+      </vds-form-field>
+      <div class="options">
+        <div
+          *ngFor="let item of availableOptions; trackBy:optionTrackBy"
+          class="option"
+          [class.selectable]="optionSelectable(item)"
+          [class.selected]="currentAvailableOptions.includes(item)"
+          (click)="availableClick(item)"
+          (keyup.enter)="availableClick(item)"
+          (keyup.space)="availableClick(item)"
+          (dblclick)="selectCurrent([item])"
+          [tabindex]="optionSelectable(item) ? '0' : '-1'">
+          {{item.label}}
+        </div>
+      </div>
+    </div>
+    <div *ngIf="!disabled" class="col--align-center buttons-container" [class.selectable]="!disabled && selectable">
+      <img src="assets/imgs/double-rightarrow.png" alt="double-leftarrow" width="14"  (click)="selectAll()" (keyup.enter)="selectAll()" tabindex="0">
+      <img src="assets/imgs/single-rightarrow.png" alt="single-leftarrow" width="8"  (click)="selectCurrent()" (keyup.enter)="selectCurrent()" tabindex="0">
+      <br>
+      <img src="assets/imgs/single-leftarrow.png" alt="single-arrow-left" width="8" (click)="unselectCurrent()" (keyup.enter)="unselectCurrent()" tabindex="0">
+      <img src="assets/imgs/double-leftarrow.png" alt="double-arrow-left" width="14" (click)="unselectAll()" (keyup.enter)="unselectAll()" tabindex="0">
+    </div>
+    <div class="col--lg-5 right-box">
+      <vds-form-field *ngIf="!disabled && searchable" floatLabel="always">
+        <label vdsLabel aria-label="Selected Options">Selected Options</label>
+        <img matPrefix src="assets/imgs/search-icon.png" alt="search-icon" width="16">
+        <input vdsInput placeholder="Search" (changed)="selectedSearch = $event.value" tabindex="0">
+      </vds-form-field>
+      <div class="options">
+        <div
+          class="option"
+          *ngFor="let item of selectedOptions;trackBy:optionTrackBy"
+          [class.selectable]="optionSelectable(item)"
+          [class.selected]="currentSelectedOptions.includes(item)"
+          [ngStyle]="rowStyle(item.value)"
+          (click)="selectedClick(item)"
+          (keyup.enter)="selectedClick(item)"
+          (keyup.space)="selectedClick(item)"
+          (dblclick)="unselectCurrent([item])"
+          [tabindex]="optionSelectable(item) ? '0' : '-1'">
+          {{item.label}}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

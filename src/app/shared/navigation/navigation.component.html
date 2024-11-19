@@ -1,0 +1,281 @@
+<div class="nav clientSide">
+  <vds-nav
+    [position]="NavPosition.FIXED"
+    [vertical]="true"
+    [openNav]="navOpen"
+    [colorScheme]="navColorSchemeV"
+  >
+    <a
+      *ngIf="!isOverlay"
+      vdsLink
+      vertical
+      vds-nav-skip-link
+      aria-label="Skip to content"
+      tabindex="0"
+      role="link"
+      (click)="skipToMainContent()"
+      (keyup.enter)="skipToMainContent()"
+      >Skip to main Content</a
+    >
+
+    <div
+      vds-nav-brand vertical
+      tabindex="0"
+      class="cursor-pointer"
+    >
+      <div
+        vds-nav-brand-info
+        class="logo-container"
+      >
+        <a
+          vds-nav-brand-logo
+          role="link"
+          class="visa-logo"
+        >
+          <img
+            vdsNavBrandLogoVisa
+            alt="Visa"
+            [variant]="visaLogoColorV"
+          />
+        </a>
+        <div
+          vds-nav-brand-info
+          class="brand-name-short"
+          *ngIf="!navOpen"
+        >
+          Loyalty
+        </div>
+        <div
+          vds-nav-brand-info
+          class="brand-name-full"
+          *ngIf="navOpen"
+        >
+          Loyalty Suite
+        </div>
+      </div>
+    </div>
+
+    <nav
+      vds-nav-links
+      vertical
+      aria-label="Main Navigation"
+    >
+      <ul
+        *ngIf="!isOverlay && initTab"
+        vds-tab-list
+        id="navigation-side-bar-links"
+        [selectedIndex]="selectedIndex"
+        [orientation]="TabsOrientation.VERTICAL"
+        [isTablistNavigation]="true"
+       >
+        <li
+          *ngFor="let menu of menus; let tabIndex = index"
+          vds-tab-item
+        >
+          <!-- Added class condition to tackle selected index disappear bug -->
+          <a
+            vds-tab
+            queryParamsHandling="merge"
+            matTooltipPosition="right"
+            [class.vds-state--selected] ="selectedIndex == tabIndex"
+            [ngClass]="{'nav-selected': selectedIndex == tabIndex}"
+            [tabAsNavLink]="false"
+            [attr.aria-expanded]="!!menu.isSubMenuOpened"
+            [attr.aria-label]="menu.module.uiName"
+            [routerLink]="hasSubMenu(menu) ? router.url.split('?')[0]  : menu.module.baseUrl"
+            [replaceUrl]="true"
+            [matTooltip]="!navOpen ? menu.module.uiName : ''"
+            (click)="selectedState(tabIndex); openSubNav = !openSubNav"
+ 
+          >
+            <div [ngClass]="{ 'menu-container': !!navOpen }">
+              <svg vds-icon [icon]="menu.icon" [low]="true"></svg>
+              <vds-tab-label *ngIf="navOpen">{{ menu.module.uiName }}</vds-tab-label>
+              
+              <svg *ngIf="hasSubMenu(menu) && navOpen" 
+                class="drpdown-icon" 
+                vds-icon [icon]="menu.isSubMenuOpened ? VisaIcon.ARROW_COLLAPSE : VisaIcon.ARROW_EXPAND" 
+                [tiny]="true" 
+                [low]="true" 
+              ></svg>
+            </div>
+
+          </a>
+          <div
+             vds-disclosure-content 
+             [isOpen]="!!menu.isSubMenuOpened || (selectedSubMenuIndex > -1)">
+            <ul 
+              vds-tab-list 
+              [selectedIndex]="(selectedSubMenuIndex > -1) ? selectedSubMenuIndex : null" 
+              [orientation]="TabsOrientation.VERTICAL"
+              >
+              <li vds-tab-item [isTabItemDisclosure]="true" *ngFor="let subMenu of (menu?.subMenus || []); let subTabIndex = index">
+                <a 
+                  vds-tab 
+                  queryParamsHandling="merge"
+                  [class.vds-state--selected] ="selectedSubMenuIndex == subTabIndex"
+                  [ngClass]="{'nav-selected': selectedSubMenuIndex == subTabIndex}"
+                  [disclosureLink]="true" 
+                  [tabAsNavLink]="true"             
+                  [routerLink]="subMenu.url"
+                  (click)="setSubMenuState(subTabIndex)">
+                  {{ subMenu.name }}
+                </a>
+              </li>
+            </ul>
+          </div>
+          
+         </li>
+      </ul>
+
+      <ul
+        vds-tab-list
+        id="navigation-side-bar-back-link"
+        *ngIf="isOverlay"
+      >
+        <li vds-tab-item>
+          <a
+            vdsTab
+            matTooltip="Back"
+            matTooltipPosition="after"
+            (click)="back()"
+          >
+            <svg
+              vds-icon
+              [icon]="VisaIcon.ARROW_BACK"
+              [low]="true"
+            ></svg>
+            <vds-tab-label *ngIf="navOpen">
+              {{ "Back" }}
+            </vds-tab-label>
+          </a>
+        </li>
+      </ul>
+
+
+    </nav>
+
+    <div vds-nav-footer>
+      <div [class.userAvatar]="navOpen">
+        <vds-avatar
+          altText="User Logo"
+          [class.vds-avatar-collapsed]="!navOpen"
+        ></vds-avatar>
+
+        <vds-avatar
+          *ngIf="navOpen"
+          matTooltipPosition="above"
+          [userName]="userName"
+          [textShade]="TextShade.LIGHT"
+          [matTooltip]="userName.length > 16 ? userName : ''"
+        ></vds-avatar>
+
+        <button
+          *ngIf="navOpen"
+          vds-button-split
+          role="button"
+          aria-label="menu"
+          aria-labelledby="expand-collapse-menu-tooltip"
+          matTooltipPosition="right"
+          [attr.aria-expanded]="isExpanded"
+          [noButtonLabel]="true"
+          [color]="ButtonColor.NAV"
+          [matTooltip]="isExpanded ? 'Collapse menu' : 'Expand menu'"
+          (click)="isExpanded = !isExpanded"
+        >
+          <svg
+            vds-icon
+            [icon]="isExpanded ? VisaIcon.ARROW_COLLAPSE : VisaIcon.ARROW_EXPAND"
+            [tiny]="true"
+          ></svg>
+        </button>
+      </div>
+
+      <div *ngIf="isExpanded && navOpen">
+        <button
+          vds-button
+          class="btn-no-text-transform logout-btn"
+          role="button"
+          aria-label="logout-button"
+          matTooltipPosition="right"
+          matTooltip="Logout"
+          [isFullWidth]="true"
+          [color]="ButtonColor.TERTIARY"
+          (keyup.enter)="logout()"
+          (click)="logout()"
+        >
+        <svg
+          vds-icon
+          [icon]="VisaIcon.POWER"
+          [tiny]="true"
+        ></svg>
+        Logout
+      </button>
+      </div>
+      <button
+        vds-button-split
+        role="button"
+        class="nav-button"
+        matTooltipPosition="after"
+        aria-label="navigation control"
+        aria-labelledby="expand-collapse-navigation-tooltip"
+        [noButtonLabel]="true"
+        [color]="ButtonColor.NAV"
+        [matTooltip]="navOpen ? 'Collapse navigation' : 'Expand navigation'"
+        (click)="navOpen = !navOpen"
+      >
+        <svg
+          vds-icon
+          [icon]="VisaIcon.ARROW_NEXT"
+          [tiny]="true"
+          [class.nav-open]="navOpen"
+        ></svg>
+      </button>
+    </div>
+
+    <div class="client-indicator">
+      <div *ngIf="isClientActive">
+        <svg
+          vds-icon
+          [icon]="VisaIcon.PASSWORD_SHOW"
+          [tiny]="true"
+        ></svg>
+        <span>
+          Managing:
+          <ng-container *ngIf="!!user.accessToMultipleClients">
+            <a
+              vdsLink
+              role="link"
+              tabindex="0"
+              (keyup.enter)="openClientSelectionDialog()"
+              (click)="openClientSelectionDialog()"
+            >
+              {{ clientName }}
+            </a>
+          </ng-container>
+          <ng-container *ngIf="!user.accessToMultipleClients">
+            {{ clientName }}
+          </ng-container>
+        </span>
+      </div>
+
+      <div class="sitemap-icon">
+        <button
+          vds-button-icon
+          role="button"
+          aria-label="sitemap-button"
+          matTooltipPosition="right"
+          matTooltip="Sitemap"
+          [iconType]="ButtonIconType.LIGHT_TINY"
+          (click)="openSiteMapDialog()"
+        >
+          <svg
+            vds-icon
+            [tiny]="true"
+            [icon]="VisaIcon.MAP_LOCATION_CURRENT"
+          ></svg>
+        </button>
+      </div>
+    </div>
+  </vds-nav>
+</div>

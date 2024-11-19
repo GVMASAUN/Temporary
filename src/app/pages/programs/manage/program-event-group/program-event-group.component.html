@@ -1,0 +1,100 @@
+<app-search-table
+  #eventGroupTable
+  tableId="program-event-group-list"
+  [tableActions]="tableActions"
+  [columns]="tableColumns"
+  [searchFields]="advancedSearchFields"
+  [hideSelectAll]="true"
+  [hideSearchFieldFilters]="true"
+  [search]="getEventGroups.bind(this)"
+  tableId="event-group-list"
+  notFound="No data exists for the provided search filter."
+></app-search-table>
+<app-footer></app-footer>
+
+<ng-template #columnEventGroupName let-column="column" let-row="row">
+  <ng-container>
+    <td vdsTd [style]="column.cellStyle && column.cellStyle(row, this)">
+      <a
+        vdsLink
+        role="link"
+        tabindex="0"
+        (click)="column.click && column.click(row)"
+        (keyup.enter)="column.click && column.click(row)"
+      >{{ row[column.key] }}</a>
+      <span
+        *ngIf="((row.eventGroupStatusCode === StatusCode.ERROR) && (row.publishedStatus !== StatusCode.INACTIVE))"
+        matTooltip="This Event Group was partially published and 
+          remains Active in VOP. Please consider deactivating to prevent 
+          incomplete or invalid Event conditions being evaluated!"
+        [matTooltipPosition]="TooltipPosition.RIGHT"
+      >
+        <svg class="alert-icon" vds-icon [icon]="VisaIcon.WARNING" [low]="true"></svg>
+      </span>
+    </td>
+  </ng-container>
+</ng-template>
+
+<app-panel
+  #panel
+  *ngIf="isImportPanelOpen"
+  [panelTabs]="panelTabs"
+  panelId="import-panel"
+  [selectedTab]="0"
+>
+  <div search>
+    <table vdsDataTable>
+      <caption vdsScreenReader>
+        {{ caption }}
+      </caption>
+      <thead vdsThead>
+        <tr vdsTr>
+          <th vdsTh scope="col" width="5%">
+              <!-- Added label with 0 opacity for VGAR Requirement -->
+              <!-- Table Header shouldn't be empty -->
+            <label vdsLabel class="hidden-label">Select</label>
+          </th>
+          <th vdsTh scope="col" *ngFor="let column of panelTableColumns">
+            <div class="sort-btn">
+              {{ column.label }}
+            </div>
+          </th>
+        </tr>
+      </thead>
+      <tbody vdsTbody>
+        <tr vdsTr *ngFor="let column of panelTableData; let i = index">
+          <th vdsTh scope="col" width="5%">
+            <vds-radio
+              label="Select"
+              name="radioButton"
+              [checked]="selectedRowNumber == i"
+              (changed)="onRowSelect($event, i)"
+              [radioValue]="column.eventGroupName"
+            ></vds-radio>
+          </th>
+
+          <td vdsTd>{{ column.eventGroupName }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="panel-footer">
+      <vds-button-group>
+        <button role="button"
+          vds-button
+          [color]="ButtonColor.PRIMARY"
+          [disabled]="selectedRowNumber < 0"
+          (click)="importModal()"
+        >
+          Import
+        </button>
+        <button role="button"
+          vds-button
+          [color]="ButtonColor.SECONDARY"
+          (click)="closePanel()"
+        >
+          Cancel
+        </button>
+      </vds-button-group>
+    </div>
+  </div>
+</app-panel>

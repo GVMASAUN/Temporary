@@ -1,0 +1,31 @@
+.login-page-wrapper {
+  height: 100vh;
+  display: grid;
+  place-items: center;
+
+  form {
+    border: 1px solid;
+    padding: 30px;
+    width: min(500px, 80vw);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    .form-title > p {
+      margin: unset;
+    }
+
+    vds-button-group {
+      ::ng-deep {
+        .vds-btn-group {
+          gap: 15px;
+
+          .submit-button {
+            width: 100%;
+            margin: unset;
+          }
+        }
+      }
+    }
+  }
+}

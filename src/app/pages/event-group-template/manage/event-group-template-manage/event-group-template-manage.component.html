@@ -1,0 +1,82 @@
+<app-header 
+  [headerHeight]="46"
+  screenTitle="Manage Event Group Template - {{ tabs[selectedTabIndex] }}"
+>
+</app-header>
+
+<div class="tabs-section">
+  <ul
+    vds-tab-list
+    [orientation]="TabsOrientation.HORIZONTAL"
+    >
+    <li vds-tab-item *ngFor="let tab of tabs; let tabIndex = index">
+      <button role="button" 
+        vdsTab
+        vdsTab
+        [selected]="selectedTabIndex === tabIndex"
+        (focus)="selectedTabIndex = tabIndex"
+      >
+        {{ tab }}
+      </button>
+    </li>
+  </ul>
+</div>
+
+<div *ngIf="initialized">
+    <app-event-group-template-basics
+      *ngIf="!hideTab(EventGroupStep.BASICS)"
+      [form]="form"
+      [id]="getTabId(viewName,selectedTabIndex,EventGroupStep.BASICS)"
+      [attr.aria-labelledby]="getTabLabelledById(viewName,selectedTabIndex,EventGroupStep.BASICS)"
+      [mode]="mode"
+      [userRole]="userRole"
+      [currentUserId]="currentUserId"
+      [editable]="editable"
+      [disabled]="!editable"
+      [disabledApproveOrReject]="disabledApproveOrReject"
+      (workflowChangeEmitter)="handleWorkflowChange($event)"
+    ></app-event-group-template-basics>
+    <app-event-group-template-events
+      [hidden]="hideTab(EventGroupStep.EVENTS)"
+      [editable]="editable"
+      [form]="form"
+      [id]="getTabId(viewName,selectedTabIndex,EventGroupStep.EVENTS)"
+      [attr.aria-labelledby]="getTabLabelledById(viewName,selectedTabIndex,EventGroupStep.EVENTS)"
+      [mode]="mode"
+      (onSubmitEvent)="ngOnInit()"
+    ></app-event-group-template-events>    
+  </div>
+
+  <app-footer [overlay]="false" >
+    <vds-button-group *ngIf="hideTab(EventGroupStep.EVENTS) && editable">
+        <button role="button" vds-button [color]="ButtonColor.PRIMARY" 
+          (click)="handleSubmit()"
+        >
+          Save
+        </button>
+        <button role="button" vds-button [color]="ButtonColor.SECONDARY"
+          (click)="handleSubmit(true)"
+        >
+          Save & Exit
+        </button>
+
+        <!-- <button role="button" *ngIf="StatusCode.ACTIVE !== eventGroupTemplate.eventGroupStatusCode" 
+            vds-button [color]="ButtonColor.SECONDARY" 
+            (click)="deleteTemplate()">
+            Delete
+        </button> -->
+    </vds-button-group>
+  
+    <vds-button-group>
+      <button role="button"
+        vds-button
+        [color]="ButtonColor.TERTIARY"
+        routerLink="../../"
+        queryParamsHandling="merge"
+      >
+        {{ showCloseButton ? 'Close' : 'Cancel' }}
+      </button>
+    </vds-button-group>
+  </app-footer>
+
+

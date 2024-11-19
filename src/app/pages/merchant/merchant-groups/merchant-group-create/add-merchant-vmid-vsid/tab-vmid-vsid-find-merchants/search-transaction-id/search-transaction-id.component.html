@@ -1,0 +1,49 @@
+<form [formGroup]="transIDMerchantData" (ngSubmit)="findMerchant()">
+  <!-- *ngIf="!tableData.length; else table" -->
+  <div class="trans-id-search-form-field">
+    <vds-form-field>
+      <label vdsLabel>Visa Transaction ID </label>
+      <input vdsInput formControlName="transactionId" />
+    </vds-form-field>
+    <vds-date-selector
+      label="Transaction Date (YYYY-MM-DD)"
+      (formattedDateChange)="dateChange($event)"
+      [formatInputValue]="'yyyy-MM-dd'"
+      [value]="transIDMerchantData.get('transactionDate')?.value"
+    ></vds-date-selector>
+    <vds-form-field>
+      <label vdsLabel>User Community Code </label>
+      <input vdsInput formControlName="userCommunityCode" />
+    </vds-form-field>
+  </div>
+
+  <div class="merchant-search-action panel-footer">
+    <vds-button-group>
+      <button role="button"
+        vds-button
+        [color]="ButtonColor.PRIMARY"
+        [disabled]="transIDMerchantData.invalid"
+        [type]="ButtonType.SUBMIT"
+      >
+        <span *ngIf="!loading">
+          find merchant
+        </span>
+        <vds-spinner-progress
+          class="loading-spinner"
+          *ngIf="loading"
+        ></vds-spinner-progress>
+      </button>
+      <button role="button"
+        vds-button
+        [color]="ButtonColor.SECONDARY"
+        [type]="ButtonType.RESET"
+      >
+        reset
+      </button>
+      <vds-error vdsErrorMessage [show]="!!errMsg"> {{ errMsg }} </vds-error>
+    </vds-button-group>
+  </div>
+</form>
+<!-- <ng-template #table>
+  <app-td-data-table [tableData]="tableData"></app-td-data-table>
+</ng-template> -->

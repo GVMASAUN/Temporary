@@ -1,0 +1,56 @@
+<app-overlay
+  [backLink]="['..']"
+  backPage="merchant"
+  screenTitle="Add Merchants"
+  [close]="true"
+>
+  <!-- Overlay content starts -->
+  <div class="menu-container">
+    <ul
+      vds-tab-list
+      aria-label="Tabs"
+      [orientation]="TabsOrientation.HORIZONTAL"
+      [selectedIndex]="selectedTab"
+    >
+      <!-- <li vds-tab-item>
+        <button role="button" vdsTab (click)="selectedTab = 0">
+          VMID-VSID
+        </button>
+      </li> -->
+      <li vds-tab-item>
+        <button role="button" vdsTab (click)="selectedTab = 0">
+          Find Merchants
+        </button>
+      </li>
+      <li vds-tab-item>
+        <button role="button" vdsTab (click)="selectedTab = 1">
+          Bulk Upload
+        </button>
+      </li>
+    </ul>
+  </div>
+
+  <!-- <div
+    class="vmid-vsid-tab-container"
+    [hidden]="selectedTab === 0 ? undefined : 'hidden'"
+    aria-labelledby="vmid-vsid-tab-label"
+  >
+    <app-tab-vmid-vsid></app-tab-vmid-vsid>
+  </div> -->
+  <div
+    class="find-merchant-tab-container"
+    [hidden]="selectedTab === 0 ? undefined : 'hidden'"
+    aria-labelledby="find-merchant-tab-label"
+  >
+    <app-tab-vmid-vsid-find-merchants></app-tab-vmid-vsid-find-merchants>
+  </div>
+  <div
+    class="bulk-upload-tab-container"
+    [hidden]="selectedTab === 1 ? undefined : 'hidden'"
+    aria-labelledby="bulk-upload-tab-label"
+  >
+    <app-tab-vmid-vsid-bulk-upload></app-tab-vmid-vsid-bulk-upload>
+  </div>
+
+  <!-- Overlay content ends -->
+</app-overlay>

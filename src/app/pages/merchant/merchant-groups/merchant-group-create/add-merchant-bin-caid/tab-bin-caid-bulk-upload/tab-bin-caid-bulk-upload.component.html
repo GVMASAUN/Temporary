@@ -1,0 +1,99 @@
+<div class="vds-grid">
+  <div class="col">
+    <div class="form-header">
+      <svg vds-icon icon="document-add" [low]="true"></svg>
+      Add via File Upload
+      <svg vds-icon icon="info" [tiny]="true"></svg>
+    </div>
+    <p class="section-title">File template</p>
+    <div class="form-header link" (click)="templateDownload()">
+      <svg vds-icon icon="file-download" [tiny]="true"></svg>
+      <a role="link" tabindex="0" (keyup.enter)="templateDownload()" vdsLink>Download file template</a>
+    </div>
+    <div class="file-upload-wrapper">
+      <div class="file-upload-container">
+        <p class="section-title">Upload file</p>
+        <vds-fileupload
+          *ngIf="initUploadFileSelector"
+          [enableDropzone]="true"
+          inputLabel="Upload Files..."
+          inputAriaLabel="Upload Files"
+          (uploadEvent)="handleUpload($event)"
+          [customControl]="true"
+          (downloadEvent)="handleItemDownload($event)"
+          (directoryDeleteEvent)="handleItemDirDelete($event)"
+          [disabled]="!!formData.get('file') || binCaidCombinations.valid"
+        >
+        </vds-fileupload>
+      </div>
+    </div>
+
+    <hr />
+    <form [formGroup]="binCaidCombinations">
+      <div class="form-header">
+        <svg vds-icon icon="document-add" [low]="true"></svg>
+        Add via BIN, CAID Combinations
+        <svg vds-icon icon="info" [tiny]="true"></svg>
+      </div>
+
+      <p class="section-title">BIN-CAID Combinations</p>
+      <p>Enter a comma seperated list.</p>
+
+      <div class="form-field">
+        <vds-form-field>
+          <label vdsLabel>BIN-CAID combinations</label>
+          <textarea
+            vdsInput
+            [autoGrow]="true"
+            [rows]="3"
+            formControlName="combinations"
+            placeholder="BIN, CAID, External Id (optional), Start Date (optional), End Date (required if start date is present)"
+            [readonly]="!!formData.get('file')"
+            [tabindex]="!!formData.get('file') ? -1 : 0"
+          ></textarea>
+        </vds-form-field>
+      </div>
+
+      <!-- <hr />
+      <p class="section-title">Comment</p>
+      <div class="form-field">
+        <vds-form-field>
+          <label vdsLabel>Comment</label>
+          <textarea
+            vdsInput
+            [autoGrow]="true"
+            [rows]="1"
+            formControlName="comment"
+            [disabled]="!!formData.get('file')"
+          ></textarea>
+        </vds-form-field>
+      </div> -->
+    </form>
+  </div>
+
+  <div class="col col--md-2">
+    <div></div>
+  </div>
+</div>
+
+<app-footer [overlay]="true">
+  <vds-button-group>
+    <button role="button"
+      vds-button
+      [color]="ButtonColor.PRIMARY"
+      [disabled]="!(formData.get('file') || binCaidCombinations.valid)"
+      (click)="addMerchants()"
+    >
+      ADD
+    </button>
+    <button role="button"
+      vds-button
+      [color]="ButtonColor.SECONDARY"
+      [routerLink]="['..']"
+      [queryParams]="{ type: 'AcquirerInfo' }"
+      queryParamsHandling="merge"
+    >
+      CANCEL
+    </button>
+  </vds-button-group>
+</app-footer>

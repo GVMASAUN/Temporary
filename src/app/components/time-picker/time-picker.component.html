@@ -1,0 +1,20 @@
+<form>
+    <div class="input">
+        <label vdsLabel>{{ placeholder }} {{!!isRequired ? '*' : ""}}
+            <ng-container [ngTemplateOutlet]="placeholderSuffix"></ng-container>
+        </label>
+        <div class="input-bar">
+            <input
+                [class.invalid]="invalid"
+                type="time"
+                [step]="step"
+                [required]="isRequired"
+                [value]="value"
+                [disabled]="disabled"
+                (change)="handleTimeChange($event)"
+                (keydown)="handleKeyEvents($event)"
+            />
+        </div>
+    </div> 
+</form>
+

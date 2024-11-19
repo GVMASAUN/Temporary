@@ -1,0 +1,99 @@
+<app-header
+screenTitle="Manage {{PAY_WITH_POINT.name}} - {{ tabs[selectedTabIndex] }}"
+[headerHeight]="46"
+></app-header>
+
+
+<div class="vds-grid">
+  <div class="row">
+    <div class="col--valign-center" id="plan-version-select">
+      Version
+    </div>
+    
+    <div class="col--lg-1">
+      <vds-form-field *ngIf="versionList?.length">
+        <select 
+          vdsSelect 
+          name="planVersion"
+          aria-labelledby="plan-version-select"
+          [formControl]="versionFormControl"  
+          >
+          <option
+            *ngFor="let version of versionList"
+            [value]="version.version"
+            >
+            {{ version.version }}
+          </option>
+        </select>
+      </vds-form-field>
+    </div>
+  </div>
+</div>
+
+
+<div class="tabs-section">
+<ul
+  vds-tab-list
+  [orientation]="TabsOrientation.HORIZONTAL"
+  (selectedIndexChange)="onTabChange($event)"
+
+>
+  <li vds-tab-item *ngFor="let tab of tabs; let tabIndex = index">
+    <button role="button" 
+      vdsTab
+      [selected]="selectedTabIndex === tabIndex"
+      (focus)="selectedTabIndex = tabIndex"
+    >
+      {{ tab }}
+    </button>
+  </li>
+</ul>
+</div>
+
+<div class="row" *ngIf="initialized">
+    <app-pay-with-point-details
+      [id]="this.functionService.getTabId(viewName,selectedTabIndex,PayWithPointStep.Details)"
+      [attr.aria-labelledby]="this.functionService.getTabLabelledById(viewName,selectedTabIndex,PayWithPointStep.Details)"
+      [mode]="Mode.Manage"
+      [planForm]="planForm"
+      [disabled]="!editable"
+      [previousVersionExist]="previousVersionExist"
+      (workflowChangeEmitter)="handleWorkflowChange($event)"
+    ></app-pay-with-point-details>
+</div>
+
+
+<app-footer [overlay]="false" >
+  <vds-button-group *ngIf="editable">
+      <button 
+        vds-button
+        role="button" 
+        [color]="ButtonColor.PRIMARY" 
+        (click)="handleSubmit()"
+      >
+        Save
+      </button>
+
+      <button 
+        vds-button
+        role="button"  
+        [color]="ButtonColor.SECONDARY"
+        (click)="handleSubmit(true)"
+      >
+        Save & Exit
+      </button>
+
+  </vds-button-group>
+
+  <vds-button-group>
+    <button role="button"
+      vds-button
+      [color]="ButtonColor.TERTIARY"
+      (click)="payWithPointService.navigateToListPage()"
+    >
+      {{editable ? 'Cancel' : 'Close'}}
+    </button>
+  </vds-button-group>
+</app-footer>
+
+<app-progress-spinner></app-progress-spinner>

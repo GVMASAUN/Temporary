@@ -1,0 +1,54 @@
+<app-header [screenTitle]="'Create Epm Template - ' + (epmTemplate?.[EpmTemplateField.TEMPLATE_MESSAGE_NAME] || 'Untitled')">
+</app-header>
+
+<div class="tabs-section">
+    <ul
+        vds-tab-list
+        [orientation]="TabsOrientation.HORIZONTAL"
+        (selectedIndexChange)="onTabChange($event)"
+
+        >
+        <li vds-tab-item *ngFor="let tab of tabs; let tabIndex = index">
+            <button role="button" 
+                vdsTab
+                [attr.aria-controls]="getTabId(viewName,tabIndex,tab)"
+                [id]="getTabLabelledById(viewName,tabIndex,tab)"
+                [selected]="selectedTabIndex === tabIndex"
+                (focus)="selectedTabIndex = tabIndex"
+            >
+                {{ tab }}
+            </button>
+        </li>
+    </ul>
+</div>
+
+<app-details
+    [hidden]="selectedTabIndex !==0"
+    [id]="getTabId(viewName,selectedTabIndex,EpmTemplateStep.DETAILS)"
+    [attr.aria-labelledby]="getTabLabelledById(viewName,selectedTabIndex,EpmTemplateStep.DETAILS)"
+    [form]="epmTemplateForm"
+></app-details>
+
+<!-- <app-linked-event-group
+    [hidden]="selectedTabIndex !==1"
+></app-linked-event-group>
+
+<app-history
+    [hidden]="selectedTabIndex !==2"
+></app-history> -->
+
+<app-footer>
+    <vds-button-group>
+        <button role="button" vds-button [color]="ButtonColor.PRIMARY" (click)="create()">
+            Save
+        </button>
+        <button role="button" vds-button [color]="ButtonColor.SECONDARY" (click)="create(true)">
+        Save & Exit
+        </button>
+    </vds-button-group>
+    <vds-button-group>
+        <button role="button" vds-button [color]="ButtonColor.TERTIARY" (click)="close()">
+            Cancel
+        </button>
+    </vds-button-group>
+</app-footer>

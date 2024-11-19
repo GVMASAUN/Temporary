@@ -1,0 +1,75 @@
+<app-header *ngIf="viewType === 'page'" screenTitle="Clients"></app-header>
+
+  <div class="filter-section" [ngClass]="{'margin-when-panel-open': isPanelOpen}">
+    <div vds-combobox [type]="ComboBoxType.AUTO">
+      <vds-form-field>
+        <label vdsLabel>Community</label>
+        <input vdsInput placeholder="Select Community" />
+        <button role="button"
+          vdsSuffix 
+          vds-button-icon
+          [iconType]="ButtonIconType.LIGHT_TINY"
+          [attr.aria-expanded]="menuOpen"
+        >
+          <svg vds-icon icon="visa_arrow-expand" (click)="menuOpen = !menuOpen" [tiny]="true"></svg>
+        </button>
+      </vds-form-field>
+
+      <vds-menu>
+        <ul vds-listbox 
+          id="community-list-listbox"  
+          (change)="selectOption($event, true); clientGroupSearch.value = ''">
+          <li 
+            *ngFor="let card of communityList" 
+            vds-listbox-item 
+            [value]="card.communityName!"
+          >
+            {{ card.communityName }}
+          </li>
+        </ul>
+      </vds-menu>
+    </div>
+
+    <vds-form-field>
+      <label vdsLabel>Client Group </label>
+      <select 
+        vdsSelect 
+        #clientGroupSearch
+        (change)="selectOption($event, false)"
+        [disabled]="!selectedCommunity">
+        <option hidden selected value=""> Select Client Group</option>
+
+        <option 
+          *ngFor="let card of clientGroupList" 
+          [value]="card.communityName!"
+        >
+          {{ card.communityName }}
+        </option>
+
+        <option value="" *ngIf="!clientGroupList.length" disabled>
+          No Client Groups Exist
+        </option>
+      </select>
+    </vds-form-field>
+  </div>
+
+  <div>
+    <span vdsAlertLabel *ngIf="!fetchClients; else tableBlock">
+      Please select the Community and Client Group to continue.
+    </span>
+
+    <ng-template #tableBlock>
+      <app-search-table
+        *ngIf="fetchClients"
+        tableId="client-list"
+        [columns]="tableColumns"
+        [searchFields]="advancedSearchFields"
+        [hideSelectAll]="true"
+        [hideSearchFieldFilters]="true"
+        [search]="getClientList.bind(this)"
+        notFound="No data exists for the provided search filter."
+      ></app-search-table>
+    </ng-template>
+  </div>
+
+  <app-footer *ngIf="viewType === 'page'" [panelOpen]="isPanelOpen"></app-footer>

@@ -1,0 +1,480 @@
+<div class="page-content">
+  <div class="filter-bar" *ngIf="searchActivate">
+    <strong>Results for</strong>
+    <form [formGroup]="searchPanel">
+      <vds-form-field
+        *ngIf="
+          merchantGroupType == 'MerchantInfo' &&
+          activeFilters.includes('visaMerchantId')
+        "
+      >
+        <label vdsLabel> VMID </label>
+        <input vdsInput formControlName="visaMerchantId" type="number" />
+      </vds-form-field>
+      <vds-form-field
+        *ngIf="
+          merchantGroupType == 'MerchantInfo' &&
+          activeFilters.includes('visaMerchantName')
+        "
+      >
+        <label vdsLabel> Visa Merchant Name </label>
+        <input vdsInput formControlName="visaMerchantName" />
+      </vds-form-field>
+      <vds-form-field
+        *ngIf="
+          merchantGroupType == 'MerchantInfo' &&
+          activeFilters.includes('visaStoreId')
+        "
+      >
+        <label vdsLabel> VSID </label>
+        <input vdsInput formControlName="visaStoreId" type="number" />
+      </vds-form-field>
+      <vds-form-field
+        *ngIf="
+          merchantGroupType == 'MerchantInfo' &&
+          activeFilters.includes('visaStoreName')
+        "
+      >
+        <label vdsLabel> Visa Store Name </label>
+        <input vdsInput formControlName="visaStoreName" />
+      </vds-form-field>
+
+      <vds-form-field
+        *ngIf="
+          merchantGroupType == 'AcquirerInfo' &&
+          activeFilters.includes('acquirerBin')
+        "
+      >
+        <label vdsLabel> Acquirer Bin </label>
+        <input vdsInput formControlName="acquirerBin" type="number" />
+      </vds-form-field>
+      <vds-form-field
+        *ngIf="
+          merchantGroupType == 'AcquirerInfo' &&
+          activeFilters.includes('cardAcceptorId')
+        "
+      >
+        <label vdsLabel> Card Acceptor Id </label>
+        <input vdsInput formControlName="cardAcceptorId" type="number" />
+      </vds-form-field>
+
+      <vds-form-field *ngIf="activeFilters.includes('isActive')">
+        <label vdsLabel> Status </label>
+        <select vdsSelect formControlName="isActive">
+          <option value="" hidden>Any</option>
+          <option value="true">Active</option>
+          <option value="false">Inactive</option>
+        </select>
+      </vds-form-field>
+      <vds-form-field *ngIf="activeFilters.includes('externalId')">
+        <label vdsLabel> External Id </label>
+        <input vdsInput formControlName="externalId" />
+      </vds-form-field>
+
+      <vds-date-selector
+        *ngIf="activeFilters.includes('startDate')"
+        label="Start Date (YYYY-MM-DD)"
+        formControlName="startDate"
+        (formattedDateChange)="dateChange($event, 'startDate')"
+        [formatInputValue]="DateFormat.YYYY_MM_DD"
+      ></vds-date-selector>
+      <app-time-picker
+            *ngIf="activeFilters.includes('startDate')"
+            formControlName="startTime"
+            placeholder="Start Time (HH-MM-SS)"
+            aria-required="true"
+          >
+      </app-time-picker>
+      <vds-date-selector
+        *ngIf="activeFilters.includes('endDate')"
+        label="End Date (YYYY-MM-DD)"
+        formControlName="endDate"
+        (formattedDateChange)="dateChange($event, 'endDate')"
+        [formatInputValue]="DateFormat.YYYY_MM_DD"
+      ></vds-date-selector>
+      <app-time-picker
+        *ngIf="activeFilters.includes('endDate')"
+        formControlName="endTime"
+        placeholder="End Time (HH-MM-SS)"
+        aria-required="true"
+      >
+      </app-time-picker>
+    </form>
+    <div class="clear-section">
+      <span>
+        Clear search
+      </span>
+      <button role="button"
+        vds-button-icon
+        [iconType]="ButtonIconType.LIGHT_TINY"
+        (click)="clearSearch()"
+      >
+        <svg vds-icon [tiny]="true" icon="clear"></svg>
+      </button>
+    </div>
+  </div>
+
+  <vds-action-bar [active]="true" [class.inactive]="!selectedIndex.length">
+    <div class="wrapper-action-bar">
+      <div class="col col--xs-3 col--no-gutter">
+        <vds-button-group>
+          <button role="button"
+            vds-button
+            aria-label="Open Panel"
+            [color]="ButtonColor.SECONDARY"
+            (click)="openPanel()"
+          >
+            <svg vds-icon icon="search" [low]="true"></svg>
+          </button>
+          <button role="button"
+            vds-button
+            [color]="ButtonColor.SECONDARY"
+            [routerLink]="
+              merchantGroupType == 'MerchantInfo'
+                ? ['add-vmid-vsid']
+                : ['add-bin-caid']
+            "
+            queryParamsHandling="merge"
+            [disabled]="!merchantActive || selectedIndex.length"
+          >
+            Add Merchants
+          </button>
+          <button role="button"
+            vds-button
+            [color]="ButtonColor.SECONDARY"
+            (click)="activateMerchants()"
+            [disabled]="!(merchantActive && selectedIndex.length)"
+          >
+            Activate
+          </button>
+          <button role="button"
+            vds-button
+            [color]="ButtonColor.SECONDARY"
+            (click)="deactivateMerchants()"
+            [disabled]="!(merchantActive && selectedIndex.length)"
+          >
+            Deactivate
+          </button>
+          <button role="button"
+            vds-button
+            [color]="ButtonColor.TERTIARY"
+            [disabled]="!tableData.length"
+            (click)="download()"
+          >
+            Download
+          </button>
+          <button role="button"
+            vds-button
+            [color]="ButtonColor.TERTIARY"
+            [disabled]="!tableData.length"
+            (click)="openEditModal()"
+          >
+            EDIT MERCHANT DATE RANGE
+          </button>
+        </vds-button-group>
+      </div>
+
+      <div
+        class="col col--align-end col--no-gutter"
+        *ngIf="selectedIndex.length"
+      ></div>
+      <app-show-columns [columns]="columns"></app-show-columns>
+    </div>
+  </vds-action-bar>
+
+  <div class="table-wrapper">
+    <div class="table-container">
+      <div
+      >
+        <table vdsDataTable>
+          <caption vdsScreenReader>
+            Clients List
+          </caption>
+          <thead vdsThead>
+            <tr vdsTr>
+              <th vdsTh scope="col" width="5%" class="fixed">
+                  <vds-checkbox
+                    label="Select"
+                    (click)="selectAllHandler($event)"
+                    id="select-all"
+                    [indeterminate]="
+                      selectedIndex.length > 0 &&
+                      selectedIndex.length < tableData.length
+                    "
+                    [checked]="
+                      tableData.length > 0 &&
+                      selectedIndex.length === tableData.length
+                    "
+                    [matTooltip]="
+                    selectedIndex.length === tableData.length
+                      ? 'Deselect All'
+                      : 'Select All'
+                    "
+                    matTooltipPosition="after"
+                  ></vds-checkbox>
+
+                <!-- Added label with 0 opacity for VGAR Requirement -->
+                <!-- Table Header shouldn't be empty -->
+                <label vdsLabel class="hidden-label">Select</label>
+              </th>
+
+              <ng-container *ngFor="let column of columns; let i = index">
+                <th
+                  vdsTh
+                  scope="col"
+                  *ngIf="column?.checked"
+                  [class.fixed]="column.fixed"
+                >
+                  <div class="sort-btn">
+                    {{ column.label }}
+
+                      <button 
+                        *ngIf="column.sortable"
+                        role="button"
+                        vds-button-icon
+                        [iconType]="ButtonIconType.LIGHT_TINY"
+                        (click)="handleSort(column.sortMapping || column.value, i)"
+                        [attr.aria-label]="'sort ' + column.label + sortBy[i]"
+                        [matTooltip]="'Sort ' + sortBy[i].slice(1) | titlecase"
+                        matTooltipPosition="after"
+                      >
+                        <svg
+                          vds-icon
+                          [icon]="'sortable' + sortBy[i]"
+                          [tiny]="true"
+                        ></svg>
+                      </button>
+                  </div>
+                </th>
+              </ng-container>
+            </tr>
+          </thead>   
+
+          <tbody vdsTbody>
+            <tr
+              vdsTr
+              *ngFor="let row of tableData; let i = index"
+              [class.selected-row]="selectedIndex.includes(i)"
+            >
+              <td vdsTd class="fixed">
+                <vds-checkbox
+                  label="Select"
+                  (changed)="checkboxHandler($event, i, row)"
+                  [checked]="selectedIndex.includes(i)"
+                ></vds-checkbox>
+              </td>
+
+              <ng-container *ngFor="let column of columns"
+              >
+                <ng-container *ngIf="column.type === SearchTableColumnType.DATE && column.checked; else status">
+                    <td vdsTd [class.fixed]="column?.fixed">
+                        {{ convertTimeZone(row[column.value]) || "-" }}
+                      <vds-badge *ngIf="row[column.value]">
+                        {{ timeZone }}
+                      </vds-badge>
+                    </td>
+                </ng-container>
+    
+                <ng-template #status>
+                  <ng-container *ngIf="column.type === SearchTableColumnType.STATUS && column.checked; else default">
+                      <td vdsTd [class.fixed]="column?.fixed">
+                        <vds-badge
+                          [type]="row[column.value] ? BadgeType.STABLE : BadgeType.CRITICAL"
+                        >
+                          {{ row[column.value] ? "Active" : "Inactive" }}
+                        </vds-badge>
+                      </td>
+                  </ng-container>
+                </ng-template>
+  
+                <ng-template #default>
+                  <ng-container>
+                    <td vdsTd *ngIf="column.checked" [class.fixed]="column?.fixed">
+                      {{ row[column.value] || "-" }}
+                    </td>
+                  </ng-container>
+                </ng-template>
+              </ng-container>
+
+              <!-- <td vdsTd class="fix">
+                {{
+                  merchantGroupType == "MerchantInfo"
+                    ? row.visaMerchantId || "-"
+                    : row.acquirerBin || "-"
+                }}
+              </td>
+              <td vdsTd class="fix" *ngIf="merchantGroupType == 'MerchantInfo'">
+                {{ row.visaMerchantName }}
+              </td>
+              <td vdsTd class="fix">
+                {{
+                  merchantGroupType == "MerchantInfo"
+                    ? row.visaStoreId || "-"
+                    : row.cardAcceptorId || "-"
+                }}
+              </td>
+              <td vdsTd *ngIf="merchantGroupType == 'MerchantInfo'">
+                {{ row.visaStoreId ? row.visaStoreName || "-" : "-" }}
+              </td>
+              <td vdsTd *ngIf="merchantGroupType == 'MerchantInfo'">
+                {{ row.merchantStreetAddress || "-" }}
+              </td>
+              <td vdsTd [class.fix]="merchantGroupType == 'AcquirerInfo'">
+                <vds-badge
+                  [type]="row.isActive ? BadgeType.STABLE : BadgeType.CRITICAL"
+                >
+                  {{ row.isActive ? "Active" : "Inactive" }}
+                </vds-badge>
+              </td>
+              <td vdsTd>
+                {{ row.externalId || "-" }}
+              </td>
+              <td vdsTd>
+                {{ convertTimeZone(row.startDateInMerchantGroup) || "-" }}
+                <vds-badge *ngIf="row.startDateInMerchantGroup">
+                  {{ timeZone }}
+                </vds-badge>
+              </td>
+              <td vdsTd>
+                {{ convertTimeZone(row.endDateInMerchantGroup) || "-" }}
+                <vds-badge *ngIf="row.endDateInMerchantGroup">
+                  {{ timeZone }}
+                </vds-badge>
+              </td>
+              <td vdsTd>
+                {{ convertTimeZone(row.modifiedDate) || "-" }}
+                <vds-badge *ngIf="row.modifiedDate">
+                  {{ timeZone }}
+                </vds-badge>
+              </td>
+            </tr>
+          </tbody> -->
+        </table>
+
+      </div>
+      <div class="no-data-label" *ngIf="!tableData.length && !loading">
+        No results found.
+      </div>
+      <div *ngIf="loading" class="progress-container">
+        <vds-linear-progress></vds-linear-progress>
+      </div>
+    </div>
+  </div>
+
+  <vds-pagination
+    ariaLabel="Merchant-pagination"
+    [pageIndex]="page"
+    [pageSize]="size"
+    [length]="totalElements"
+    (paginationEvent)="handlePagination($event)"
+    [ariaFirstPage]="'First Page'"
+    [ariaPreviousPage]="'Previous Page'"
+    [ariaNextPage]="'Next Page'"
+    [ariaLastPage]="'Last Page'"
+  >
+  </vds-pagination>
+
+  <app-footer [panelOpen]="isPanelOpen">
+    <vds-button-group> </vds-button-group>
+    <vds-button-group>
+      <button role="button"
+        vds-button
+        [color]="ButtonColor.TERTIARY"
+        routerLink="/merchant"
+        queryParamsHandling="merge"
+        [queryParams]="{ type: null }"
+      >
+        Back
+      </button>
+    </vds-button-group>
+  </app-footer>
+</div>
+
+<div class="panel-content" *ngIf="isPanelOpen">
+  <app-panel [selectedTab]="0">
+    <div search>
+      <form [formGroup]="searchPanel">
+        <vds-form-field *ngIf="merchantGroupType == 'MerchantInfo'">
+          <label vdsLabel> VMID </label>
+          <input vdsInput formControlName="visaMerchantId" type="number" />
+        </vds-form-field>
+        <vds-form-field *ngIf="merchantGroupType == 'MerchantInfo'">
+          <label vdsLabel> Visa Merchant Name </label>
+          <input vdsInput formControlName="visaMerchantName" />
+        </vds-form-field>
+        <vds-form-field *ngIf="merchantGroupType == 'MerchantInfo'">
+          <label vdsLabel> VSID </label>
+          <input vdsInput formControlName="visaStoreId" type="number" />
+        </vds-form-field>
+        <vds-form-field *ngIf="merchantGroupType == 'MerchantInfo'">
+          <label vdsLabel> Visa Store Name </label>
+          <input vdsInput formControlName="visaStoreName" />
+        </vds-form-field>
+
+        <vds-form-field *ngIf="merchantGroupType == 'AcquirerInfo'">
+          <label vdsLabel> Acquirer Bin </label>
+          <input vdsInput formControlName="acquirerBin" type="number" />
+        </vds-form-field>
+        <vds-form-field *ngIf="merchantGroupType == 'AcquirerInfo'">
+          <label vdsLabel> Card Acceptor Id </label>
+          <input vdsInput formControlName="cardAcceptorId" type="number" />
+        </vds-form-field>
+
+        <vds-form-field>
+          <label vdsLabel> Status </label>
+          <select vdsSelect formControlName="isActive">
+            <option value="" hidden>Any</option>
+            <option value="true">Active</option>
+            <option value="false">Inactive</option>
+          </select>
+        </vds-form-field>
+        <vds-form-field>
+          <label vdsLabel> External Id </label>
+          <input vdsInput formControlName="externalId" />
+        </vds-form-field>
+        <vds-date-selector
+          label="Start Date (YYYY-MM-DD)"
+          formControlName="startDate"
+          (formattedDateChange)="dateChange($event, 'startDate')"
+          [formatInputValue]="DateFormat.YYYY_MM_DD"
+        ></vds-date-selector>
+        <app-time-picker
+          formControlName="startTime"
+          placeholder="Start Time (HH-MM-SS)"
+          aria-required="true"
+          [min]="(!searchPanel.get('startDate')?.value) ? false : true"
+          [disabled]="!searchPanel.get('startDate')?.value"
+        >
+        </app-time-picker>
+        <vds-date-selector
+          label="End Date (YYYY-MM-DD)"
+          formControlName="endDate"
+          (formattedDateChange)="dateChange($event, 'endDate')"
+          [formatInputValue]="DateFormat.YYYY_MM_DD"
+        ></vds-date-selector>
+        <app-time-picker
+          formControlName="endTime"
+          placeholder="End Time (HH-MM-SS)"
+          aria-required="true"
+          [max]="(!searchPanel.get('endDate')?.value) ? false : true"
+          [disabled]="!searchPanel.get('endDate')?.value"
+        >
+        </app-time-picker>
+      </form>
+      <div class="panel-footer">
+        <vds-button-group>
+          <button role="button" vds-button [color]="ButtonColor.PRIMARY" (click)="search()">
+            Search
+          </button>
+          <button role="button"
+            vds-button
+            [color]="ButtonColor.SECONDARY"
+            (click)="clearSearch()"
+          >
+            Reset
+          </button>
+        </vds-button-group>
+      </div>
+    </div>
+  </app-panel>
+</div>

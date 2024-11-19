@@ -1,0 +1,8 @@
+<app-search-table
+  tableId="user-history-list"
+  [columns]="tableColumns"
+  [hideSelectAll]="true"
+  [search]="getUserHistory.bind(this)"
+  notFound="No History is associated with this User."
+>
+</app-search-table>

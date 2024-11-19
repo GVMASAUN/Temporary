@@ -1,0 +1,64 @@
+<div class="dialog-center">
+    <div class="dialog-container">
+        <div class="vds-grid">
+            <div class="row dialog-header-bar">
+                <div class="col--align-end">
+                  <button role="button"
+                    vds-button-icon
+                    aria-label="Close"
+                    [iconType]="ButtonIconType.LIGHT_TINY"
+                    (click)="close()"
+                  >
+                    <svg vds-icon [icon]="VisaIcon.CLOSE" [tiny]="true"></svg>
+                  </button>
+                </div>
+            </div>
+        </div>
+
+        <div vds-dialog-card-head>
+            <div class="vds-grid">
+                <div class="row">
+                    <span>BID Assigned | {{ bid }}</span>
+                </div>
+            
+                <div class="row">
+                    <h2 vds-dialog-card-head-title>
+                        Communities
+                    </h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="horizontal-rule">
+            <hr vdsDivider />
+        </div>
+
+        <div vds-dialog-card-body class="detail-panel">
+            <app-search-table
+                tableId="community-list"
+                [columns]="tableColumns"
+                [hideSelectAll]="true"
+                [hideSearchFieldFilters]="true"
+                [dataSource]="communityList"
+                [sorting]="SortType.STATIC"
+                [defaultPageSize]="10"
+                notFound="No data exists"
+            ></app-search-table>
+        </div>
+
+        <div vds-dialog-card-footer class="dialog-footer">
+            <vds-button-group>
+              <button role="button"
+                vds-button
+                [color]="ButtonColor.PRIMARY"
+                [disabled]="false"
+                (click)="close()"
+              >
+                DONE
+              </button>
+            </vds-button-group>
+        </div>
+    </div>
+</div>
+
+

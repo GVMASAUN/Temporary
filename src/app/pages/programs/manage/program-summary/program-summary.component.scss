@@ -1,0 +1,63 @@
+.program-summary {
+    .program-summary-panel {
+        padding: 25px;
+
+        .divider {
+            border-top: 2px solid #cacaca;
+            margin-bottom: 25px;
+            margin-top: 25px;
+        }
+
+        .header-title {
+            font-family: OpenSans;
+            font-size: 16px;
+            font-weight: normal;
+            color: #0052e1;
+        }
+    }
+
+    .event-group-detail-panel {
+        .sub-header-title {
+            margin: 2px 0 2px 8px;
+            font-family: OpenSans;
+            font-size: 14px;
+            color: #0052e1;
+            font-weight: 600;
+        }
+
+        .accordion-panel {
+            background-color: #fff
+        }
+
+        padding: 20px;
+        background-color: #fafafa
+    }
+}
+
+@media (max-width: 960px) {
+    .vds-grid [class^=col--][class*="-1"],
+    .vds-grid [class^=col--][class*="-2"],
+    .vds-grid [class^=col--][class*="-3"],
+    .vds-grid [class^=col--][class*="-4"],
+    .vds-grid [class^=col--][class*="-5"],
+    .vds-grid [class^=col--][class*="-6"],
+    .vds-grid [class^=col--][class*="-7"],
+    .vds-grid [class^=col--][class*="-8"],
+    .vds-grid [class^=col--][class*="-9"] {
+        width: 86% !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .vds-grid [class^=col--][class*="-1"],
+    .vds-grid [class^=col--][class*="-2"],
+    .vds-grid [class^=col--][class*="-3"],
+    .vds-grid [class^=col--][class*="-4"],
+    .vds-grid [class^=col--][class*="-5"],
+    .vds-grid [class^=col--][class*="-6"],
+    .vds-grid [class^=col--][class*="-7"],
+    .vds-grid [class^=col--][class*="-8"],
+    .vds-grid [class^=col--][class*="-9"] {
+        width: 60% !important;
+    }
+}

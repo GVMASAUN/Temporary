@@ -1,0 +1,124 @@
+<!-- NOT IN USE -->
+
+<app-header>
+  <div class="sections">
+    Sections
+    <vds-badge [type]="BadgeType.NEUTRAL">
+      <svg
+        vds-icon
+        [icon]="merchantGroup.valid ? 'circle-filled' : 'circle-empty'"
+        [tiny]="true"
+      ></svg>
+      Basics
+    </vds-badge>
+    <vds-badge
+      [type]="BadgeType.STATUS"
+      [class.link]="merchantGroup.valid"
+      (click)="merchantGroup.valid && nextPage()"
+    >
+      <svg vds-icon icon="circle-empty" [tiny]="true"></svg>
+      Merchants
+    </vds-badge>
+  </div>
+</app-header>
+
+<div class="vds-grid">
+  <div class="row">
+    <div class="col">
+      <form [formGroup]="merchantGroup">
+        <div class="form-header">
+          <label class="form-header-label">Basics</label>
+          <div class="form-header-value">
+            <p class="merchant-group-title">
+              {{ merchantGroup.value.name || "Untitled" }}
+            </p>
+            <p class="required-label">*required field</p>
+          </div>
+        </div>
+        <div class="form-field">
+          <vds-form-field>
+            <label vdsLabel>Merchant Group Name</label>
+            <input
+              vdsInput
+              placeholder="Merchant Group Name"
+              formControlName="name"
+              name="name"
+            />
+          </vds-form-field>
+        </div>
+
+        <div class="form-field">
+          <label class="form-label">
+            Merchant Group Type
+          </label>
+           <vds-radio-group role="radiogroup"
+            #radioGroupOne
+            (changed)="selectMerchantGroupType($event)"
+          >
+            <vds-radio
+              label="VMID/VSID"
+              name="type"
+              radioValue="MerchantInfo"
+              [checked]="'MerchantInfo' === merchantGroup.value.type"
+            ></vds-radio>
+            <vds-radio
+              label="BIN/CAID"
+              name="type"
+              radioValue="AcquirerInfo"
+              [checked]="'AcquirerInfo' === merchantGroup.value.type"
+            >
+            </vds-radio>
+          </vds-radio-group>
+        </div>
+
+        <div class="form-field">
+          <vds-form-field>
+            <label vdsLabel>Description</label>
+            <textarea
+              vdsInput
+              placeholder="Enter description"
+              [autoGrow]="true"
+              [rows]="3"
+              formControlName="description"
+            ></textarea>
+          </vds-form-field>
+        </div>
+
+        <div class="form-field">
+          <vds-form-field>
+            <label vdsLabel>Optional comment</label>
+            <textarea
+              vdsInput
+              placeholder="Merchant Group Name"
+              [autoGrow]="true"
+              formControlName="optionalComment"
+            ></textarea>
+          </vds-form-field>
+        </div>
+      </form>
+    </div>
+    <div class="col col--md-2">
+      <div></div>
+    </div>
+  </div>
+</div>
+<app-footer>
+  <vds-button-group>
+    <button role="button"
+      vds-button
+      [color]="ButtonColor.PRIMARY"
+      (click)="nextPage()"
+      [disabled]="merchantGroup.invalid"
+    >
+      Next
+    </button>
+    <button role="button" vds-button [color]="ButtonColor.SECONDARY" (click)="saveAndExit()">
+      Save & Exit
+    </button>
+  </vds-button-group>
+  <vds-button-group>
+    <button role="button" vds-button [color]="ButtonColor.SECONDARY" routerLink="/merchant">
+      Cancel
+    </button>
+  </vds-button-group>
+</app-footer>

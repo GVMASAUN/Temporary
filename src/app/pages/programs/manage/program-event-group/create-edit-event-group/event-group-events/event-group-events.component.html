@@ -1,0 +1,69 @@
+<app-search-table
+  tableId="event-group-events-list"
+  [tableActions]="disabled ? [] : tableActions"
+  [columns]="tableColumns"
+  [dataSource]="eventTableDataSource"
+  [hideSelectAll]="true"
+  [sorting]="SortType.STATIC"
+  sortActive="eventName"
+></app-search-table>
+<app-panel
+  #panel
+  *ngIf="isImportPanelOpen"
+  [panelTabs]="panelTabs"
+  [selectedTab]="0"
+>
+  <div search>
+    <table vdsDataTable>
+      <caption vdsScreenReader>
+        {{ caption }}
+      </caption>
+      <thead vdsThead>
+        <tr vdsTr>
+          <th vdsTh scope="col" width="5%"></th>
+          <th vdsTh scope="col" *ngFor="let column of panelTableColumns">
+            <div class="sort-btn">
+              {{ column.label }}
+            </div>
+          </th>
+        </tr>
+      </thead>
+      <tbody vdsTbody>
+        <tr vdsTr *ngFor="let column of panelTableData; let i = index">
+          <th vdsTh scope="col" width="5%">
+            <vds-radio
+              name="radioButton"
+              label="Select"
+              [checked]="selectedRowNumber == i"
+              (changed)="onRowSelect($event, i)"
+              [radioValue]="column.eventName"
+            ></vds-radio>
+          </th>
+
+          <td vdsTd>{{ column.eventName }}</td>
+          <td vdsTd>{{ column.eventType }}</td>
+          <td vdsTd>{{ column.eventDescription }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="panel-footer">
+      <vds-button-group>
+        <button role="button"
+          vds-button
+          [color]="ButtonColor.PRIMARY"
+          [disabled]="selectedRowNumber < 0"
+          (click)="importModal()"
+        >
+          Import
+        </button>
+        <button role="button"
+          vds-button
+          [color]="ButtonColor.SECONDARY"
+          (click)="closePanel()"
+        >
+          Cancel
+        </button>
+      </vds-button-group>
+    </div>
+  </div>
+</app-panel>

@@ -1,0 +1,127 @@
+<div class="vds-grid">
+  <div class="col">
+    <div class="form-header">
+      <svg vds-icon icon="document-add" [low]="true"></svg>
+      Add via File Upload
+      <svg vds-icon icon="info" [tiny]="true"></svg>
+    </div>
+    <p class="section-title">File template</p>
+    <div class="form-header link" (click)="templateDownload()">
+      <svg vds-icon icon="file-download" [tiny]="true"></svg>
+      <a role="link" tabindex="0" (keyup.enter)="templateDownload()" vdsLink>Download file template</a>
+    </div>
+    <div class="file-upload-wrapper">
+      <div class="file-upload-container">
+        <p class="section-title">Upload file</p>
+        <vds-fileupload
+          *ngIf="initUploadFileSelector"
+          [enableDropzone]="true"
+          inputLabel="Upload Files..."
+          inputAriaLabel="Upload Files"
+          (uploadEvent)="handleUpload($event)"
+          [customControl]="true"
+          [multipleUpload]="false"
+          (downloadEvent)="handleItemDownload($event)"
+          (directoryDeleteEvent)="handleItemDirDelete($event)"
+          [disabled]="!!formData.get('file') || vmidVsidCombinations.valid"
+        >
+        </vds-fileupload>
+
+        <div class="form-header">
+          Exclusions
+          <svg vds-icon icon="info" [tiny]="true"></svg>
+        </div>
+
+        <div class="form-field">
+          <vds-form-field>
+            <label vdsLabel>VSIDs</label>
+            <textarea
+              vdsInput
+              [autoGrow]="true"
+              placeholder="VMID, VSID1, VSID2, VSID3 …"
+              [rows]="1"
+              [value]="vsids"
+              #vsidsInput
+              (changed)="vsids = vsidsInput.value"
+              [readonly]="vmidVsidCombinations.valid"
+              [tabindex]="vmidVsidCombinations.valid ? -1 : 0"
+            ></textarea>
+          </vds-form-field>
+        </div>
+      </div>
+    </div>
+
+    <hr />
+    <form [formGroup]="vmidVsidCombinations">
+      <div class="form-header">
+        <svg vds-icon icon="document-add" [low]="true"></svg>
+        Add via VMID, VSID Combinations
+        <svg vds-icon icon="info" [tiny]="true"></svg>
+      </div>
+
+      <p class="section-title">VMID, VSID Combinations</p>
+      <p>Enter a comma seperated list.</p>
+
+      <div class="form-field">
+        <vds-form-field>
+          <label vdsLabel>VMID, VSID combinations</label>
+          <textarea
+            vdsInput
+            placeholder="VMID, VSID (optional), External Id (optional), Start Date (optional), End Date (required if start date is present)"
+            [autoGrow]="true"
+            [rows]="3"
+            formControlName="combinations"
+            [readonly]="!!formData.get('file')"
+            [tabindex]="!!formData.get('file') ? -1 : 0"
+          ></textarea>
+        </vds-form-field>
+      </div>
+      <div class="form-header">
+        Exclusions
+        <svg vds-icon icon="info" [tiny]="true"></svg>
+      </div>
+
+      <div class="form-field">
+        <vds-form-field>
+          <label vdsLabel>VSIDs</label>
+          <textarea
+            aria-required="true"
+            vdsInput
+            placeholder="VMID, VSID1, VSID2, VSID3 …"
+            [autoGrow]="true"
+            [rows]="1"
+            formControlName="exclusions"
+            [readonly]="!!formData.get('file')"
+            [tabindex]="!!formData.get('file') ? -1 : 0"
+          ></textarea>
+        </vds-form-field>
+      </div>
+
+    </form>
+  </div>
+
+  <div class="col col--md-2">
+    <div></div>
+  </div>
+</div>
+
+<app-footer [overlay]="true">
+  <vds-button-group>
+    <button role="button"
+      vds-button
+      [color]="ButtonColor.PRIMARY"
+      [disabled]="!(formData.get('file') || vmidVsidCombinations.valid)"
+      (click)="addMerchants()"
+    >
+      ADD
+    </button>
+    <button role="button"
+      vds-button
+      [color]="ButtonColor.SECONDARY"
+      [routerLink]="['..']"
+      queryParamsHandling="merge"
+    >
+      CANCEL
+    </button>
+  </vds-button-group>
+</app-footer>

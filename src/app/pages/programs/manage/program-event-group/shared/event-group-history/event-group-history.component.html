@@ -1,0 +1,59 @@
+<app-search-table
+  tableId="event-group-history-list"
+  [columns]="historyTableColumns"
+  [searchFields]="searchFields"
+  [hideSelectAll]="true"
+  [hideSearchFieldFilters]="true"
+  [search]="getHistoryRecords.bind(this)"
+  notFound="No History are associated with this Event."
+  (searchFilterResetEmitter)="handleFilterReset()"
+>
+</app-search-table>
+
+
+<ng-template #entityField let-advancedSearchForm="advancedSearchForm">
+  <ng-container [formGroup]="advancedSearchForm">
+    <div 
+      vds-combobox
+      formControlName="id"
+      >
+      <vds-form-field>
+        <label vdsLabel>Entity</label>
+        <input vdsInput class="entity-input" onkeydown="return false"/>
+    
+        <button role="button" vdsSuffix vds-button-icon (click)="entityMenuOpened = !entityMenuOpened" [iconType]="ButtonIconType.LIGHT_TINY">
+          <svg vds-icon icon="visa_arrow-expand" [tiny]="true"></svg>
+        </button>
+      </vds-form-field>
+    
+      <vds-menu [isComboboxMenu]="true" [show]="entityMenuOpened">
+          <ul vds-listbox >
+            <!-- Event Group -->
+            <li vds-listbox-item 
+              [value]="getEntityListItemValue(eventGroup.eventGroupId ,EntityType.Event_Group)"
+              (change)="entityMenuOpened = !entityMenuOpened"
+              
+            >{{eventGroup.eventGroupName}}</li>
+  
+            <ng-container *ngFor="let event of this.eventGroup?.eventStageList">
+              <!-- Events -->
+              <li class="m-l-20" 
+                vds-listbox-item 
+                [value]="getEntityListItemValue(event.eventStageId, EntityType.Event)"
+                (change)="entityMenuOpened = !entityMenuOpened"
+              >{{ event.eventName }}</li>
+            
+              <!-- Event Actions -->
+              <li class="m-l-40" 
+                *ngFor="let action of event?.eventActions" 
+                vds-listbox-item 
+                [value]="getEntityListItemValue(action.id, EntityType.Action)"
+                (change)="entityMenuOpened = !entityMenuOpened"
+              >{{ action.actionName }}</li>
+
+            </ng-container>
+          </ul>
+      </vds-menu>
+    </div>
+  </ng-container>
+</ng-template>

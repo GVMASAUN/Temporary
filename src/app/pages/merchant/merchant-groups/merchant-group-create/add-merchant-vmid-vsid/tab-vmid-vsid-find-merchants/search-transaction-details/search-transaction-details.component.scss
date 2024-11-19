@@ -1,0 +1,35 @@
+form {
+  display: block !important;
+
+  .trans-details-search-form-field {
+    display: grid;
+    row-gap: 15px;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 25px;
+
+    vds-radio-group ::ng-deep fieldset {
+      display: flex;
+    }
+  }
+
+  .merchant-search-action {
+    .loading-spinner ::ng-deep .vds-progress--spinner {
+      &,
+      svg {
+        height: 40px;
+        width: 113px;
+      }
+    }
+
+    vds-error {
+      margin-left: 10px;
+    }
+  }
+}
+
+// @media (max-width: 768px) {
+//   .trans-details-search-form-field {
+//     grid-template-columns: 1fr;
+//     column-gap: unset;
+//   }
+// }

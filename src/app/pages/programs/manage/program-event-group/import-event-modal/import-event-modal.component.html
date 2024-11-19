@@ -1,0 +1,119 @@
+<div class="dialog-center">
+  <div class="import-event-modal">
+    <div vds-dialog-card-head>
+      <h2 vds-dialog-card-head-title>
+        Import Event {{ importType == "event-group" ? "Group" : "" }}
+      </h2>
+    </div>
+    <div vds-dialog-card-body class="detail-panel">
+      <form
+        [formGroup]="importType == 'event-group' ? eventGroupForm : eventForm"
+      >
+        <vds-form-field>
+          <label vdsLabel>
+            Event {{ importType == "event-group" ? "Group" : "" }} Name*
+          </label>
+          <input vdsInput 
+            [formControlName]="name" 
+            aria-required="true"
+            [invalid]="!!getErrorMessage(form, name)" 
+            />
+        </vds-form-field>
+        <vds-error 
+          vdsErrorMessage 
+          [show]="!!getErrorMessage(form, name)">{{
+            getErrorMessage(form, name) 
+          }}
+        </vds-error>
+        <div class="start-date-section">
+          <div>
+            <vds-date-selector
+              label="Start Date (MM/DD/YYYY)*"
+              [selectsStart]="true"
+              [required]="true"
+              [placement]="CALENDAR_PLACEMENT.BOTTOM"
+              [formControlName]="sDate"
+              [startDate]="getFormData('sDate').value"
+              [endDate]="getFormData('eDate').value"
+              [valid]="!getErrorMessage(form, sDate)"
+            ></vds-date-selector>
+            <vds-error 
+             vdsErrorMessage 
+              [show]="!!getErrorMessage(form, sDate)">{{
+              getErrorMessage(form, sDate) 
+             }}
+            </vds-error>
+          </div>
+
+          <div class="start-time-section">
+            <vds-form-field>
+              <label vdsLabel>Time*</label>
+              <input
+                vdsInput
+                type="time"
+                aria-required="true"
+                [value]="startTime"
+                (change)="setTime($event, 'sTime')"
+              />
+            </vds-form-field>
+          </div>
+
+          <vds-badge>
+            {{ timeZone }}
+          </vds-badge>
+        </div>
+        <div class="end-date-section">
+          <div>
+            <vds-date-selector
+              label="End Date (MM/DD/YYYY)*"
+              [selectsEnd]="true"
+              [placement]="CALENDAR_PLACEMENT.BOTTOM"
+              [formControlName]="eDate"
+              [required]="true"
+              [startDate]="getFormData('sDate').value"
+              [endDate]="getFormData('eDate').value"
+              [minDate]="getFormData('sDate').value"
+              [valid]="!getErrorMessage(form, eDate)"
+            ></vds-date-selector>
+            <vds-error 
+              vdsErrorMessage 
+                [show]="!!getErrorMessage(form, eDate)">{{
+                getErrorMessage(form, eDate) 
+              }}
+            </vds-error>
+          </div>
+
+          <div class="end-time-section">
+            <vds-form-field>
+              <label vdsLabel>Time*</label>
+              <input
+                vdsInput
+                type="time"
+                [value]="endTime"
+                aria-required="true"
+                (change)="setTime($event, 'eTime')"
+              />
+            </vds-form-field>
+          </div>
+          <vds-badge>
+            {{ timeZone }}
+          </vds-badge>
+        </div>
+      </form>
+    </div>
+    <div vds-dialog-card-footer>
+      <vds-button-group direction="right">
+        <button role="button"
+          vds-button
+          [color]="buttonColor.PRIMARY"
+          (click)="addEvent()"
+        >
+          Save
+        </button>
+        <button role="button" vds-button [color]="buttonColor.SECONDARY" (click)="close()">
+          Cancel
+        </button>
+      </vds-button-group>
+    </div>
+  </div>
+</div>

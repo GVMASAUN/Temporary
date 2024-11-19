@@ -1,0 +1,54 @@
+<div class="dialog-center">
+  <div vds-dialog-card class="assign-program-card">
+    <div vds-dialog-card-head>
+      <h2 vds-dialog-card-head-title>
+        Assign to Program
+      </h2>
+      <h3 class="f-s-1">Select a Program to assign Offer(s)</h3>
+    </div>
+    <div vds-dialog-card-body class="assign-program-body">
+      <div vds-combobox [type]="comboboxType.AUTO">
+        <vds-form-field class="login-username-field">
+          <label vdsLabel>Select Program</label>
+          <input vdsInput placeholder="Select program to assign" />
+          <button role="button"
+            vdsSuffix
+            vds-button-icon
+            [iconType]="buttonIconType.LIGHT_TINY"
+          >
+            <svg vds-icon icon="visa_arrow-expand" [tiny]="true"></svg>
+          </button>
+        </vds-form-field>
+        <vds-menu>
+          <ul 
+            vds-listbox 
+            id="assign-program-modal-listbox"
+            (change)="selectOption($event)">
+            <li
+              *ngFor="let card of programList"
+              vds-listbox-item
+              [value]="card"
+            >
+              {{ card }}
+            </li>
+          </ul>
+        </vds-menu>
+      </div>
+    </div>
+    <div vds-dialog-card-footer>
+      <vds-button-group direction="right">
+        <button role="button"
+          vds-button
+          [color]="buttonColor.PRIMARY"
+          [disabled]="!programName"
+          (click)="confirm()"
+        >
+          Assign
+        </button>
+        <button role="button" vds-button [color]="buttonColor.SECONDARY" (click)="close()">
+          Close
+        </button>
+      </vds-button-group>
+    </div>
+  </div>
+</div>

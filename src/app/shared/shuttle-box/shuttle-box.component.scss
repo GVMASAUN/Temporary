@@ -1,0 +1,52 @@
+.shuttle-box {
+
+  .left-box,
+  .right-box {
+    border: 2px solid #0052E1;
+    width: 90vh;
+
+    .options {
+      height: 160px;
+      width: 100%;
+      overflow: auto;
+      padding: 8px 0;
+      color: #57587d;
+
+      .option {
+        padding: 8px 16px;
+        flex: 0 0 auto;
+      }
+
+      .selectable {
+        cursor: pointer;
+
+        &:hover {
+          background: #ddd;
+        }
+      }
+
+      .selected {
+        background: #ccc !important;
+      }
+    }
+  }
+
+  .buttons-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 30px 0 0 30px;
+
+    img {
+      width: 16px;
+      margin-bottom: 16px;
+      cursor: pointer;
+    }
+  }
+
+  .selected {
+    background: #ccc !important;
+  }
+
+
+}

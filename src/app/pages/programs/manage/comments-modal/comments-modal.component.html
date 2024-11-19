@@ -1,0 +1,56 @@
+<div class="dialog-center">
+  <div class="comment-modal">
+    <div vds-dialog-card-head class="comment-modal-header">
+      <h2 vds-dialog-card-head-title>{{ title }} - Comments</h2>
+    </div>
+    <div vds-dialog-card-body class="comment-modal-body">
+      <div class="add-comment-section" *ngIf="canSaveComments">
+        <vds-form-field>
+          <label vdsLabel>Add a comment</label>
+          <textarea vdsInput [autoGrow]="true" #commentField></textarea>
+        </vds-form-field>
+        <div class="comment-save-btn">
+          <button role="button" vds-button (click)="saveComment(commentField.value)">
+            Save
+          </button>
+        </div>
+      </div>
+      <div class="comment-wrapper">
+        <div *ngIf="!comments.length" class="comment-not-found">
+          <p>
+            {{
+              (isEventGroup || isEventGroupTemplate)
+                ? 'No comments exist for this Event Group.'
+                : 'No comments exist for this event.'
+            }}
+          </p>
+        </div>
+        <div class="comment-section" *ngFor="let data of comments">
+          <hr vdsDivider/>
+          <div class="comment-card">
+            <div class="comment-header">
+              <h3 class="f-s-1">
+                {{ data.createdUserFullName | titlecase }}
+              </h3>
+              <span>
+                {{ formatDate(data.createdDate, 
+                  DateFormat.MOMENT_MM_DD_YYYY_HH_MM_A) }}
+                <vds-badge>
+                  {{ getTimeZone() }}
+                </vds-badge>
+              </span>
+            </div>
+            <div class="comment-body">
+              <span>{{ data.comment }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div vds-dialog-card-footer class="comment-modal-footer">
+      <vds-button-group direction="right">
+        <button role="button" vds-button (click)="close()">done</button>
+      </vds-button-group>
+    </div>
+  </div>
+</div>

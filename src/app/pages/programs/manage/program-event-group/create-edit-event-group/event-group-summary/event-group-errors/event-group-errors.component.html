@@ -1,0 +1,44 @@
+<div class="vds-grid">
+    <div class="row dialog-header-bar">
+      <div class="col--align-end">
+        <button role="button"
+          vds-button-icon
+          [iconType]="ButtonIconType.LIGHT_TINY"
+          aria-label="Close"
+          (click)="close()"
+        >
+          <svg vds-icon [icon]="VisaIcon.CLOSE" [tiny]="true"></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <div vds-dialog-card-head>
+    <div class="vds-grid">
+      <div class="row">
+        <h2 vds-dialog-card-head-title>{{ 
+          'VOP Publication Error for Event Group: ' + dialogConfig.title
+        }}</h2>
+      </div>
+    </div>
+  </div>
+  
+  <div  vds-dialog-card-body class="detail-panel">
+    <div class="row">
+        <app-search-table
+            tableId="error-list"
+            [columns]="columns"
+            [dataSource]="dialogConfig.dataSource"
+            [moreColumns]="false"
+            [hideSelectAll]="true"
+      ></app-search-table>
+    </div>
+  </div>
+  
+  <div vds-dialog-card-footer class="dialog-footer">
+    <vds-button-group>
+      <button role="button" vds-button [color]="ButtonColor.TERTIARY" (click)="close()">
+        CLOSE
+      </button>
+    </vds-button-group>
+  </div>

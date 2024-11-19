@@ -1,0 +1,110 @@
+<vds-action-bar [active]="true" [class.inactive]="!selectedIndex.length">
+  <div class="wrapper-action-bar">
+    <div class="col col--xs-3 col--no-gutter">
+      <vds-button-group>
+        <button role="button" vds-button [color]="ButtonColor.SECONDARY">
+          <svg vds-icon icon="search" [low]="true"></svg>
+        </button>
+      </vds-button-group>
+      <div class="vl"></div>
+      Filter
+      <button role="button" vds-button-icon [iconType]="ButtonIconType.LIGHT">
+        <svg vds-icon icon="add-alt" [low]="true"></svg>
+      </button>
+    </div>
+
+    <div
+      class="col col--align-end col--no-gutter"
+      *ngIf="selectedIndex.length"
+    ></div>
+    <app-show-columns [columns]="columns"></app-show-columns>
+  </div>
+</vds-action-bar>
+
+<div class="table-wrapper">
+  <div class="table-container">
+    <table vdsDataTable>
+      <caption vdsScreenReader>
+        {{ caption }}
+      </caption>
+      <thead vdsThead>
+        <tr vdsTr>
+          <th vdsTh scope="col" width="5%">
+              <vds-checkbox
+                label="Select"
+                (click)="selectAllHandler($event)"
+                [indeterminate]="
+                  selectedIndex.length > 0 &&
+                  selectedIndex.length < tableData.length
+                "
+                [checked]="
+                  tableData.length > 0 &&
+                  selectedIndex.length === tableData.length
+                "
+                [matTooltip]="
+                  selectedIndex.length === tableData.length
+                    ? 'Deselect All'
+                    : 'Select All'
+                "
+                [matTooltipPosition]="TooltipPosition.RIGHT"
+              ></vds-checkbox>
+
+              
+              <!-- Added label with 0 opacity for VGAR Requirement -->
+              <!-- Table Header shouldn't be empty -->
+              <label vdsLabel class="hidden-label">Select</label>
+          </th>
+
+          <ng-container *ngFor="let column of columns; let i = index">
+            <th vdsTh scope="col" *ngIf="column.checked">
+              <!-- [width]="column.width" -->
+              <div class="sort-btn">
+                {{ column.label }}
+                  <button 
+                    *ngIf="column.sortable"
+                    [matTooltip]="'Sort ' + sortBy[i].slice(1) | titlecase"
+                    [matTooltipPosition]="TooltipPosition.RIGHT"
+                    role="button"
+                    vds-button-icon
+                    [iconType]="ButtonIconType.LIGHT_TINY"
+                    (click)="handleSort(column.value, i)"
+                    [attr.aria-label]="'sort ' + column.label + sortBy[i]"
+                  >
+                    <svg
+                      vds-icon
+                      [icon]="'sortable' + sortBy[i]"
+                      [tiny]="true"
+                    ></svg>
+                  </button>
+              </div>
+            </th>
+          </ng-container>
+        </tr>
+      </thead>
+      <tbody vdsTbody></tbody>
+    </table>
+    <div *ngIf="loading" class="progress-container">
+      <vds-linear-progress></vds-linear-progress>
+    </div>
+  </div>
+</div>
+
+<vds-pagination
+  ariaLabel="Tenant-pagination"
+  [pageIndex]="0"
+  [pageSize]="10"
+  [length]="30"
+  [ariaFirstPage]="'First Page'"
+  [ariaPreviousPage]="'Previous Page'"
+  [ariaNextPage]="'Next Page'"
+  [ariaLastPage]="'Last Page'"
+>
+</vds-pagination>
+<app-footer>
+  <vds-button-group> </vds-button-group>
+  <vds-button-group>
+    <button role="button" vds-button [color]="ButtonColor.TERTIARY" routerLink="/merchant">
+      Back
+    </button>
+  </vds-button-group>
+</app-footer>

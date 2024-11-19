@@ -1,0 +1,49 @@
+<div class="dialog-center">
+  <div [ngStyle]="{ width: '480px' }">
+    <vds-linear-progress *ngIf="showLoader"></vds-linear-progress>
+    <div vds-dialog-card-head>
+      <h2 vds-dialog-card-head-title>Add Merchants</h2>
+    </div>
+
+    <div vds-dialog-card-body class="m-t-10">
+      <p>
+        Are you sure you want to add merchants?
+      </p>
+      <!-- <p vdsErrorMessage [show]="true">{{ errMsg }}</p> -->
+
+      <!-- <div class="form-field">
+        <vds-form-field>
+          <label vdsLabel>Comment</label>
+          <textarea
+            vdsInput
+            placeholder="Comment"
+            [autoGrow]="true"
+            [rows]="3"
+            [value]="comment"
+            [maxLength]="256"
+            (changed)="commentChange($event)"
+          ></textarea>
+        </vds-form-field>
+      </div> -->
+    </div>
+
+    <div vds-dialog-card-footer>
+      <vds-button-group direction="reverse">
+        <button role="button"
+          id="close-button"
+          vds-button
+          [color]="ButtonColor.SECONDARY"
+          (click)="close()"
+        >
+          Cancel
+        </button>
+        <button role="button"
+          vds-button
+          (click)="confirm()"
+        >
+          Confirm
+        </button>
+      </vds-button-group>
+    </div>
+  </div>
+</div>

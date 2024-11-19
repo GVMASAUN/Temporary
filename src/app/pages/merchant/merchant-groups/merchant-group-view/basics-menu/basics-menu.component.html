@@ -1,0 +1,152 @@
+<form [formGroup]="merchantData">
+  <div class="vds-grid" *ngIf="initView">
+    <div class="row">
+      <div class="col">
+        <div class="form-field">
+          <label vdsLabel class="form-label">Merchant Group Name</label>
+          <div class="form-value">
+            {{ merchantName }}
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label vdsLabel class="form-label">Merchant Group Type</label>
+          <div class="form-value">
+            {{
+              this.merchantType === "MerchantInfo" ? "VMID/VSID" : "BIN/CAID"
+            }}
+          </div>
+        </div>
+
+        <div class="form-field">
+          <vds-form-field>
+            <label vdsLabel>Description</label>
+            <textarea
+              vdsInput
+              placeholder="Merchant Group Description"
+              [autoGrow]="true"
+              formControlName="description"
+            ></textarea>
+            <span vdsErrorMessage aria-atomic="true" aria-live="assertive" class="flex-container">
+              <ng-container *ngIf="!!getErrorMessage('description')">
+                  <svg vds-icon [icon]="VisaIcon.ERROR" [tiny]="true"></svg>
+                  Error: {{ getErrorMessage('description') }}
+              </ng-container>
+            </span>
+          </vds-form-field>
+        </div>
+
+        <div class="form-field">
+          <label vdsLabel class="form-label">Status</label>
+          <div class="form-value">
+            <vds-badge
+              [type]="merchantStatus ? BadgeType.STABLE : BadgeType.CRITICAL"
+            >
+              {{ merchantStatus ? "Active" : "InActive" }}
+            </vds-badge>
+          </div>
+        </div>
+        <!-- <div class="form-field"> -->
+        <!--  <vds-radio-group role="radiogroup" formControlName="merchantStatus">
+            <legend vdsLegend>Status</legend>
+            <vds-radio
+              label="Active"
+              name="status-option"
+              radioValue="active"
+              [checked]="getFormValue('merchantStatus') == 'active'"
+            >
+            </vds-radio>
+            <vds-radio
+              label="InActive"
+              name="status-option"
+              radioValue="inactive"
+              [checked]="getFormValue('merchantStatus') == 'inactive'"
+            >
+            </vds-radio>
+          </vds-radio-group> -->
+        <!-- </div> -->
+
+        <!-- <div class="form-field input-field-container">
+        <vds-form-field>
+          <label vdsLabel>Currency</label>
+          <select vdsSelect value="usd" [disabled]="true">
+            <option value="usd">USD</option>
+            <option value="inr">INR</option>
+          </select>
+        </vds-form-field>
+        <vds-form-field>
+          <label vdsLabel>Budget</label>
+          <input vdsInput [value]="12345.0" type="number" [disabled]="true" />
+        </vds-form-field>
+        <vds-form-field>
+          <label vdsLabel>Exhausted</label>
+          <input vdsInput [value]="1000" type="number" [disabled]="true" />
+        </vds-form-field>
+      </div>
+      
+      <div class="form-field">
+        <vds-form-field>
+          <label vdsLabel>Optional comment</label>
+          <textarea
+          vdsInput
+          placeholder="Optional comment"
+          [readonly]="true"
+          [autoGrow]="true"
+          value="Diam pellentesque sed ipsum vitae nunc urna. Venenatis est justo, quisque praesent lacus, nibh. At neque viverra facilisi cras dictumst facilisi condimentum. "
+          ></textarea>
+        </vds-form-field>
+      </div>
+      
+      <div class="form-field">
+        <label vdsLabel>Last update</label>
+        <div>
+          {{ date | date: "MM/dd/yyyy hh:mm a z" }}
+          {{ " by " }}
+          <a role="link" vdsLink routerLink="#">Username</a>
+        </div>
+      </div>
+    </div> -->
+
+        <div class="col col--md-2">
+          <div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+<app-footer>
+  <vds-button-group>
+    <button role="button"
+      vds-button
+      [color]="ButtonColor.PRIMARY"
+      (click)="saveGroup()"
+      [disabled]="!merchantStatus"
+    >
+      Save
+    </button>
+    <button role="button"
+      vds-button
+      [color]="ButtonColor.SECONDARY"
+      [disabled]="DataChange || !merchantStatus"
+      (click)="cloneGroup()"
+    >
+      Clone
+    </button>
+
+    <button role="button"
+      vds-button
+      [color]="ButtonColor.SECONDARY"
+      [disabled]="!merchantStatus"
+      (click)="archiveGroup()"
+    >
+      Archive
+    </button>
+  </vds-button-group>
+  <vds-button-group>
+    <button role="button" vds-button [color]="ButtonColor.TERTIARY" (click)="backAction()">
+      {{ DataChange ? "Cancel" : "Back" }}
+    </button>
+  </vds-button-group>
+</app-footer>
+<app-progress-spinner></app-progress-spinner>
+

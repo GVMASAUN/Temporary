@@ -1,0 +1,10 @@
+.detail-panel {
+    height: 70vh;
+    position: relative;
+    padding-top: 15px;
+}
+
+/* CSS class to adjust width to filter section when panel is open */
+.width-when-panel-open {
+    width: max-content;
+}

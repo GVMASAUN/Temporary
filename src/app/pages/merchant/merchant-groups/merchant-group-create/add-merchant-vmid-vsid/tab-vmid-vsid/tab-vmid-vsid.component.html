@@ -1,0 +1,273 @@
+<!-- NOT IN USE -->
+
+<form [formGroup]="binCaidObject">
+  <div class="vds-grid">
+    <div class="row">
+      <div class="col">
+        <div class="form-header">
+          <svg vds-icon icon="document-add" [low]="true"></svg>
+          Add VMID-VSID
+          <svg vds-icon icon="info" [tiny]="true"></svg>
+        </div>
+        <p>
+          Some instructions go here. Pulvinar tellus, eu mollis enim turpis
+          posuere convallis penatibus volutpat.
+        </p>
+        <div class="form-header">
+          <vds-badge
+            [type]="selectedTab == 0 ? BadgeType.NEUTRAL : BadgeType.STATUS"
+            (click)="selectedTab = 0"
+            class="link"
+          >
+            <svg vds-icon icon="view-list" [tiny]="true"></svg>
+            All VMID-VSID
+          </vds-badge>
+
+          <vds-badge
+            [type]="selectedTab == 1 ? BadgeType.NEUTRAL : BadgeType.STATUS"
+            (click)="selectedTab = 1"
+            class="link"
+          >
+            <svg
+              vds-icon
+              [icon]="selections.length ? 'circle-filled' : 'circle-empty'"
+              [tiny]="true"
+            ></svg>
+            Selections
+            <span *ngIf="selections.length">{{
+              "(" + selections.length + ")"
+            }}</span>
+          </vds-badge>
+        </div>
+        <hr />
+      </div>
+      <div class="col col--md-2">
+        <div></div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <div class="wrapper-action-bar">
+          <div class="col col--xs-3 col--no-gutter">
+            <div class="col col--md-3">
+              <!-- <vds-form-field>
+                <svg vds-icon vdsPrefix icon="search" [tiny]="true"></svg>
+                <input vdsInput placeholder="Search" />
+              </vds-form-field> -->
+
+              <div
+                vds-search
+                [variant]="SearchVariant.DYNAMIC"
+                aria-label="Search Box"
+              >
+                <vds-form-field>
+                  <svg vds-icon vdsPrefix icon="search" [low]="true"></svg>
+                  <input
+                    vdsInput
+                    placeholder="Search VMID / VSID"
+                    type="search"
+                  />
+                </vds-form-field>
+              </div>
+            </div>
+          </div>
+
+          <div class="col col--align-end col--no-gutter">
+            <app-show-columns [columns]="columns"></app-show-columns>
+          </div>
+        </div>
+
+        <table vdsDataTable>
+          <caption vdsScreenReader>
+            {{ caption }}
+          </caption>
+          <thead vdsThead>
+            <tr vdsTr>
+              <th vdsTh scope="col" width="5%">
+                  <button 
+                    [matTooltip]="
+                      selectedIndex.length === allVmidVsid.length
+                        ? 'Deselect All'
+                        : 'Select All'
+                    "
+                    [matTooltipPosition]="TooltipPosition.RIGHT"
+                    role="button"
+                    aria-labelledby="vmid-vsid-select-all-tooltip"
+                    vds-button-icon
+                    [iconType]="ButtonIconType.LIGHT"
+                    (click)="
+                      selectedTab == 0
+                        ? selectAllHandler()
+                        : deselectAllHandler()
+                    "
+                  >
+                    <svg
+                      vds-icon
+                      [icon]="selectedTab == 0 ? 'add-alt' : 'subtract-alt'"
+                      [low]="true"
+                    ></svg>
+                  </button>
+              </th>
+
+              <ng-container *ngFor="let column of columns; let i = index">
+                <th vdsTh scope="col" *ngIf="column.checked">
+                  <div class="sort-btn">
+                    {{ column.label }}
+
+                      <button 
+                        *ngIf="column.sortable"
+                        [matTooltip]="'Sort ' + sortBy[i].slice(1) | titlecase"
+                        [matTooltipPosition]="TooltipPosition.RIGHT"
+                        role="button"
+                        vds-button-icon
+                        [iconType]="ButtonIconType.LIGHT_TINY"
+                        (click)="handleSort(column.value, i)"
+                        [attr.aria-label]="'sort ' + column.label + sortBy[i]"
+                      >
+                        <svg
+                          vds-icon
+                          [icon]="'sortable' + sortBy[i]"
+                          [tiny]="true"
+                        ></svg>
+                      </button>
+                  </div>
+                </th>
+              </ng-container>
+            </tr>
+          </thead>
+          <tbody vdsTbody>
+            <tr
+              vdsTr
+              *ngFor="
+                let row of selectedTab == 0 ? allVmidVsid : selections;
+                let i = index
+              "
+              [class.selected-row]="
+                selectedIndex.includes(i) && selectedTab == 0
+              "
+            >
+              <td vdsTd class="align-center">
+                <button role="button"
+                  vds-button-icon
+                  [iconType]="ButtonIconType.LIGHT_TINY"
+                  [disabled]="selectedIndex.includes(i)"
+                  (click)="selectRow(i)"
+                  *ngIf="selectedTab == 0"
+                >
+                  <svg
+                    vds-icon
+                    icon="add"
+                    [tiny]="true"
+                    *ngIf="!selectedIndex.includes(i)"
+                  ></svg>
+                  <svg
+                    vds-icon
+                    icon="checkmark"
+                    [tiny]="true"
+                    *ngIf="selectedIndex.includes(i)"
+                  ></svg>
+                </button>
+
+                <button role="button"
+                  vds-button-icon
+                  [iconType]="ButtonIconType.LIGHT_TINY"
+                  (click)="deselectRow(i)"
+                  *ngIf="selectedTab == 1"
+                >
+                  <svg vds-icon icon="subtract" [tiny]="true"></svg>
+                </button>
+              </td>
+              <td vdsTd *ngIf="columns[0].checked">
+                {{ row.vmid }}
+              </td>
+              <td vdsTd *ngIf="columns[1].checked">
+                {{ row.visaMerchantName }}
+              </td>
+              <td vdsTd *ngIf="columns[2].checked">
+                {{ row.vsid }}
+              </td>
+              <td vdsTd *ngIf="columns[3].checked">
+                {{ row.visaStoreName }}
+              </td>
+              <td vdsTd *ngIf="columns[4].checked">
+                <a role="link" tabindex="0" vdsLink>{{ row.externalId }}</a>
+              </td>
+              <td vdsTd *ngIf="columns[5].checked">
+                {{ row.country }}
+              </td>
+              <td vdsTd *ngIf="columns[6].checked">
+                {{ row.city }}
+              </td>
+              <td vdsTd *ngIf="columns[7].checked">
+                {{ row.state }}
+              </td>
+              <td vdsTd *ngIf="columns[8].checked">
+                {{ row.postal }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div
+          class="no-data-label"
+          *ngIf="selectedTab == 1 && !selections.length"
+        >
+          No Merchants
+        </div>
+      </div>
+    </div>
+
+    <hr />
+    <div class="row">
+      <div class="col">
+        <h4>Comment</h4>
+        <div class="form-field">
+          <vds-form-field>
+            <label vdsLabel>Comment</label>
+            <textarea
+              vdsInput
+              [autoGrow]="true"
+              [value]="comment"
+              (changed)="setComment($event)"
+            ></textarea>
+          </vds-form-field>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+
+<app-footer [overlay]="true" [rowSelected]="!!selectedIndex.length">
+  <vds-button-group>
+    <button role="button"
+      vds-button
+      [color]="ButtonColor.PRIMARY"
+      [disabled]="!selectedIndex.length || !comment"
+      [routerLink]="['..']"
+      [queryParams]="{ type: 'MerchantInfo' }"
+      queryParamsHandling="merge"
+    >
+      ADD
+    </button>
+    <button role="button"
+      vds-button
+      [color]="ButtonColor.SECONDARY"
+      *ngIf="!!selectedIndex.length"
+      (click)="deselectAllHandler()"
+    >
+      Clear selections
+    </button>
+    <button role="button"
+      vds-button
+      [color]="ButtonColor.SECONDARY"
+      [routerLink]="['..']"
+      [queryParams]="{ type: 'MerchantInfo' }"
+      queryParamsHandling="merge"
+    >
+      CANCEL
+    </button>
+  </vds-button-group>
+  <div class="align-center" *ngIf="!!selectedIndex.length">
+    {{ selections.length }}&nbsp;Merchants Selected
+  </div>
+</app-footer>

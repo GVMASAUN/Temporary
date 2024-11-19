@@ -1,0 +1,48 @@
+<app-overlay
+  [backLink]="['..']"
+  backPage="history"
+  screenTitle="Audit History Details: Merchant Group | Groupon CAID Merchants"
+>
+  <h4>
+    <strong>{{ title }}</strong>
+  </h4>
+
+  <div class="table-wrapper">
+    <table vdsDataTable>
+      <thead vdsThead>
+        <tr vdsTr>
+          <th vdsTh *ngIf="!showHeader" scope="col">Attribute</th>
+          <th vdsTh [colSpan]="showHeader ? 5 : 1" scope="col">
+            <div class="date-header">
+              Change Date
+              <vds-date-selector></vds-date-selector>
+            </div>
+          </th>
+          <th vdsTh *ngIf="!showHeader" scope="col">Previous Version</th>
+        </tr>
+        <tr vdsTr *ngIf="showHeader">
+          <ng-container *ngFor="let col of column">
+            <th vdsTh scope="col" class="highlight">
+              {{ col.label }}
+            </th>
+          </ng-container>
+        </tr>
+      </thead>
+      <tbody vdsTbody>
+        <tr vdsTr>
+          <td vdsTd [class.heighlight]="showHeader"></td>
+          <td vdsTd [class.heighlight]="showHeader"></td>
+          <td vdsTd></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <app-footer [overlay]="true">
+    <vds-button-group>
+      <button role="button" vds-button routerLink=".." queryParamsHandling="merge">
+        DONE
+      </button>
+    </vds-button-group>
+  </app-footer>
+</app-overlay>

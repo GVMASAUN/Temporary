@@ -1,0 +1,67 @@
+
+
+
+<app-dialog
+    buttonDirection="right"
+    title="PWP Transaction ID: {{transactionDetails.pwpTransactionId}}">
+    <div dialogContent>
+        <hr vdsDivider>
+        
+        <br>
+        <br>
+        
+        <h4>Points Details</h4>
+        
+        <div class="summary">
+            <span class="summary-field-heading">Available pints</span>
+            <span class="summary-field-value">{{pointsDetails.availablePoints}}</span>
+        
+            <span class="summary-field-heading">Amount Redeemed</span>
+            <span class="summary-field-value">{{pointsDetails.partialRedemption}}</span>    
+        
+            <span class="summary-field-heading">Available Points in Amount</span>
+            <span class="summary-field-value">{{pointsDetails.availalbePointsInAmount}}</span>   
+        
+            <span class="summary-field-heading">Conversion Rate</span>
+            <span class="summary-field-value">{{pointsDetails.conversionRate}}</span>    
+        
+            <span class="summary-field-heading">Partial Redemption</span>
+            <span class="summary-field-value">{{pointsDetails.partialRedemption}}</span>
+        
+            <span class="summary-field-heading">Points Bank Approval Status</span>
+            <span class="summary-field-value">{{pointsRedeemDetails.pointsBankApprovalStatus}}</span>
+        
+            <span class="summary-field-heading">Points Redeemed</span>
+            <span class="summary-field-value">{{pointsRedeemDetails.pointsRedeemed}}</span>
+        
+
+            <span class="summary-field-heading">Transaction Points</span>
+            <span class="summary-field-value">{{pointsDetails.transactionPoints}}</span>
+        </div>
+        
+        <hr class="divider">
+        
+        <h4>Merchant</h4>
+        
+        <div class="summary">
+            <span class="summary-field-heading">Merchant Name</span>
+            <span class="summary-field-value">{{transactionDetails.merchantName}}</span>
+            
+            <span class="summary-field-heading">MCC</span>
+            <span class="summary-field-value">{{transactionDetails.merchantCategoryCode}}</span>
+        </div>
+        
+        <hr class="divider">
+        
+        <h4>Transaction</h4>
+        
+        <div class="summary">
+            <span class="summary-field-heading">Transaction Amount</span>
+            <span class="summary-field-value">{{transactionDetails.transactionAmount}}</span>
+            <span class="summary-field-heading">Transaction Currency Code</span>
+            <span class="summary-field-value">{{transactionDetails.transactionCurrencyCode}}</span>
+            <span class="summary-field-heading">Transaction Timestamp</span>
+            <app-date-time-field-value [value]="transactionDetails.transactionTimestamp" styleClass="summary-field-value"></app-date-time-field-value>
+        </div>
+    </div>
+</app-dialog>

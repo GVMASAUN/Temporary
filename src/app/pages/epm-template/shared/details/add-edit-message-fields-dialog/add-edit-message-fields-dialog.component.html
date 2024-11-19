@@ -1,0 +1,44 @@
+<vds-linear-progress *ngIf="isLoading"></vds-linear-progress>
+<div vds-dialog-card-head>
+  <div class="vds-grid">
+    <div class="row">
+      <h2 vds-dialog-card-head-title>{{
+        mode === DialogMode.EDIT ? 'Edit Message Fields' : 'Add Message Fields'
+      }}</h2>
+    </div>
+
+    <div class="row name">
+      <span>
+        Select required fields for the template
+      </span>
+    </div>
+
+  </div>
+</div>
+
+<div vds-dialog-card-body 
+  id="edit-message-fields-dialog"
+  class="detail-panel">
+  <form [formGroup]="requiredFieldForm">
+      <app-shuttle-box
+          formControlName="requiredMessageFields"
+          placeholder="Available Fields"
+          [options]="availableFields"
+          [disabled]="false"
+          [required]="true"
+      ></app-shuttle-box>
+  </form>
+</div>
+
+<div vds-dialog-card-footer class="dialog-footer">
+  <vds-button-group>
+    <button role="button"
+      vds-button
+      [color]="ButtonColor.TERTIARY"
+      (click)="close()"
+    >
+      CLOSE
+    </button>
+  </vds-button-group>
+</div>
+

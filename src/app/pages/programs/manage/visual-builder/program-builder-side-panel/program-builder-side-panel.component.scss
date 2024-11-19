@@ -1,0 +1,42 @@
+vds-panel.vds-state--open:not(.vds-state--animated) {
+    min-width: 355px;
+    max-width: 280px;
+}
+
+.vds-panel {
+    min-height: auto;
+    min-width: 280px;
+}
+
+.vds-panel-panel {
+    border: solid 1px #CACACA;
+    box-shadow: 0 0 4px 0 #797979;
+    min-height: 500px;
+    height: 500px;
+
+}
+
+.vds-panel .vds-panel-tabs-close {
+    border-left: solid 1px #CACACA;
+}
+
+.vds-panel-panel .vds-panel-content {
+    min-height: 400px;
+    padding-top: 0;
+}
+
+vds-panel.vds-state--open:not(.vds-state--animated) .panel-header{
+    position: fixed;
+    min-height: 24px;
+    background-color: #FFFFFF;
+    max-height: 145px;
+    width: 100%;
+    position: sticky;
+    top: 0;
+    padding-top: 10px;
+}
+
+.vds-panel.vds-state--open:not(.vds-state--animated) .vds-panel-panel {
+    max-width: 370px;
+    width: 100%;
+}

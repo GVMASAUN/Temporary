@@ -1,0 +1,15 @@
+<svg version="1.1" class="ds-hero--logo" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 85.2 80" style="enable-background:new 0 0 85.2 80;" xml:space="preserve">
+  <style type="text/css">
+    .st0{fill:#151544;}
+  </style>
+  <g>
+    <path class="st0" d="M45.1,44l-0.5-2.5l-1.7-8.3c-0.3-1.1-1.2-1.5-2.2-1.5h-7.9l-0.1,0.4c1.9,0.5,3.6,1.1,5.2,2l4.4,15.7l5.2,0
+      l7.7-18h-5.2L45.1,44z"></path>
+    <polygon class="st0" points="5.2,0 5.2,25 11.9,25 11.9,6.7 78.6,6.7 78.6,73.3 11.9,73.3 11.9,55 5.2,55 5.2,80 85.2,80 85.2,0     
+      "></polygon>
+    <rect x="5.2" y="31" class="st0" width="6.7" height="18"></rect>
+    <rect y="25" class="st0" width="5.2" height="6"></rect>
+    <rect y="49" class="st0" width="5.2" height="6"></rect>
+    <path class="st0" d="M20.2,31v18h-8.3v6h8.3v10h50V15h-50v10h-8.3v6H20.2z M26.2,21h38v38h-38V21z"></path>
+  </g>
+</svg>

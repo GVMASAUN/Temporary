@@ -1,0 +1,11 @@
+@font-face {
+  font-family: "Visa Dialect UI";
+  src: url(./VisaDialectUI-Regular.ttf) format("truetype");
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "Visa Dialect UI";
+  src: url(./VisaDialectUI-Semibold.ttf) format("truetype");
+  font-weight: 600;
+}

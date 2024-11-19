@@ -1,0 +1,30 @@
+<app-search-table
+  tableId="merchant-history-list"
+  [searchFields]="searchFields"
+  [columns]="tableColumns"
+  [hideSelectAll]="true"
+  [hideSearchFieldFilters]="true"
+  [search]="getMerchantHistory.bind(this)"
+  notFound="No History is associated with this merchant"
+></app-search-table>
+
+<ng-template #columnChangesMade let-column="column" let-row="row">
+  <ng-container>
+    <td vdsTd [style]="column.cellStyle && column.cellStyle(row, this)">
+      <div>
+        {{ mapColumn(row[column.key]) }}
+      </div>
+      <div *ngIf="row.moreHistoryMessagesExist">
+        <a
+          vdsLink
+          role="link"
+          tabindex="0"
+          (click)="column.click && column.click(row)"
+          (keyup.enter)="column.click && column.click(row)"
+        >view more</a>
+      </div>
+    </td>
+  </ng-container>
+</ng-template>
+
+<app-footer></app-footer>

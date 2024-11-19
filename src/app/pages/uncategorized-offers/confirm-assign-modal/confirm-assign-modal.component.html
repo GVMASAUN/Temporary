@@ -1,0 +1,22 @@
+<div class="dialog-center">
+  <div vds-dialog-card class="assign-program-card">
+    <div vds-dialog-card-head>
+      <h2 vds-dialog-card-head-title>
+        You are about to assign Offers to the selected program.
+      </h2>
+    </div>
+    <div vds-dialog-card-body class="assign-program-body">
+      Sample description. it will change later
+    </div>
+    <div vds-dialog-card-footer>
+      <vds-button-group direction="right">
+        <button role="button" vds-button [color]="buttonColor.PRIMARY" (click)="confirm()">
+          Assign
+        </button>
+        <button role="button" vds-button [color]="buttonColor.SECONDARY" (click)="close()">
+          Close
+        </button>
+      </vds-button-group>
+    </div>
+  </div>
+</div>

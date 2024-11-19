@@ -1,0 +1,69 @@
+<app-header 
+  [headerHeight]="46"
+  screenTitle="Create Event Group Template"
+>
+</app-header>
+
+<div class="tabs-section">
+  <ul
+    vds-tab-list
+    [orientation]="TabsOrientation.HORIZONTAL"
+    (selectedIndexChange)="onTabChange($event)"
+    >
+    <li vds-tab-item 
+      *ngFor="let tab of tabs; let tabIndex = index">
+      <button role="button" 
+        vdsTab
+        [selected]="selectedTabIndex === tabIndex"
+        (focus)="selectedTabIndex = tabIndex"
+      >
+        {{ tab }}
+      </button>
+    </li>
+  </ul>
+</div>
+
+<div *ngIf="initialized">
+    <app-event-group-template-basics
+      *ngIf="!hideTab(EventGroupStep.BASICS)"
+      [id]="getTabId(viewName,selectedTabIndex,EventGroupStep.BASICS)"
+      [attr.aria-labelledby]="getTabLabelledById(viewName,selectedTabIndex,EventGroupStep.BASICS)"
+      [form]="form"
+    ></app-event-group-template-basics>
+    <app-event-group-template-events
+      *ngIf="!hideTab(EventGroupStep.EVENTS)"
+      [form]="form"
+      [id]="getTabId(viewName,selectedTabIndex,EventGroupStep.EVENTS)"
+      [attr.aria-labelledby]="getTabLabelledById(viewName,selectedTabIndex,EventGroupStep.EVENTS)"
+    ></app-event-group-template-events>    
+  </div>
+
+  <app-footer [overlay]="false">
+    <vds-button-group *ngIf="hideTab(EventGroupStep.EVENTS)">
+        <button role="button" vds-button [color]="ButtonColor.PRIMARY"
+        (click)="handleSubmit()" 
+          [disabled]="!enableActionButtons"
+          >
+          Save
+        </button>
+        <button role="button" vds-button [color]="ButtonColor.SECONDARY" 
+        (click)="handleSubmit(true)"
+        [disabled]="!enableActionButtons"
+        >
+            Save & Exit
+        </button>
+    </vds-button-group>
+  
+    <vds-button-group>
+      <button role="button"
+        vds-button
+        [color]="ButtonColor.TERTIARY"
+        routerLink="../"
+        queryParamsHandling="merge"
+      >
+      {{ showCloseButton ? 'Close' : 'Cancel' }}
+      </button>
+    </vds-button-group>
+  </app-footer>
+
+

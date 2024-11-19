@@ -1,0 +1,31 @@
+.progress-bar ::ng-deep {
+  .vds-progress {
+    margin-top: -25px;
+    padding-bottom: 25px;
+  }
+}
+.vds-grid {
+  max-width: unset;
+}
+.form-field {
+  margin-bottom: 20px;
+  .form-label {
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 16px;
+
+    color: #4a4a4a;
+  }
+  .form-value {
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+    padding: 10px 0;
+  }
+
+  // &.input-field-container {
+  //   display: grid;
+  //   grid-template-columns: 1fr 1fr 1fr;
+  //   gap: 8px;
+  // }
+}

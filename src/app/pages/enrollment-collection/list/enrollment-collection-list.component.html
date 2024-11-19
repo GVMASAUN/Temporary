@@ -1,0 +1,27 @@
+<app-header 
+    screenTitle="{{ ENROLLMENT_COLLECTION.uiName }}"
+></app-header>
+
+<app-progress-spinner *ngIf="!showSearchTable"></app-progress-spinner>
+
+<app-search-table
+    *ngIf="showSearchTable"
+    tableId="enrollment-collection-list"
+    sortActive="enrollmentCollectionName"
+    [sorting]="SortType.STATIC"
+    [hideSelectAll]="true"
+    [hideSearchFieldFilters]="true"
+    [resetSort]="true"
+    [persistSearchFilters]="true"
+    [tableActions]="tableActions"
+    [columns]="tableColumns"
+    [searchFields]="advancedSearchFields"
+    [search]="getEnrollmentCollectionList.bind(this)"
+    [tableStyle]="{
+        height: '63vh',
+        overflow: 'auto'
+        }"
+    [notFound]="'No data exists for the provided search filter.'"
+></app-search-table>
+
+<app-footer></app-footer>

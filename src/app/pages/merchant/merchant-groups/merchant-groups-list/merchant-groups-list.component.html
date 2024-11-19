@@ -1,0 +1,211 @@
+<div class="page-content" [ngClass]="{ 'panel-open': isPanelOpen }">
+  <app-header screenTitle="Merchant Groups"> </app-header>
+
+  <div class="filter-bar" *ngIf="searchActivate">
+    <strong>Results for</strong>
+    <form [formGroup]="searchData">
+      <vds-form-field>
+        <label vdsLabel>Merchant Group Name </label>
+        <input vdsInput formControlName="name" />
+      </vds-form-field>
+      <vds-form-field>
+        <label vdsLabel>Merchant Group Type </label>
+        <select vdsSelect formControlName="MerchantGroupType">
+          <option value="">Any</option>
+          <option value="AcquirerInfo">BIN/CAID</option>
+          <option value="MerchantInfo">VMID/VSID</option>
+        </select>
+      </vds-form-field>
+      <vds-form-field>
+        <label vdsLabel>Status</label>
+        <select vdsSelect formControlName="isActive">
+          <option value="">Any</option>
+          <option value="true">Active</option>
+          <option value="false">Inactive</option>
+        </select>
+      </vds-form-field>
+    </form>
+    <div class="clear-section">
+      <span>
+        Clear search
+      </span>
+      <button role="button"
+        vds-button-icon
+        aria-label="Clear"
+        [iconType]="ButtonIconType.LIGHT_TINY"
+        (click)="clearSearch(); getMerchantGroups()"
+      >
+        <svg vds-icon [tiny]="true" icon="clear"></svg>
+      </button>
+    </div>
+  </div>
+
+  <vds-action-bar [active]="true" [class.inactive]="!selectedIndex.length">
+    <div class="wrapper-action-bar">
+      <div class="col col--xs-3 col--no-gutter">
+        <vds-button-group>
+          <button role="button"
+            vds-button
+            aria-label="search-button"
+            [color]="ButtonColor.SECONDARY"
+            [disabled]="selectedIndex.length"
+            (click)="openSearch()"
+          >
+            <svg vds-icon icon="search" [low]="true"></svg>
+          </button>
+          <button role="button"
+            vds-button
+            aria-label="create-merchant-group-button"
+            [color]="ButtonColor.SECONDARY"
+            (click)="createMerchantGroup()"
+          >
+            Create merchant group
+          </button>
+        </vds-button-group>
+      </div>
+
+      <div>
+        <app-show-columns [columns]="columns"></app-show-columns>
+      </div>
+    </div>
+  </vds-action-bar>
+
+  <div class="body-wrapper" [ngClass]="{ 'body-panel-open': isPanelOpen }">
+    <div class="table-container">
+      <table vdsDataTable>
+        <caption vdsScreenReader>
+          Merchant Groups List
+        </caption>
+        <thead vdsThead>
+          <tr vdsTr>
+            <ng-container *ngFor="let column of columns; let i = index">
+              <th vdsTh scope="col" *ngIf="column.checked">
+                <div class="sort-btn">
+                  {{ column.label }}
+                    <button 
+                      *ngIf="column.sortable"
+                      role="button"
+                      vds-button-icon
+                      [iconType]="ButtonIconType.LIGHT_TINY"
+                      (click)="handleSort(column.value, i)"
+                      [attr.aria-label]="'sort ' + column.label + sortBy[i]"
+                      [matTooltip]="'Sort ' + sortBy[i].slice(1) | titlecase"
+                      matTooltipPosition="after"
+                    >
+                      <svg
+                        vds-icon
+                        [icon]="'sortable' + sortBy[i]"
+                        [tiny]="true"
+                      ></svg>
+                    </button>
+                </div>
+              </th>
+            </ng-container>
+          </tr>
+        </thead>
+
+        <tbody vdsTbody>
+          <tr
+            vdsTr
+            *ngFor="let row of merchatData; let i = index"
+            [class.selected-row]="selectedIndex.includes(i)"
+          >
+            <td vdsTd *ngIf="columns[0].checked">
+              <a role="link"
+                vdsLink
+                [routerLink]="'view/' + row.name"
+                [queryParams]="{ type: row.merchantGroupType }"
+                [queryParamsHandling]="'merge'"
+                (keyup.enter)="goToMerchant(row)"
+                (click)="goToMerchant(row)"
+                >{{ row.name }}</a
+              >
+            </td>
+            <td vdsTd *ngIf="columns[1].checked">
+              <span
+                *ngIf="row.merchantGroupType === 'MerchantInfo'; else elseblock"
+                >VMID/VSID</span
+              >
+              <ng-template #elseblock>
+                BIN/CAID
+              </ng-template>
+            </td>
+            <td vdsTd *ngIf="columns[2].checked">
+              <vds-badge
+                [type]="
+                  row[columns[2].value] ? BadgeType.STABLE : BadgeType.CRITICAL
+                "
+              >
+                {{ row[columns[2].value] ? "Active" : "Inactive" }}
+              </vds-badge>
+            </td>
+            <td vdsTd *ngIf="columns[3].checked">
+              {{ row.modifiedDate | date }}
+            </td>
+          </tr>
+          <tr vdsTr *ngIf="!merchatData.length && !loading">
+            <td vdsTd>No Merchant Groups found</td>
+          </tr>
+        </tbody>
+      </table>
+      <div *ngIf="loading" class="progress-container">
+        <vds-linear-progress></vds-linear-progress>
+      </div>
+    </div>
+  </div>
+  <vds-pagination
+    ariaLabel="Tenant-pagination"
+    [pageIndex]="page"
+    [pageSize]="size"
+    [length]="totalElements"
+    (paginationEvent)="handlePagination($event)"
+    [ariaFirstPage]="'First Page'"
+    [ariaPreviousPage]="'Previous Page'"
+    [ariaNextPage]="'Next Page'"
+    [ariaLastPage]="'Last Page'"
+  >
+  </vds-pagination>
+  <app-footer [panelOpen]="isPanelOpen"></app-footer>
+</div>
+<div class="panel-content" *ngIf="isPanelOpen">
+  <app-panel>
+    <div search>
+      <form [formGroup]="searchData">
+        <vds-form-field>
+          <label vdsLabel>Merchant Group Name </label>
+          <input vdsInput formControlName="name" />
+        </vds-form-field>
+        <vds-form-field>
+          <label vdsLabel>Merchant Group Type </label>
+          <select vdsSelect formControlName="MerchantGroupType">
+            <option value="">Any</option>
+            <option value="AcquirerInfo">BIN/CAID</option>
+            <option value="MerchantInfo">VMID/VSID</option>
+          </select>
+        </vds-form-field>
+        <vds-form-field>
+          <label vdsLabel>Status</label>
+          <select vdsSelect formControlName="isActive">
+            <option value="">Any</option>
+            <option value="true">Active</option>
+            <option value="false">Inactive</option>
+          </select>
+        </vds-form-field>
+      </form>
+      <div class="panel-footer">
+        <vds-button-group>
+          <button role="button" vds-button [color]="ButtonColor.PRIMARY" (click)="search()">
+            Search
+          </button>
+          <button role="button"
+            vds-button
+            [color]="ButtonColor.SECONDARY"
+            (click)="clearSearch()"
+          >
+            Reset
+          </button>
+        </vds-button-group>
+      </div>
+    </div>
+  </app-panel>
+</div>

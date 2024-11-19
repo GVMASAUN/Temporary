@@ -1,0 +1,25 @@
+.header {
+  position: fixed;
+  right: 0;
+  top: 0;
+  left: 56px;
+  z-index: 103;
+  border-bottom: 1px solid #e1e1e1;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  margin-left: 46px;
+
+  &.nav--open {
+    left: 235px;
+  }
+
+  .title {
+    margin: 10px;
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 26px;
+    cursor: default;
+    color: #1a1a1a;
+  }
+}

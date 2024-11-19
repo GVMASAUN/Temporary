@@ -1,0 +1,15 @@
+.filter-section {
+    display: flex;
+    align-items: baseline;
+    gap: 50px;
+
+    &>div,
+    &>vds-form-field {
+        flex: 1;
+    }
+}
+
+/* CSS class to add margin to filter section when panel is open */
+.margin-when-panel-open {
+    margin-right: 616px;
+}

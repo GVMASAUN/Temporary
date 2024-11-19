@@ -1,0 +1,99 @@
+.table-wrapper {
+  .table-container {
+    position: relative;
+
+    .hidden-label {
+      opacity: 0;
+      font-size: 0;
+    }
+
+    .model-table-container {
+      // margin-left: 569.25px;
+      overflow-x: scroll;
+      min-height: 60vh;
+
+      vds-radio,
+      vds-checkbox,
+      vds-date-selector {
+        ::ng-deep label {
+          font-size: 0 !important;
+        }
+      }
+
+      .table-class {
+        // .fix {
+        //   position: absolute;
+        //   display: flex;
+        //   align-items: center;
+
+        //   &:nth-of-type(1) {
+        //     left: 0;
+        //   }
+
+        //   &:nth-of-type(2) {
+        //     left: 65.25px;
+        //   }
+
+        //   &:nth-of-type(3) {
+        //     left: 233.25px;
+        //   }
+
+        //   &:nth-of-type(4) {
+        //     left: 401.25px;
+        //   }
+        // }
+
+        tbody {
+          tr {
+            &:nth-child(even) {
+              td.fix {
+                background-color: #f5f5f5;
+              }
+            }
+
+            &:nth-child(odd) {
+              td.fix {
+                background-color: #ffffff;
+              }
+            }
+          }
+        }
+
+        th:not(:first-child),
+        td:not(:first-child) {
+          min-width: 140px !important;
+          width: 140px;
+        }
+
+        .selected-row {
+          background: #e1e1e1;
+
+          td.fix {
+            background: #e1e1e1 !important;
+          }
+        }
+
+        .sort-btn {
+          display: flex;
+          align-items: center;
+        }
+
+        .date-selector {
+          display: flex;
+          align-items: center;
+          width: 260px !important;
+
+          vds-date-selector {
+            flex: 1;
+
+            ::ng-deep .vds-input {
+              display: flex;
+              width: fit-content;
+              min-width: unset;
+            }
+          }
+        }
+      }
+    }
+  }
+}

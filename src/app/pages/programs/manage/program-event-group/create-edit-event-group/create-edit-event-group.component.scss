@@ -1,0 +1,21 @@
+vds-form-field {
+  & ::ng-deep {
+    .vds-input-bar,
+    input,
+    select {
+      border-radius: 20px !important;
+    }
+  }
+}
+
+.detail-panel {
+  padding-top: 15px;
+  position: relative;
+  max-height: 50vh;
+  overflow-y: auto;
+}
+
+
+.name {
+  height: 20px;
+}

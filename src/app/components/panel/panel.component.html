@@ -1,0 +1,169 @@
+<vds-panel
+  *ngIf="isPanelOpen"
+  [openPanel]="isPanelOpen"
+  [attr.aria-expanded]="isPanelOpen"
+>
+  <div vds-panel-panel>
+    <ng-template #tabSection>
+      <button role="button"
+        vds-button-icon
+        aria-label="Close Panel"
+        [iconType]="ButtonIconType.LIGHT_TINY"
+        (click)="closePanel()"
+      >
+        <svg vds-icon [tiny]="true" [icon]="closeIcon"></svg>
+      </button>
+
+      <div class="panel-tab-menu-btns">
+        <ul
+          *ngIf="panelTabs.length"
+          vds-tab-list
+          [orientation]="TabsOrientation.HORIZONTAL"
+          [selectedIndex]="selectedTab"
+        >
+          <li vds-tab-item *ngFor="let panelTab of panelTabs; let tabIndex = index">
+            <button role="button" vdsTab (click)="selectedTab = tabIndex; sendOutput(); panelTab.click && panelTab.click();">
+              <svg *ngIf="panelTab.icon" vds-icon [low]="true" [icon]="panelTab.icon"></svg>
+              {{panelTab.label}}
+            </button>
+          </li>
+        </ul>
+        <ul
+          *ngIf="!panelTabs.length"
+          vds-tab-list
+          [orientation]="TabsOrientation.HORIZONTAL"
+          [selectedIndex]="selectedTab"
+        >
+          <li vds-tab-item>
+            <button role="button" vdsTab (click)="selectedTab = 0; sendOutput()">
+              <svg vds-icon [low]="true" icon="search"></svg>
+              Search
+            </button>
+          </li>
+          <li vds-tab-item *ngIf="!hideFilter">
+            <button role="button" vdsTab (click)="selectedTab = 1; sendOutput()">
+              <svg vds-icon [low]="true" icon="filter"></svg>
+              Filter
+            </button>
+          </li>
+        </ul>        
+      </div>
+    </ng-template>
+
+    <div 
+      vds-panel-content [openPanelContent]="selectedTab == 0">
+      <div *ngIf="false; else tabSection"></div>
+      <div *ngIf="!forProgram && !manualSearch.children.length">
+        <div class="search-panel">
+          <form [formGroup]="searchData">
+            <vds-form-field>
+              <label vdsLabel>Merchant Group Name</label>
+              <input vdsInput formControlName="groupName" />
+            </vds-form-field>
+            <vds-form-field>
+              <label vdsLabel>Merchant Group Type</label>
+              <select vdsSelect formControlName="groupType">
+                <option value="">All</option>
+              </select>
+            </vds-form-field>
+            <vds-form-field>
+              <label vdsLabel>Client</label>
+              <select vdsSelect formControlName="client">
+                <option value="">All</option>
+              </select>
+            </vds-form-field>
+            <vds-form-field>
+              <label vdsLabel>Status</label>
+              <select vdsSelect formControlName="status">
+                <option value="">Not in use</option>
+              </select>
+            </vds-form-field>
+            <vds-date-selector label="Start Date"></vds-date-selector>
+            <vds-date-selector label="Start Date"></vds-date-selector>
+          </form>
+        </div>
+      </div>
+      <div #manualSearch class="search-panel">
+        <ng-content select="[search]"></ng-content>
+      </div>
+    </div>
+    
+    <div
+      vds-panel-content
+      *ngIf=" !forProgram && !hideFilter"
+      [openPanelContent]="selectedTab == 1"
+    >
+      <div *ngIf="false; else tabSection"></div>
+
+      <div class="filter-panel">
+        <form [formGroup]="filterData">
+          <vds-form-field>
+            <label vdsLabel>User</label>
+            <select vdsSelect formControlName="user">
+              <option value="">Default</option>
+            </select>
+          </vds-form-field>
+          <vds-form-field>
+            <label vdsLabel>Entity</label>
+            <select vdsSelect formControlName="entity">
+              <option value="">Anything</option>
+            </select>
+          </vds-form-field>
+          <vds-form-field>
+            <label vdsLabel>Activity</label>
+            <select vdsSelect formControlName="activity">
+              <option value="">All</option>
+            </select>
+          </vds-form-field>
+          <vds-form-field>
+            <label vdsLabel>Date</label>
+            <select vdsSelect formControlName="date">
+              <option value="">Anytime</option>
+              <option *ngFor="let op of filterDate" [value]="op">
+                {{ op }}
+              </option>
+            </select>
+          </vds-form-field>
+        </form>
+      </div>
+    </div>
+    <div       
+      *ngIf="forProgram"
+      vds-panel-content [openPanelContent]="true">
+      
+      <div>
+        <ng-container *ngTemplateOutlet="tabSection"></ng-container>
+      </div>
+      
+      <div >
+        <ng-container [ngTemplateOutlet]="tabContent"></ng-container>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel-footer" *ngIf="!manualSearch.children.length">
+    <vds-button-group>
+      <button role="button" vds-button [color]="ButtonColor.PRIMARY">Search</button>
+      <button role="button" vds-button [color]="ButtonColor.SECONDARY">Reset</button>
+      <button role="button"
+        vds-button
+        [color]="ButtonColor.TERTIARY"
+        *ngIf="selectedTab == 0"
+      >
+        Load Saved Search
+      </button>
+    </vds-button-group>
+  </div>
+
+  <div *ngIf="panelActions?.length" class="panel-footer">
+    <vds-button-group >
+      <button role="button" vds-button *ngFor="let action of panelActions"
+        [color]="action.buttonColor"
+        (click)="action.click && action.click()"
+        [disabled]="action.disabled && action.disabled()" 
+        >
+        {{action.label}}
+      </button>
+    </vds-button-group>
+  </div>
+</vds-panel>

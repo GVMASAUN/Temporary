@@ -1,0 +1,175 @@
+<div class="page-wrapper">
+  <div class="table-section">
+    <table vdsDataTable>
+      <caption vdsScreenReader>
+        {{ caption }}
+      </caption>
+      <thead vdsThead sort>
+        <tr vdsTr>
+          <th vdsTh scope="col" *ngFor="let column of tableColumns">
+            <div class="sort-btn">
+              {{ column.label }}
+            </div>
+          </th>
+        </tr>
+      </thead>
+      <tbody vdsTbody>
+        <tr vdsTr *ngFor="let row of eventTableDataSource; let i = index">
+          <td vdsTd>
+            <a role="link" tabindex="0" vdsLink class="link">
+              {{ row.dependentEventName }}
+            </a>
+          </td>
+          <td vdsTd>
+            {{ row.dependentEventTypeName }}
+          </td>
+          <td vdsTd>
+            <div vds-switch [checked]="prerequisitedCol.includes(i)"
+            [disabled]="disabled"
+            >
+              <div vds-switch-value >
+                {{ prerequisitedCol.includes(i) ? "On" : "Off" }}
+              </div>
+
+              <label
+                vds-switch-label
+                [for]="'prerequisiteID-' + i"
+                [id]="'prerequisiteID-label-' + i"
+              >
+              </label>
+
+              <input
+                vds-switch-input
+                aria-label="Prerequisite-checkbox"
+                type="checkbox"
+                [id]="'prerequisiteID-' + i"
+                [name]="'prerequisiteName-' + i"
+                [disabled]="disabled"
+                (click)="checkPrerequisited(i)"
+              />
+            </div>
+          </td>
+        </tr>
+        <tr vdsTr *ngIf="!eventTableDataSource.length">
+          <td vdsTd>
+            You must have at least 2 events to configure event relationships.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="execute-event-section" *ngIf="prerequisitedCol.length">
+     <vds-radio-group role="radiogroup" (changed)="selectRadio($event)">
+      <legend vdsLegend class="vds-text--body--alt">
+        Execute event action(s) if
+      </legend>
+      <vds-radio
+        label="All"
+        radioValue="ALL"
+        name="action"
+        [checked]="executeActionIf == 'ALL'"
+      ></vds-radio>
+      <vds-radio
+        label="Any"
+        radioValue="ANY"
+        name="action"
+        [checked]="executeActionIf == 'ANY'"
+      ></vds-radio>
+      <vds-radio
+        label=""
+        radioValue="OF"
+        name="action"
+        [checked]="executeActionIf == 'OF'"
+      ></vds-radio>
+    </vds-radio-group>
+    <div class="custom-radio-section">
+      <vds-form-field>
+        <label vdsLabel></label>
+        <select
+          vdsSelect
+          (changed)="selectCustomRadio($event)"
+          [value]="executeActionIfNumber"
+        >
+          <option
+            [value]="i + 1"
+            *ngFor="let option of prerequisitedCol; let i = index"
+          >
+            {{ i + 1 }}
+          </option>
+        </select>
+      </vds-form-field>
+      <span>
+        of the event(s) marked prerequisite occur
+      </span>
+    </div>
+  </div>
+
+  <div class="event-prerequisite-deadline" *ngIf="prerequisitedCol.length">
+    <div class="vds-text--body--alt">Event Prerequisite Deadline</div>
+    <div class="vds-text--body">
+      Prerequisite event(s) must occur prior to deadlines elapse when set
+    </div>
+    <vds-checkbox
+      label="Enable"
+      (changed)="enableDeadLine($event)"
+      [checked]="hasEventPrerequisiteDeadline"
+    ></vds-checkbox>
+    <div class="deadline-section" *ngIf="hasEventPrerequisiteDeadline">
+      <form [formGroup]="deadlineForm">
+        <vds-form-field>
+          <label vdsLabel>Days</label>
+          <input 
+            vdsInput 
+            type="number" 
+            formControlName="days"
+            min="0"
+            [invalid]="!!getErrorMessage('days')"
+            (change)="updateDeadlineValues('days', $event)"
+          />
+          <span vdsErrorMessage aria-atomic="true" aria-live="assertive">
+            <ng-container *ngIf="!!getErrorMessage('days')">
+                <svg vds-icon icon="error" [tiny]="true"></svg>
+                Error: {{ getErrorMessage('days') }}
+            </ng-container>
+          </span>
+        </vds-form-field>
+        <vds-form-field>
+          <label vdsLabel>Hrs</label>
+          <input 
+            vdsInput 
+            min="0"
+            type="number" 
+            formControlName="hours"
+            [invalid]="!!getErrorMessage('hours')"
+            (change)="updateDeadlineValues('hours', $event)"
+          />
+          <span vdsErrorMessage aria-atomic="true" aria-live="assertive">
+            <ng-container *ngIf="!!getErrorMessage('hours')">
+                <svg vds-icon icon="error" [tiny]="true"></svg>
+                Error: {{ getErrorMessage('hours') }}
+            </ng-container>
+          </span>
+        </vds-form-field>
+        <vds-form-field>
+          <label vdsLabel>Min</label>
+          <input 
+            vdsInput 
+            min="0"
+            type="number" 
+            formControlName="minutes" 
+            [invalid]="!!getErrorMessage('minutes')"
+            (change)="updateDeadlineValues('minutes', $event)"
+          />
+          <span vdsErrorMessage aria-atomic="true" aria-live="assertive">
+            <ng-container *ngIf="!!getErrorMessage('minutes')">
+                <svg vds-icon icon="error" [tiny]="true"></svg>
+                Error: {{ getErrorMessage('minutes') }}
+            </ng-container>
+          </span>
+        </vds-form-field>
+      </form>
+    </div>
+  </div>
+
+  <!-- <button role="button" vds-button (click)="setEventDependency()">Save</button> -->
+</div>

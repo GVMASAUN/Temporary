@@ -1,0 +1,207 @@
+<div class="vds-grid">
+    <div class="col">
+        <div class="row">
+            <span>User Details</span>
+        </div>
+
+        <div class="row">
+            <h2 class="f-s-1-point-25">
+                {{ user?.firstName }}{{', '}}{{ user?.lastName }}
+            </h2>
+        </div>
+        
+        <div class="row header-title">
+            <span>Basics</span>
+        </div>
+        
+        <div class="vds-grid user-details-panel m-t-20">
+            
+            <div class="row">
+                <div class="col--lg-3">
+                    <span class="user-basic-heading">
+                        Family Name
+                    </span>
+                </div>
+                <div class="col">
+                    <span class="user-basic-value">
+                        {{ user?.lastName }}
+                    </span>
+                </div>
+            </div>
+        
+            <div class="row">
+                <div class="col--lg-3">
+                    <span class="user-basic-heading">
+                        Given Name
+                    </span>
+                </div>
+                <div class="col">
+                    <span class="user-basic-value">
+                        {{ user?.firstName }}
+                    </span>
+                </div>
+            </div>
+        
+            <div class="row">
+                <div class="col--lg-3">
+                    <span class="user-basic-heading">
+                        Email
+                    </span>
+                </div>
+                <div class="col">
+                    <span class="user-basic-value">
+                        {{ user?.email }}
+                    </span>
+                </div>
+            </div>
+        
+            <div class="row">
+                <div class="col--lg-3">
+                    <span class="user-basic-heading">
+                        Organization Type
+                    </span>
+                </div>
+                <div class="col">
+                    <span class="user-basic-value">
+                        VISA
+                    </span>
+                </div>
+            </div>
+        
+            <div class="row">
+                <div class="col--lg-3">
+                    <span class="user-basic-heading">
+                        Organization Country
+                    </span>
+                </div>
+                <div class="col">
+                    <span class="user-basic-value">
+                        United States of America
+                    </span>
+                </div>
+            </div>
+        
+            <div class="row">
+                <div class="col--lg-3">
+                    <span class="user-basic-heading">
+                        Organization Region
+                    </span>
+                </div>
+                <div class="col">
+                    <span class="user-basic-value">
+                        US
+                    </span>
+                </div>
+            </div>
+        
+            <div class="row">
+                <div class="col--lg-3">
+                    <span class="user-basic-heading">
+                        BID
+                    </span>
+                </div>
+                <div class="col">
+                    <span class="user-basic-value">
+                        {{ user?.primaryBid?.bid }}
+                    </span>
+                </div>
+            </div>
+        
+            <div class="row">
+                <div class="col--lg-3">
+                    <span class="user-basic-heading">
+                        Role Assignment
+                    </span>
+                </div>
+                <div class="col">
+                    <span class="user-basic-value">
+                        {{ user?.primaryRole?.role }}
+                    </span>
+                </div>
+            </div>
+        
+            <div *ngIf="(user?.primaryRole?.role === UserRole.VISA_REGIONAL_ADMIN) || (user?.primaryRole?.role === UserRole.VISA_REGIONAL_ADMIN_WITH_PAY_WITH_POINTS)">
+                <div class="row">
+                    <div class="col">
+                        <span class="user-basic-heading">
+                            Region Assignment 
+                        </span>
+                    </div>
+                </div>
+        
+                <div class="row" *ngFor="let option of assignedRegionOptions">
+                    <vds-checkbox
+                        *ngIf="initCheckbox"
+                        [label]="option.value"
+                        [disabled]="disabledAssignedRegions"
+                        [checked]="isAuthorizedRegion(option.value)"
+                        (change)="handleRegionAssignment(option.value)"
+                    ></vds-checkbox>
+                </div>
+            </div>
+        
+        </div>
+        
+        <ng-container 
+            *ngIf="
+            (user?.primaryRole?.role !== UserRole.VISA_GLOBAL_ADMIN ) && 
+            (user?.primaryRole?.role !== UserRole.VISA_REGIONAL_ADMIN) &&
+            (user?.primaryRole?.role !== UserRole.VISA_REGIONAL_ADMIN_WITH_PAY_WITH_POINTS)
+            "
+        >
+            <div class="divider">
+                <hr vdsDivider />
+            </div>
+            
+            <div>
+                <div class="row header-title">
+                    <span>BID Assignment</span>
+                </div>
+            </div>
+            
+            <div class="user-details-panel m-t-20">
+                <div class="row">
+                    <div class="col--lg-6">
+                        <form [formGroup]="assignedBIDForm">
+                            <vds-form-field>
+                                <input vdsInput formControlName="bid" />
+                                <button
+                                    vdsSuffix
+                                    aria-label="clear-button"
+                                    vds-button-icon
+                                    [disabled]="!bid"
+                                    [iconType]="ButtonIconType.LIGHT_TINY">
+                                        <svg vds-icon [tiny]="true" [icon]="VisaIcon.CLEAR" (click)="reset()"></svg>
+                                </button>
+                            </vds-form-field>
+                        </form>
+                    </div>
+            
+                    <div class="col--valign-center">
+                        <button 
+                            vds-button 
+                            [color]="ButtonColor.SECONDARY"
+                            (click)="addAdditionalBID()"
+                            [disabled]="!bid">
+                            ADD
+                        </button>
+                    </div>
+                </div>
+            
+                <div class="col">
+                    <app-search-table
+                        [columns]="tableColumns"
+                        [hideSelectAll]="true"
+                        [dataSource]="additionalBidList"
+                        [rowActions]="rowActions"
+                        [hidePaginationSizeFilter]="false"
+                        [sorting]="SortType.STATIC"
+                        [defaultPageSize]="10"
+                        notFound="No data exists">
+                    </app-search-table>
+                </div>
+            </div>
+        </ng-container>
+
+    </div>
+</div>

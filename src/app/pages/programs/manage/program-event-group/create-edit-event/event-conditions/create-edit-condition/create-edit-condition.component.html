@@ -1,0 +1,531 @@
+<div class="detail-panel">
+  <div *ngIf="(!!eventConditionForm && action !== EventConditionAction.DELETE)" class="vds-grid">
+    <div class="col">
+      <div class="row">
+        <strong>{{ !creatingByEventGroupTemplate ? (action === EventConditionAction.ADD ? "Add " : "Edit ") : ''
+          }}
+          {{
+          attributeCategory === AttributeCategory.EVENT
+          ? "Event"
+          : "Segmentation"
+          }}
+          Criteria</strong>
+      </div>
+    </div>
+  </div>
+
+  <vds-spinner-progress
+    class="loading-spinner"
+    *ngIf="isLoading"
+  ></vds-spinner-progress>
+  
+  <ng-template #formContainer let-conditionForm="conditionForm">
+    <form *ngIf="initializeForm && (action !== EventConditionAction.DELETE)" [formGroup]="conditionForm">
+      <ng-template 
+        [ngTemplateOutlet]="conditionFormContainer" 
+        [ngTemplateOutletContext]="{conditionForm:conditionForm}"
+      ></ng-template>
+      <ng-container formArrayName="dependentEventConditions">
+        <form #innerForm *ngFor="let dependentEventConditionForm of getDependentEventConditionFormGroups(conditionForm); let index = index" formGroupName="{{index}}">
+          <ng-template 
+            [ngTemplateOutlet]="formContainer" 
+            [ngTemplateOutletContext]="{conditionForm:dependentEventConditionForm}"></ng-template>
+        </form>
+      </ng-container>
+    </form>
+  </ng-template>
+
+  <ng-container *ngTemplateOutlet="formContainer; context: {conditionForm:eventConditionForm}"></ng-container>
+
+  
+  <div *ngIf="initializeForm && (action === EventConditionAction.DELETE)" class="vds-grid">
+    <div class="row">
+      <div class="col--align-center">
+        <h2>{{CONFIRM_MESSAGE}}</h2>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col--align-center">
+        <p>
+          This action will delete the
+          {{
+          attributeCategory === AttributeCategory.EVENT
+          ? "Event"
+          : "Segmentation"
+          }}
+          Criteria{{!!eventCondition.compoundField ? ' and its dependent criteria(s).' : '.'}}
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <vds-button-group *ngIf="initializeForm && !creatingByEventGroupTemplate" direction="right">
+    <button role="button" vds-button-icon aria-label="Save" (click)="submitHandler()">
+      <svg vds-icon [icon]="VisaIcon.CHECKMARK" [low]="true"></svg>
+    </button>
+
+    <button role="button" vds-button-icon aria-label="Cancel" (click)="cancel()">
+      <svg vds-icon [icon]="VisaIcon.CLOSE" [low]="true"></svg>
+    </button>
+  </vds-button-group>
+</div>
+
+
+
+
+
+<ng-template #conditionFormContainer let-conditionForm="conditionForm">
+  <div class="vds-grid" [formGroup]="conditionForm" *ngIf="!isLoading">
+    <div class="row">
+      <div class="col">
+        <vds-form-field>
+          <label vdsLabel>Attribute *</label>
+          <select 
+            vdsSelect 
+            (change)="onAttributeChange($event, conditionForm)" 
+            [required]="true"
+            formControlName="eventAttributeId"
+            [disabled]="disabled || creatingByEventGroupTemplate || (action !== EventConditionAction.ADD) || conditionForm.value?.disabledAttribute"
+            [invalid]="!!getErrorMessage(conditionForm, 'eventAttributeId')"
+          >
+            <optgroup *ngFor="
+              let attributeGroup of (getEventConditionFormData(conditionForm).attributeGroups || attributeGroups)  | keyvalue" 
+              [label]="attributeGroup.key"
+            >
+              <option *ngFor="let attribute of attributeGroup.value" [value]="attribute.attributeId">
+                {{ attribute.attributeDisplayName }}
+              </option>
+            </optgroup>
+          </select>
+        </vds-form-field>
+        <vds-error vdsErrorMessage [show]="!!getErrorMessage(conditionForm, 'eventAttributeId')">
+          Error: {{ getErrorMessage(conditionForm, 'eventAttributeId') }}
+        </vds-error>
+      </div>
+  
+      <div class="col">
+        <vds-form-field [hidden]="!conditionForm?.value?.attributeOperators?.length">
+          <label vdsLabel>Comparison Operator *
+            <svg *ngIf="creatingByEventGroupTemplate && conditionForm?.value?.eventRuleOperatorLocked" vds-icon [icon]="VisaIcon.LOCK" [tiny]="true"></svg>
+          </label>
+          <select 
+            vdsSelect 
+            [required]="true"
+            formControlName="eventRuleOperator"
+            [disabled]="disabled || (creatingByEventGroupTemplate && !!conditionForm.value?.eventRuleOperatorLocked)"
+            [invalid]="!!getErrorMessage(conditionForm, 'eventRuleOperator')"
+            (change)="onOperatorChange($event, conditionForm)" 
+          >
+            <option *ngFor="
+                let operator of conditionForm?.value?.attributeOperators
+              " [value]="operator.key"
+              >
+              {{ operator.value }}
+            </option>
+          </select>
+      
+        </vds-form-field>
+        <vds-checkbox
+          *ngIf="isTemplateEvent"
+          formControlName="eventRuleOperatorLocked"
+          [disabled]="disabled"
+          [checked]="!!conditionForm.value?.eventRuleOperatorLocked"
+          label="Locked"
+        ></vds-checkbox>
+        <vds-error vdsErrorMessage [show]="!!getErrorMessage(conditionForm, 'eventRuleOperator')">
+          Error: {{ getErrorMessage(conditionForm, 'eventRuleOperator') }}
+        </vds-error>
+      </div>
+  
+      <div formGroupName="criteriaValues" class="col">
+        <ng-container *ngIf="
+            !conditionForm?.value?.selectedAttribute
+              ?.isApiAttributeType &&
+              conditionForm?.value?.selectedAttribute
+                ?.attributeType === EventAttributeType.CUSTOM;
+            else date
+          ">
+          <vds-form-field>
+            <label vdsLabel>Comparison Value *
+              <svg *ngIf="creatingByEventGroupTemplate && conditionForm?.value?.eventRulePropertyValLocked" vds-icon [icon]="VisaIcon.LOCK" [tiny]="true"></svg>
+            </label>
+            <input
+              vdsInput
+              aria-required="true"
+              formControlName="singleCriteriaValue1"
+              [readonly]="disabled || (creatingByEventGroupTemplate && !!conditionForm.value?.eventRulePropertyValLocked)"
+              [tabindex]="disabled || (creatingByEventGroupTemplate && !!conditionForm.value?.eventRulePropertyValLocked) ? -1 : 0"
+              [invalid]="!!getErrorMessage(criteriaValuesForm(conditionForm), 'singleCriteriaValue1')" />
+          </vds-form-field>
+          <vds-error vdsErrorMessage [show]="!!getErrorMessage(criteriaValuesForm(conditionForm), 'singleCriteriaValue1')">
+            Error: {{ getErrorMessage(criteriaValuesForm(conditionForm), 'singleCriteriaValue1') }}
+          </vds-error>
+
+  
+          <vds-form-field *ngIf="
+              conditionForm?.value?.eventRuleOperator ===
+              EventAttributeOperatorType.BETWEEN
+            ">
+            <label vdsLabel>Comparison Value *
+              <svg *ngIf="creatingByEventGroupTemplate && conditionForm?.value?.eventRulePropertyValLocked" vds-icon [icon]="VisaIcon.LOCK" [tiny]="true"></svg>
+            </label>
+            <input 
+              vdsInput 
+              aria-required="true"
+              formControlName="singleCriteriaValue2"
+              [readonly]="disabled || (creatingByEventGroupTemplate && !!conditionForm.value?.eventRulePropertyValLocked)"
+              [tabindex]="disabled || (creatingByEventGroupTemplate && !!conditionForm.value?.eventRulePropertyValLocked) ? -1 : 0"
+              [invalid]="!!getErrorMessage(criteriaValuesForm(conditionForm), 'singleCriteriaValue2')" />
+          </vds-form-field>
+  
+          <ng-container  *ngTemplateOutlet="forTemplateEvent"></ng-container>
+          <vds-error vdsErrorMessage 
+            [show]="(conditionForm?.value?.eventRuleOperator ===EventAttributeOperatorType.BETWEEN) &&
+                  !!getErrorMessage(criteriaValuesForm(conditionForm), 'singleCriteriaValue2')
+                  "
+            >
+            Error: {{ getErrorMessage(criteriaValuesForm(conditionForm), 'singleCriteriaValue2') }}
+          </vds-error>
+
+        </ng-container>
+        
+
+        <ng-template #date>
+          <ng-container *ngIf="
+              conditionForm?.value?.selectedAttribute
+                ?.attributeType === EventAttributeType.DATE;
+              else time
+              "  
+            >
+            <vds-date-selector 
+                formControlName="singleCriteriaValue1" 
+                [required]="true"
+                label="Comparison Date (MM/DD/YYYY) *"
+                [placement]="CALENDAR_PLACEMENT.BOTTOM" 
+                [disabled]="disabled || (creatingByEventGroupTemplate && !!conditionForm.value?.eventRulePropertyValLocked)"
+                [formatInputValue]="DateFormat.MM_DD_YYYY"
+                [valid]="!getErrorMessage(criteriaValuesForm(conditionForm), 'singleCriteriaValue1')"
+              >
+            </vds-date-selector>
+            <vds-error vdsErrorMessage [show]="!!getErrorMessage(criteriaValuesForm(conditionForm), 'singleCriteriaValue1')">
+              Error: {{ getErrorMessage(criteriaValuesForm(conditionForm), 'singleCriteriaValue1') }}
+            </vds-error>
+  
+            <vds-date-selector *ngIf="
+                conditionForm?.value?.eventRuleOperator ===
+                EventAttributeOperatorType.BETWEEN
+              " 
+              label="Comparison Date (MM/DD/YYYY) *" 
+              formControlName="singleCriteriaValue2"
+              [required]="true"
+              [placement]="CALENDAR_PLACEMENT.BOTTOM" 
+              [disabled]="disabled || (creatingByEventGroupTemplate && !!conditionForm.value?.eventRulePropertyValLocked)"
+              [formatInputValue]="DateFormat.MM_DD_YYYY"
+              [valid]="!getErrorMessage(criteriaValuesForm(conditionForm), 'singleCriteriaValue2')"
+            ></vds-date-selector>
+          
+            <ng-container *ngTemplateOutlet="forTemplateEvent"></ng-container>
+            <vds-error vdsErrorMessage 
+              [show]="(conditionForm?.value?.eventRuleOperator ===
+                      EventAttributeOperatorType.BETWEEN) && 
+                      !!getErrorMessage(criteriaValuesForm(conditionForm), 'singleCriteriaValue2')
+                      "
+                >
+              Error: {{ getErrorMessage(criteriaValuesForm(conditionForm), 'singleCriteriaValue2') }}
+            </vds-error>
+          </ng-container>
+        </ng-template>
+  
+        <ng-template #time>
+          <ng-container *ngIf="
+              conditionForm?.value?.selectedAttribute
+                ?.attributeType === EventAttributeType.TIME;
+              else number
+            ">
+            <div class="form-field-time">
+              <div class="form-field-time-input">
+                
+                  <app-time-picker 
+                    formControlName="singleCriteriaValue1" 
+                    placeholder="Comparison Time"
+                    aria-required="true"
+                    [isRequired]="true"
+                    [min]="true"
+                    [disabled]="disabled || (creatingByEventGroupTemplate && !!conditionForm.value?.eventRulePropertyValLocked)"
+                    [invalid]="!!getErrorMessage(criteriaValuesForm(conditionForm), 'singleCriteriaValue1')"
+                  >
+                  <ng-template #placeholderSuffix>
+                    <svg *ngIf="creatingByEventGroupTemplate && conditionForm?.value?.eventRulePropertyValLocked" vds-icon [icon]="VisaIcon.LOCK" [tiny]="true"></svg>
+                  </ng-template>
+                </app-time-picker>
+                <vds-error vdsErrorMessage [show]="!!getErrorMessage(criteriaValuesForm(conditionForm), 'singleCriteriaValue1')">
+                  Error: {{ getErrorMessage(criteriaValuesForm(conditionForm), 'singleCriteriaValue1') }}
+                </vds-error>
+
+              </div>
+              <div class="form-field-timezone">
+                <vds-badge>
+                  {{
+                    conditionForm?.value?.selectedAttribute?.attributeDisplayName 
+                      === SpecialAttribute.BETWEEN_GMT_TIME
+                        ? 'GMT'
+                        : getTimeZone()
+                  }}
+                </vds-badge>
+              </div>
+            </div>
+  
+            <div *ngIf="conditionForm?.value?.eventRuleOperator === EventAttributeOperatorType.BETWEEN" class="form-field-time">
+              <div class="form-field-time-input">
+                  <app-time-picker 
+                    placeholder="Comparison Time"
+                    formControlName="singleCriteriaValue2" 
+                    aria-required="true"
+                    [isRequired]="true"
+                    [max]="true"
+                    [disabled]="disabled || (creatingByEventGroupTemplate && !!conditionForm.value?.eventRulePropertyValLocked)"
+                    [invalid]="!!getErrorMessage(criteriaValuesForm(conditionForm), 'singleCriteriaValue2')"
+                  >
+                    <ng-template #placeholderSuffix>
+                      <svg *ngIf="creatingByEventGroupTemplate && conditionForm?.value?.eventRulePropertyValLocked" vds-icon [icon]="VisaIcon.LOCK" [tiny]="true"></svg>
+                    </ng-template>
+                  </app-time-picker>
+                  <vds-error 
+                    vdsErrorMessage 
+                    [show]="(conditionForm?.value?.eventRuleOperator === EventAttributeOperatorType.BETWEEN) 
+                    && !!getErrorMessage(criteriaValuesForm(conditionForm), 'singleCriteriaValue2')
+                    "
+                    >
+                    Error: {{ getErrorMessage(criteriaValuesForm(conditionForm), 'singleCriteriaValue2') }}
+                  </vds-error>
+              </div>
+              
+              <div class="form-field-timezone">
+                <vds-badge *ngIf="
+                    conditionForm?.value?.eventRuleOperator ===
+                    EventAttributeOperatorType.BETWEEN
+                  ">
+                  {{
+                    conditionForm?.value?.selectedAttribute?.attributeDisplayName 
+                      === SpecialAttribute.BETWEEN_GMT_TIME
+                        ? 'GMT'
+                        : getTimeZone()
+                  }}
+                </vds-badge>
+              </div>
+            </div>
+            <ng-container *ngTemplateOutlet="forTemplateEvent"></ng-container>
+          
+          </ng-container>
+        </ng-template>
+  
+        <ng-template #number>
+          <ng-container *ngIf="
+              conditionForm?.value?.selectedAttribute
+                ?.attributeType === EventAttributeType.NUMERIC;
+              else decimal
+            ">
+            <vds-form-field>
+              <label vdsLabel>Comparison Number *
+                <svg *ngIf="creatingByEventGroupTemplate && conditionForm?.value?.eventRulePropertyValLocked" vds-icon [icon]="VisaIcon.LOCK" [tiny]="true"></svg>
+              </label>
+              <input
+                vdsInput
+                formControlName="singleCriteriaValue1" 
+                aria-required="true"
+                [invalid]="!!getErrorMessage(criteriaValuesForm(conditionForm), 'singleCriteriaValue1')" />
+            </vds-form-field>
+
+  
+            <vds-form-field *ngIf="
+                conditionForm?.value?.eventRuleOperator ===
+                EventAttributeOperatorType.BETWEEN
+              ">
+              <label vdsLabel>Comparison Number *
+                <svg *ngIf="creatingByEventGroupTemplate && conditionForm?.value?.eventRulePropertyValLocked" vds-icon [icon]="VisaIcon.LOCK" [tiny]="true"></svg>
+              </label>
+              <input 
+                vdsInput 
+                formControlName="singleCriteriaValue2" 
+                aria-required="true"
+                [invalid]="!!getErrorMessage(criteriaValuesForm(conditionForm), 'singleCriteriaValue2')" />
+            </vds-form-field>
+            <ng-container *ngTemplateOutlet="forTemplateEvent"></ng-container>
+            <vds-error vdsErrorMessage [show]="!!getErrorMessage(criteriaValuesForm(conditionForm), 'singleCriteriaValue1')">
+              Error: {{ getErrorMessage(criteriaValuesForm(conditionForm), 'singleCriteriaValue1') }}
+            </vds-error>
+            <vds-error vdsErrorMessage [show]="(conditionForm?.value?.eventRuleOperator ===
+            EventAttributeOperatorType.BETWEEN) && !!getErrorMessage(criteriaValuesForm(conditionForm), 'singleCriteriaValue2')">
+              Error: {{ getErrorMessage(criteriaValuesForm(conditionForm), 'singleCriteriaValue2') }}
+            </vds-error>
+          </ng-container>
+        </ng-template>
+  
+        <ng-template #decimal>
+          <ng-container *ngIf="
+              conditionForm?.value?.selectedAttribute
+                ?.attributeType === EventAttributeType.DECIMAL;
+              else default
+            ">
+            <vds-form-field>
+              <label vdsLabel>Comparison Number *
+                <svg *ngIf="creatingByEventGroupTemplate && conditionForm?.value?.eventRulePropertyValLocked" vds-icon [icon]="VisaIcon.LOCK" [tiny]="true"></svg>
+              </label>
+              <input 
+                vdsInput 
+                formControlName="singleCriteriaValue1" 
+                [readonly]="disabled || (creatingByEventGroupTemplate && !!conditionForm.value?.eventRulePropertyValLocked)"
+                [tabindex]="disabled || (creatingByEventGroupTemplate && !!conditionForm.value?.eventRulePropertyValLocked) ? -1 : 0"
+                aria-required="true"
+                [invalid]="!!getErrorMessage(criteriaValuesForm(conditionForm), 'singleCriteriaValue1')" />
+
+            
+            </vds-form-field>
+
+            <vds-form-field *ngIf="
+                conditionForm?.value?.eventRuleOperator ===
+                EventAttributeOperatorType.BETWEEN
+              ">
+              <label vdsLabel>Comparison Number *
+                <svg *ngIf="creatingByEventGroupTemplate && conditionForm?.value?.eventRulePropertyValLocked" vds-icon [icon]="VisaIcon.LOCK" [tiny]="true"></svg>
+              </label>
+              <input 
+                vdsInput 
+                formControlName="singleCriteriaValue2" 
+                [readonly]="disabled || (creatingByEventGroupTemplate && !!conditionForm.value?.eventRulePropertyValLocked)"
+                [tabindex]="disabled || (creatingByEventGroupTemplate && !!conditionForm.value?.eventRulePropertyValLocked) ? -1 : 0"
+                aria-required="true"
+                [invalid]="!!getErrorMessage(criteriaValuesForm(conditionForm), 'singleCriteriaValue2')" 
+              />
+
+            </vds-form-field>
+            <ng-container *ngTemplateOutlet="forTemplateEvent"></ng-container>
+            <vds-error vdsErrorMessage [show]="!!getErrorMessage(criteriaValuesForm(conditionForm), 'singleCriteriaValue1')">
+              Error: {{ getErrorMessage(criteriaValuesForm(conditionForm), 'singleCriteriaValue1') }}
+            </vds-error>
+            <vds-error vdsErrorMessage [show]="(conditionForm?.value?.eventRuleOperator ===
+            EventAttributeOperatorType.BETWEEN ) &&!!getErrorMessage(criteriaValuesForm(conditionForm), 'singleCriteriaValue2')">
+              Error: {{ getErrorMessage(criteriaValuesForm(conditionForm), 'singleCriteriaValue2') }}
+            </vds-error>
+          </ng-container>
+        </ng-template>
+  
+        <ng-template #default>
+          <ng-container *ngIf=" 
+              initComparisonValues &&
+              showComparisonValueField &&
+              conditionForm?.value?.selectedAttribute?.singleSelect &&
+              conditionForm?.value?.selectedAttribute?.isApiAttributeType
+            ">
+            <vds-form-field>
+              <label vdsLabel>Comparison Value *
+                <svg *ngIf="creatingByEventGroupTemplate && conditionForm?.value?.eventRulePropertyValLocked" vds-icon [icon]="VisaIcon.LOCK" [tiny]="true"></svg>
+              </label>
+              <select 
+                vdsSelect 
+                formControlName="singleSelectComparisonValueId"
+                [required]="true"
+                [disabled]="disabled || (creatingByEventGroupTemplate && !!conditionForm.value?.eventRulePropertyValLocked)"
+                [invalid]="!!getErrorMessage(criteriaValuesForm(conditionForm), 'singleSelectComparisonValueId')"
+              >
+                <option *ngFor="
+                    let value of conditionForm?.value
+                      ?.attributeComparisonValues
+                  " [value]="value.value"
+                  >
+                  {{ value.label }}
+                </option>
+              </select>
+            </vds-form-field>
+            <ng-container *ngTemplateOutlet="forTemplateEvent"></ng-container>
+            <vds-error vdsErrorMessage [show]="!!getErrorMessage(criteriaValuesForm(conditionForm), 'singleSelectComparisonValueId')">
+              Error: {{ getErrorMessage(criteriaValuesForm(conditionForm), 'singleSelectComparisonValueId') }}
+            </vds-error>
+          </ng-container>
+        </ng-template>
+      </div>
+    </div>
+    <div
+      formGroupName="criteriaValues"
+      *ngIf="
+        conditionForm?.value?.selectedAttribute?.multiSelect &&
+        conditionForm?.value?.selectedAttribute?.isApiAttributeType && 
+        showComparisonValueField
+      "
+      class="row"
+    >
+    <ng-container *ngIf="(SpecialAttribute.Previously_Completed_Events !== conditionForm?.value?.selectedAttribute?.attributeDisplayName);else PreviouslyCompletedEvents">
+      <div class="col">
+        <div class="row">
+          <div *ngIf="isTemplateEvent" class="col--valign-center col--align-end col--no-gutter">
+            <ng-container  *ngTemplateOutlet="forTemplateEvent"></ng-container>
+          </div>
+        </div>
+  
+        <app-shuttle-box
+          formControlName="criteriaValues"
+            [options]="
+            conditionForm.value?.attributeComparisonValues || []
+          "
+          placeholder="Comparison Values *"
+          [locked]="creatingByEventGroupTemplate && conditionForm?.value?.eventRulePropertyValLocked"
+          [disabled]="disabled || (creatingByEventGroupTemplate && !!conditionForm.value?.eventRulePropertyValLocked)" 
+          [isRequired]="true" 
+          [attr.required]="true"
+          [error]="getErrorMessage(criteriaValuesForm(conditionForm),'criteriaValues')"
+        ></app-shuttle-box>
+      </div>
+    </ng-container>
+  
+    <ng-template #PreviouslyCompletedEvents>
+      <div class="col completed-event-section">
+        <div class="row">
+          <div class="col--lg-10 col--valign-center col--no-gutter">
+              <label vdsLabel>Comparison Values *
+              </label>
+  
+            <vds-error 
+              vdsErrorMessage 
+              [show]="!!getErrorMessage(criteriaValuesForm(conditionForm),'criteriaValues')">
+              Error: {{getErrorMessage(criteriaValuesForm(conditionForm),'criteriaValues')}}
+          </vds-error>
+          </div>
+        </div>
+        <div class="list-container">
+          <ul vdsList>
+            <li
+              vdsListItem
+              vdsSuffix
+              *ngFor="let item of criteriaValuesForm(conditionForm)?.value?.criteriaValues || []"
+              > 
+              Event Id:{{item.id}} Event Name:{{item.label}}
+                
+              <svg 
+                vds-icon 
+                icon="close"
+                [tiny]="true" 
+                (click)="deleteSelectedCompletedEvent(item, conditionForm)" 
+              ></svg>
+            </li>
+          </ul>
+        </div>
+        <div class="row">
+          <a role="link" vdsLink (click)="openEventSelectorDialog(conditionForm?.value?.selectedAttribute!,conditionForm)" >Add Event</a>
+        </div>
+      </div>
+  
+    </ng-template>
+  
+    </div>
+    <ng-template  #forTemplateEvent>
+        <vds-checkbox
+        *ngIf="isTemplateEvent"
+        formControlName="eventRulePropertyValLocked"
+        [checked]="!!conditionForm.value?.eventRulePropertyValLocked"
+        label="Locked"
+        [disabled]="disabled || (creatingByEventGroupTemplate && !!conditionForm.value?.eventRulePropertyValLocked)"
+      ></vds-checkbox>   
+  
+    </ng-template>
+  </div>
+</ng-template>

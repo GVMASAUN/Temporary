@@ -1,0 +1,34 @@
+.dialog-container {
+  width: 1250px;
+  max-width: 1250px;
+
+  .header-section {
+    .history-detail-header {
+      font-size: 18px;
+      font-weight: 600;
+    }
+    hr {
+      margin: 20px 0 5px;
+    }
+    .history-detail-description {
+      display: flex;
+      gap: 10px;
+
+      & > :not(.vertical-divider) {
+        display: contents;
+
+        .label + span {
+          font-weight: 600;
+        }
+      }
+      & > .vertical-divider {
+        height: 20px;
+        border: solid 1px;
+      }
+    }
+  }
+
+  .body-section {
+    height: 71vh;
+  }
+}

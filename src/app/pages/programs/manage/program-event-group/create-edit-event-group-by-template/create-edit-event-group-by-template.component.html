@@ -1,0 +1,189 @@
+<div class="vds-grid">
+  <div class="row dialog-header-bar">
+    <div class="col--align-end">
+      <button role="button"
+        vds-button-icon
+        aria-label="Close"
+        [iconType]="ButtonIconType.LIGHT_TINY"
+        (click)="close()"
+      >
+        <svg vds-icon icon="visa_close" [tiny]="true"></svg>
+      </button>
+    </div>
+  </div>
+</div>
+<vds-linear-progress *ngIf="showLoader"></vds-linear-progress>
+
+<div vds-dialog-card-head>
+  <div class="vds-grid">
+    <div class="col">
+      <div class="row">
+        <span>
+          {{ title }}
+        </span>
+      </div>
+
+      <div class="row name">
+        <h3>
+          {{ eventGroup.eventGroupName }}
+        </h3>
+      </div>
+
+      <div
+        class="row"
+        *ngIf="mode !== DialogMode.CREATE"
+      >
+        <div class="col--lg-3">
+          <div class="row">
+            <div class="col--valign-center" id="select-version">
+              Version
+            </div>
+            
+            <div class="col">
+              <vds-form-field *ngIf="eventGroupVersions?.length">
+                <select 
+                  vdsSelect 
+                  aria-labelledby="select-version"
+                  name="workflowVersion"
+                  [formControl]="versionSelector"
+                >
+                  <option
+                    *ngFor="let version of eventGroupVersions"
+                    [value]="version.workflowVersionNumber"
+                    >
+                    {{ version?.publishedVersion ? version.workflowVersionNumber + ' - Published' : version.workflowVersionNumber }}
+                  </option>
+                </select>
+              </vds-form-field>
+            </div>
+          </div>
+        </div>
+
+        <div class="col--valign-center" *ngIf="userRole !== UserRole.CLIENT_READ_ONLY">
+          <a tabindex="0" role="link" vdsLink (keyup.enter)="openCommentDialog()" (click)="openCommentDialog()">
+            View Comments
+            <svg vds-icon [icon]="VisaIcon.ARROW_NEXT" [tiny]="true"></svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col col--valign-center">
+          <ul
+            *ngIf="initTab"
+            vds-tab-list
+            [orientation]="TabsOrientation.HORIZONTAL"
+          >
+            <li vds-tab-item *ngFor="let tab of tabs; let tabIndex = index">
+              <button
+                vdsTab
+                [selected]="selectedTabIndex === tabIndex"
+                (focus)="selectedTabIndex = tabIndex"
+            >
+                {{ tab }}
+              </button>
+            </li>
+          </ul>
+          <hr vdsDivider />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div  vds-dialog-card-body id="create-edit-event-group-by-template-dialog" class="detail-panel">
+  <div *ngIf="initializeForm" class="row">
+    <app-event-group-summary
+      *ngIf="!hideTab(this.tabs.indexOf(EventGroupStep.SUMMARY))"
+      [id]="getTabId(viewName,selectedTabIndex,EventGroupStep.SUMMARY)"
+      [attr.aria-labelledby]="getTabLabelledById(viewName,selectedTabIndex,EventGroupStep.SUMMARY)"
+      [form]="eventGroupForm"
+      [mode]="mode"
+      [isTemplateEventGroup]="true"
+      [eventList]="eventList"
+      [showDeactivatedEventGroupSummary]="mode === DialogMode.EDIT && !this.selectedWorkflowVersion?.publishedVersion && !this.selectedWorkflowVersion?.hasDraft"
+      [showEventDetailsButton]="false"
+      [isPreviouslyPublished]="this.eventGroup.archived"
+      [disabledApproveOrReject]="disabledApproveOrReject"
+      [currentUserId]="currentUserId"
+      [hidden]="hideTab(this.tabs.indexOf(EventGroupStep.SUMMARY))"
+      [userRole]="userRole"
+      [editable]="editable"
+      [scrollViewId]="dialogConfig.viewId!"
+      (eventWorkflowChangeEmitter)="handleEventWorkflowChange($event)"
+      (workflowChangeEmitter)="handleWorkflowChange($event)"
+    ></app-event-group-summary>
+
+    <app-event-group-details
+      [id]="getTabId(viewName,selectedTabIndex,EventGroupStep.DETAILS)"
+      [attr.aria-labelledby]="getTabLabelledById(viewName,selectedTabIndex,EventGroupStep.DETAILS)"
+      [mode]="mode"
+      [form]="eventGroupForm"
+      [disabled]="!editable || this.editableForApproveVersion"
+      [disabledStartDateTimeMessage]="getDisabledStartDateTimeMessage()"
+      [disabledEndDateTimeMessage]="getDisabledEndDateTimeMessage()"
+      [editable]="editable"
+      [disabledApproveOrReject]="disabledApproveOrReject"
+      [disabledPublish]="disabledPublish"
+      [currentUserId]="currentUserId"
+      [hidden]="hideTab(this.tabs.indexOf(EventGroupStep.DETAILS))"
+      [userRole]="userRole"
+      [scrollViewId]="dialogConfig.viewId!"
+      [isPublishedVersion]="selectedWorkflowVersion?.publishedVersion"
+      (workflowChangeEmitter)="handleWorkflowChange($event)"
+      (initDataEmitter)="initDataEmitter($event)"
+    ></app-event-group-details>
+
+    <app-event-group-history 
+      *ngIf="(mode !== DialogMode.CREATE) && !hideTab(this.tabs.indexOf(EventGroupStep.HISTORY))"
+      [id]="getTabId(viewName,selectedTabIndex,EventGroupStep.HISTORY)"
+      [attr.aria-labelledby]="getTabLabelledById(viewName,selectedTabIndex,EventGroupStep.HISTORY)"
+      [hidden]="hideTab(this.tabs.indexOf(EventGroupStep.HISTORY))"
+      [eventGroup]="eventGroup"
+    ></app-event-group-history>
+  </div>
+</div>
+<div vds-dialog-card-footer class="dialog-footer">
+  <vds-button-group>
+    <button role="button"
+      *ngIf="
+        selectedTabIndex === tabs.indexOf(EventGroupStep.DETAILS) &&
+        editable && !editableForApproveVersion
+      "
+      vds-button
+      [color]="ButtonColor.PRIMARY"
+      (click)="save()"
+    >
+      SAVE
+    </button>
+    <button role="button"
+      *ngIf="
+        selectedTabIndex === tabs.indexOf(EventGroupStep.DETAILS) && 
+        editable && !editableForApproveVersion
+      "
+      vds-button
+      [color]="ButtonColor.SECONDARY"
+      (click)="saveAndExit()"
+    >
+      SAVE & EXIT
+    </button>
+
+
+    <button
+      *ngIf="editableForApproveVersion || (editable && (isPublishedVersion) && selectedTabIndex === tabs.indexOf(EventGroupStep.SUMMARY))"
+      vds-button
+      role="button"
+      [color]="ButtonColor.PRIMARY" 
+      (click)="changeViewToEdit()"
+      [disabled]="!editable"
+      >
+      EDIT
+    </button>
+
+    <button role="button" vds-button [isFullWidth]="false" [color]="ButtonColor.TERTIARY" (click)="close()">
+      {{ showCloseButton ? 'CLOSE' : 'CANCEL' }}
+    </button>
+  </vds-button-group>
+</div>
+
+  

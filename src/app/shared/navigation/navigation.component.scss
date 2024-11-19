@@ -1,0 +1,152 @@
+.nav {
+  &.clientSide {
+    ::ng-deep .vds-nav {
+      height: calc(100vh - 30px) !important;
+      margin-top: 30px;
+      min-height: unset;
+    }
+  }
+
+  button {
+    color: #0052e1;
+    background: #ffffff;
+  }
+
+  ::ng-deep .vds-nav-panel {
+    height: calc(100vh - 30px) !important;
+  }
+
+  .cursor-pointer {
+    cursor: pointer;
+
+    .logo-container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      margin-bottom: 26px;
+
+      .visa-logo {
+        padding-bottom: 8px;
+      }
+
+      .brand-name-short {
+        font-size: 12px;
+        font-weight: 600;
+      }
+
+      .brand-name-full {
+        font-size: 16px;
+        font-weight: 600;
+      }
+    }
+  }
+
+  .tooltip {
+    visibility: hidden;
+
+    & svg,
+    & vds-tab-label {
+      visibility: visible;
+    }
+  }
+
+  .userAvatar {
+    display: grid;
+    height: 48px;
+    grid-template-columns: 20% 55% 25%;
+
+    vds-avatar:first-of-type ::ng-deep .vds-avatar {
+      padding-left: 17px;
+    }
+  }
+
+  vds-avatar {
+    ::ng-deep div {
+      overflow: hidden;
+      width: 130px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+  }
+
+  .logout-btn {
+    border: none;
+  }
+
+
+  vds-avatar:first-of-type ::ng-deep .vds-avatar {
+    ::ng-deep svg {
+      margin: 0.25rem !important;
+    }
+  }
+
+  .vds-avatar-collapsed {
+    ::ng-deep .vds-avatar {
+      height: 32px;
+    }
+  }
+
+  .nav-button {
+    width: 240px;
+
+    .nav-open {
+      transform: rotate(180deg);
+    }
+  }
+}
+
+.client-indicator {
+  position: fixed;
+  top: 0;
+  width: 100vw;
+  z-index: 502;
+  background: #dfebff;
+  padding: 5px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  ::ng-deep a {
+    background-color: transparent !important;
+  }
+}
+
+.sitemap-icon {
+  margin-left: auto;
+  margin-right: 15px;
+
+  ::ng-deep .vds-btn-icon {
+    height: 1.25rem;
+  }
+}
+
+.img {
+  width: 24px;
+  margin-left: 3px;
+  margin-right: 12px;
+}
+
+.menu-container {
+  display: flex;
+  align-items: center;
+
+  .drpdown-icon {
+    margin-left: auto;
+    margin-right: 0;
+  }
+}
+
+.nav-collapsed {
+  margin-left: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.hide-nav-links {
+  display: none;
+}
+
+.nav-selected {
+  background: #e6f2ff !important;
+  color: #0052e1 !important;
+}

@@ -1,0 +1,369 @@
+<div class="vds-grid">
+    <div class="col">
+        <div class="graph">
+            <ngx-graph
+                [view]="[1300, 550]"
+                [links]="links"
+                [nodes]="nodes"
+                [layoutSettings]="layoutSettings"
+                [layout]="layout"
+                [curve]="curve"
+                [panningEnabled]="panning"
+                [enableZoom]="false"
+                [autoZoom]="false"
+                [autoCenter]="true"
+                [draggingEnabled]="false"
+                [zoomLevel]="zoomLevel"
+                [nodeWidth]="245"
+                [update$]="update$"
+                [center$]="center$"
+            >
+                <ng-template #defsTemplate>
+                </ng-template>
+                    <!-- Override Node -->
+                <ng-template #nodeTemplate let-node let-index>
+                    
+                    <svg:g  
+                        class="nt-svg"
+                        [id]="'svg-' + node.id"
+                        (click)="handleNodeClick(node)"
+                        [matTooltip]="node?.data?.fullName"
+                        matTooltipPosition="above"
+                        >
+        
+                        <!-- Rectangle For Blank Node -->
+                        <rect
+                            *ngIf=" node?.data?.nodeType === NODE_TYPE.ROOT"
+                            aria-label="root node"
+                            role="button"
+                            class="node-rectangle f-node-rect"
+                            width="32"
+                            height="32"
+                            fill="#ffffff00"
+                            stroke="#979797"
+                            stroke-dasharray= "3"
+                            [attr.x]="212"
+                            [attr.y]="0"
+                        />
+        
+                        <image
+                            *ngIf="node?.data?.nodeType === NODE_TYPE.ROOT"
+                            class="main-img"
+                            [attr.x]="220"
+                            [attr.y]="8"
+                            [attr.width]="16"
+                            [attr.height]="16"
+                            [attr.xlink:href]="node?.data?.icon"
+                        />
+        
+        
+                        <ng-container *ngIf="node?.data?.nodeType === NODE_TYPE.CHILD && (node?.data?.nodeLevel === NODE_LEVEL.EVENT_GROUP || !node?.data?.nodeEntityData)">
+                            <!-- Rectangle For Actual Node -->
+                            <rect
+                                role="button"
+                                [class.disabled]="isNodeDisabled(node)"
+                                *ngIf="node.data.nodeType === NODE_TYPE.CHILD && !node?.data?.nodeEntityData"
+                                [id]="'rect-' + node.id"
+                                class="node-rectangle f-node-rect"
+                                width="245"
+                                height="40"
+                                stroke="#979797"
+                                fill="#ffffff00"
+                                stroke-dasharray= "3"
+                                [attr.aria-label]="node?.data?.name"
+                                rx="20"
+                                [attr.y]="15"
+                            />
+                            <rect
+                                role="button"
+                                *ngIf="node?.data?.nodeType === NODE_TYPE.CHILD && node?.data?.nodeEntityData"
+                                [id]="'rect-' + node.id"
+                                class="node-rectangle f-node-rect"
+                                width="245"
+                                height="40"
+                                stroke="#979797"
+                                fill="#fffacd"
+                                stroke-dasharray= "3"
+                                [attr.aria-label]="node?.data?.name"
+                                rx="20"
+                                [attr.y]="15"
+                            />           
+        
+            
+        
+                            <image
+                                [class.disabled]="isNodeDisabled(node)"
+                                *ngIf="node?.data?.nodeType === NODE_TYPE.CHILD"
+                                class="main-img"
+                                [attr.width]="24"
+                                [attr.height]="24"
+                                [attr.x]="15"
+                                [attr.y]="25"
+                                [attr.xlink:href]="node.data.icon"
+                            />
+            
+                            <!-- Node label -->
+                            <text
+                                *ngIf="node.label || node?.data?.nodeType === NODE_TYPE.ROOT"
+                                [attr.width]="30"
+                                fill="#a5a5a5"
+                                font-size="10px"
+                                height="30"
+                                [attr.x]="10"
+                                [attr.y]="0"
+                            >  {{ node.label }}
+                            </text>
+                            
+                            <!-- Text Inside Node -->
+        
+                            <a tabindex="0" (keyup.enter)="handleNodeClick(node)">
+                                <text
+                                    [class.disabled]="isNodeDisabled(node)"
+                                    *ngIf="node?.data?.name"
+                                    [attr.aria-hidden]="true"
+                                    [attr.width]="30"
+                                    [attr.x]="node?.data?.icon ? 50 : 45"
+                                    [attr.y]="40"
+                                    fill="#1a1f71"
+                                    height="30"
+                                    class="node-font"
+                                    font-size="15px"
+                                    font-weight="bold"
+                                    >{{ node.data.name  }}
+                                </text>
+                            </a>
+        
+                        </ng-container>
+        
+                    
+                        <ng-container *ngIf="node?.data?.nodeLevel && node?.data?.nodeLevel !== NODE_LEVEL.EVENT_GROUP && node?.data?.nodeEntityData">
+                        <rect
+                            role="button"
+                            *ngIf="node?.data?.nodeType !== NODE_TYPE.ROOT"
+                            tabindex="0"
+                            (keyup.enter)="handleNodeClick(node)"
+                            [id]="((node.data.nodeLevel === NODE_LEVEL.EVENTS ? 'rect-event-' : 'rect-action-') + node.id)"
+                            class="node-rectangle f-node-rect"
+                            width="245"
+                            height="100"
+                            fill="#FFFFFF"
+                            [attr.aria-label]="node?.data?.name"
+                        />
+        
+                        <!-- Rectangle For icons in Child Node -->
+                        <ng-container *ngIf="node?.data?.nodeType !== NODE_TYPE.ROOT">
+        
+                            <rect   
+                                role="button"
+                                [id]="((node.data.nodeLevel === NODE_LEVEL.EVENTS ? 'rect-event-icon-' : 'rect-action-icon-') + node.id)"
+                                class="node-rectangle f-node-rect"
+                                width="28"
+                                height="100"
+                                fill="#E9F3FF"
+                                [attr.aria-label]="node?.data?.name"
+                            />
+        
+                            <!-- Icons -->
+                            <image
+                                *ngIf="node?.data?.icon"
+                                class="main-img"
+                                [attr.x]="7"
+                                [attr.y]="10"
+                                [attr.width]="16"
+                                [attr.height]="16"
+                                [attr.xlink:href]="node.data.icon"
+                            />
+        
+                            <image
+                                *ngIf="node?.data?.showProcess || node?.data?.showError"
+                                class="main-img"
+                                [attr.x]="10"
+                                [attr.y]="70"
+                                [attr.width]="20"
+                                [attr.height]="20"
+                                [attr.xlink:href]="node?.data?.showProcess ? VisaImage.PROCESS : VisaImage.ERROR"
+                            />
+                        </ng-container>            
+        
+                            <!-- Node Header Label -->
+                            <text 
+                                *ngIf="node.label"
+                                fill="#272727"
+                                font-size="10px"
+                            >  {{ node.label }}
+                            </text>
+        
+                            <!-- Node label -->
+                            <text 
+                                *ngIf="node?.data?.name"
+                                [attr.width]="30"
+                                [attr.x]="45"
+                                [attr.y]="20"
+                                fill="#272727"
+                                font-size="12px"
+                                height="30"
+                                font-weight="bold"
+                            >  {{ node.data.name }}
+                            </text>
+                            
+                            <!-- Horizontal line -->
+                            <line 
+                                *ngIf="node?.data?.nodeType !== NODE_TYPE.ROOT"
+                                x1="35" 
+                                y1="28" 
+                                x2="235" 
+                                y2="28" 
+                                stroke="#CACACA" 
+                            />
+        
+                            <!-- Type -->
+                            <text
+                                *ngIf="node?.data?.type"
+                                [attr.aria-hidden]="true"
+                                [attr.x]="45"
+                                [attr.y]="45"
+                                fill="#272727"
+                                height="30"
+                                class="node-font"
+                                font-size="10px"
+                                font-weight="bold"
+                                >
+                                    {{ node?.data?.type  }}
+                            </text>
+                            
+                            <!-- Vertical line -->
+                            <line 
+                                *ngIf="node?.data?.nodeType !== NODE_TYPE.ROOT && node?.data?.description"
+                                x1="110" 
+                                y1="35" 
+                                x2="110" 
+                                y2="50" 
+                                stroke="black" 
+                            />
+        
+                            <!-- Description -->
+                            <text
+                                *ngIf="node?.data?.description"
+                                [attr.aria-hidden]="true"
+                                [attr.width]="30"
+                                [attr.x]="120"
+                                [attr.y]="45"
+                                fill="#272727"
+                                height="30"
+                                class="node-font"
+                                font-size="10px"
+                                font-weight="bold"
+                                >
+                                    {{ node.data.description  }}
+                            </text>  
+                            
+                            <!-- Bullets -->
+                            <image
+                                *ngIf="node?.data?.nodeType !== NODE_TYPE.ROOT"
+                                class="main-img"
+                                [attr.width]="15"
+                                [attr.height]="15"
+                                [attr.x]="45"
+                                [attr.y]="75"
+                                [attr.xlink:href]="VisaImage.BULLETS"
+                            />
+        
+                            <!-- Count -->
+                            <text
+                                *ngIf="node?.data?.count"
+                                [attr.aria-hidden]="true"
+                                [attr.width]="20"
+                                [attr.height]="20"
+                                [attr.x]="65"
+                                [attr.y]="86"
+                                height="30"
+                                font-size="12px"
+                                fill="#555555"
+                                >
+                                    {{ node.data.count  }}
+                            </text>
+        
+                            <!-- Error Icon -->
+                            <image
+                                *ngIf="node?.data?.nodeType !== NODE_TYPE.ROOT && node?.data?.showError"
+                                class="main-img"
+                                [attr.width]="15"
+                                [attr.height]="15"
+                                [attr.x]="145"
+                                [attr.y]="75"
+                                [attr.xlink:href]="VisaImage.ERROR"
+                            />
+        
+                            <!-- Error Count -->
+                            <text
+                                *ngIf="node?.data?.errorCount"
+                                [attr.aria-hidden]="true"
+                                [attr.width]="20"
+                                [attr.height]="20"
+                                [attr.x]="165"
+                                [attr.y]="86"
+                                height="30"
+                                font-size="12px"
+                                fill="#555555"
+                                >
+                                    {{ node.data.errorCount  }}
+                            </text>
+        
+                            <!-- Horizontal line -->
+                            <!-- <line 
+                                *ngIf="node.data.nodeType !== NODE_TYPE.ROOT"
+                                x1="0" 
+                                y1="100" 
+                                x2="270" 
+                                y2="100"
+                                stroke-width="3" 
+                                stroke="#8D9DAF" 
+                            /> -->
+                            <!-- Horizontal line for error -->
+                            <!-- <line 
+                            *ngIf="node.data.nodeType !== NODE_TYPE.ROOT && node.data.showError"
+                            x1="0" 
+                            y1="100" 
+                            x2="270" 
+                            y2="100"
+                            stroke-width="3" 
+                            stroke="#C30000" 
+                        /> -->
+                        </ng-container>
+                    
+                        <!-- To show add node  -->
+                        <image
+                            *ngIf="node?.data?.nodeType === NODE_TYPE.LEAF"
+                            tabindex="0"
+                            (keyup.enter)="handleNodeClick(node)"
+                            class="main-img new-node-icon"
+                            [attr.width]="24"
+                            [attr.height]="24"
+                            [attr.xlink:href]="node.data.icon"
+                        />
+        
+        
+                    </svg:g>
+                </ng-template>
+                <!-- Override Edge -->
+                <ng-template #linkTemplate let-link>
+                    <svg:g class="edge">
+                        <svg:path
+                            class="line"
+                            stroke-dasharray="3"
+                            stroke-width="1"
+                            stroke="#979797"
+                            >
+                        </svg:path>
+                        <svg:text class="edge-label" text-anchor="middle">
+                        <textPath class="text-path" [attr.href]="'#' + link.id" startOffset="50%" [attr.tabindex]="link.label?.length>0 ? '0':'-1'">
+                            {{link.label}} 
+                        </textPath>
+                        </svg:text>
+                    </svg:g>
+                </ng-template>
+        
+            </ngx-graph>
+        </div>
+    </div>
+</div>

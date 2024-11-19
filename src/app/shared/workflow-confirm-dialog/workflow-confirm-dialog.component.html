@@ -1,0 +1,26 @@
+<app-dialog
+    buttonDirection="right"
+    [buttons]="dialogActions"
+    [close]="dialogRef.close.bind(this)"
+    [showProgressBar]="showLoader"
+    [title]="dialogConfig.title"
+    >
+    <div dialogContent>
+        <form [formGroup]="form">
+            <vds-form-field>
+                <label vdsLabel>Comment *</label>
+                <input vdsInput 
+                    [formControl]="form.controls.comment | controlConverter" 
+                    aria-required="true"
+                    [invalid]="form.controls.comment.invalid"
+                />
+            </vds-form-field>
+            <vds-error
+                vdsErrorMessage
+                [show]="!!formService.getFormControlErrorMessage(form, form.controls.comment)"
+            > 
+                {{formService.getFormControlErrorMessage(form, form.controls.comment)}}
+            </vds-error> 
+        </form>
+    </div>
+</app-dialog>

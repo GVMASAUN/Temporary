@@ -1,0 +1,13 @@
+.list-box-container {
+    height: 32.5rem;
+
+    .list-box {
+        ::ng-deep {
+            ul {
+                max-height: 30.5rem;
+                min-height: 30.5rem;
+            }
+        }
+
+    }
+}

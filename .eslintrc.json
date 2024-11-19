@@ -1,0 +1,119 @@
+{
+    "root": true,
+    "ignorePatterns": [
+      "projects/**/*"
+    ],
+    "overrides": [
+      {
+        "files": [
+          "*.ts"
+        ],
+        "extends": [
+          "eslint:recommended",
+          "plugin:@typescript-eslint/recommended",
+          "plugin:@angular-eslint/recommended",
+          "plugin:@angular-eslint/template/process-inline-templates"
+        ],
+        "rules": {
+          "@typescript-eslint/indent": "off",
+          "@typescript-eslint/member-delimiter-style": [
+            "warn",
+            {
+              "multiline": {
+                "delimiter": "semi",
+                "requireLast": true
+              },
+              "singleline": {
+                "delimiter": "semi",
+                "requireLast": false
+              }
+            }
+          ],
+          "@typescript-eslint/naming-convention": "off",
+          "@typescript-eslint/no-unused-expressions": "warn",
+          "@typescript-eslint/quotes": [
+            "warn",
+            "single"
+          ],
+          "@typescript-eslint/semi": [
+            "warn",
+            "always"
+          ],
+          "@typescript-eslint/type-annotation-spacing": "warn",
+          "brace-style": [
+            "warn",
+            "1tbs",
+            {
+              "allowSingleLine": true
+            }
+          ],
+          "constructor-super": "error",
+          "curly": "error",
+          "eol-last": "error",
+          "eqeqeq": [
+            "error",
+            "smart"
+          ],
+          "id-blacklist": "off",
+          "id-match": "off",
+          "max-len": [
+            "off",
+            {
+              "code": 140
+            }
+          ],
+          "no-debugger": "error",
+          "no-duplicate-case": "error",
+          "no-multiple-empty-lines": [
+            "error",
+            {
+              "max": 2
+            }
+          ],
+          "@typescript-eslint/no-shadow": [
+            1,
+            {
+              "hoist": "all"
+            }
+          ],
+          "no-trailing-spaces": "error",
+          "no-underscore-dangle": "off",
+          "no-var": "warn",
+          "prefer-const": "warn",
+          "prefer-template": "warn",
+          "quote-props": [
+            "error",
+            "as-needed"
+          ],
+          "radix": "error"
+        }
+      },
+      {
+        "files": [
+          "*.html"
+        ],
+        "extends": [
+          "plugin:@angular-eslint/template/recommended",
+          "plugin:@angular-eslint/template/accessibility"
+        ],
+        "rules": {
+          "@angular-eslint/directive-selector": [
+            "error",
+            {
+              "type": "attribute",
+              "prefix": "model-sync",
+              "style": "camelCase"
+            }
+          ],
+          "@angular-eslint/component-selector": [
+            "error",
+            {
+              "type": "element",
+              "prefix": "model-sync",
+              "style": "kebab-case"
+            }
+          ]
+        }
+      }
+    ]
+  }

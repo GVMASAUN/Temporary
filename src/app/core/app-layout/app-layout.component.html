@@ -1,0 +1,8 @@
+<div class="main-wrapper">
+  <app-navigation (skip)="skipToMain()"></app-navigation>
+  <div class="container" [ngClass]="{ 'nav-open': navOpen }">
+    <main #contentEl tabindex="-1" class="contents">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>

@@ -1,0 +1,36 @@
+h4 {
+  padding: 1rem 0;
+}
+
+table {
+  thead {
+    .date-header {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+
+      vds-date-selector {
+        ::ng-deep {
+          .vds-date-selector .vds-input {
+            min-width: unset;
+            width: 150px;
+
+            label {
+              display: none;
+            }
+            .vds-input-bar {
+              border-radius: 100px;
+
+              input {
+                border-radius: 100px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  .highlight {
+    background-color: #ffe7ce;
+  }
+}

@@ -1,0 +1,9 @@
+<app-search-table
+  tableId="event-group-template-event-actions-list"
+  [tableActions]="!disabled ? tableActions : []"
+  [columns]="tableColumns"
+  [dataSource]="this.eventTemplate.eventActions || []"
+  [hideSelectAll]="true"
+  [hideSearchFieldFilters]="true"
+  notFound="No Actions are associated with this Event."
+></app-search-table>

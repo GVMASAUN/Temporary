@@ -1,0 +1,312 @@
+<div class="vds-grid">
+  <section class="form-container">
+    <div *ngIf="!isTemplateEvent" class="row status-container">
+        <div class="row">
+            <strong>Status</strong>
+        </div>
+        <div class="row">
+            <div class="col--lg-2">
+                <span> Status Details</span>
+            </div>
+            <div class="col">
+              <vds-badge
+                [type]="STATUS_BADGE_TYPE[event.eventStatus || StatusCode.DRAFT]"
+              >
+                {{STATUS_DESC[event.eventStatus || StatusCode.DRAFT]}}
+              </vds-badge>
+            </div>
+        </div>
+<!-- 
+        <div class="row">
+            <button role="button" vds-button
+                [isFullWidth]="false"
+                [disabled]="true"
+                >Submit For Approval
+            </button>
+        </div> -->
+    </div>
+    <hr  *ngIf="!isTemplateEvent" vdsDivider />
+    <div class="row">
+        <div class="col col--align-center">
+            <label vdsLabel>Event Information</label>
+        </div>
+    </div>
+    <div class="row">
+      <div class="col">
+          <form [formGroup]="form">
+              <vds-form-field>
+                <label vdsLabel>Event Name *</label>
+                <input
+                  vdsInput
+                  placeholder="Event Name"
+                  formControlName="eventName"
+                  [readonly]="disabled"
+                  [tabindex]="disabled ? -1 : 0"
+                  aria-required="true"
+                  [invalid]="!!getErrorMessage(form, 'eventName')"
+                />
+                <span vdsErrorMessage aria-atomic="true" aria-live="assertive">
+                  <ng-container *ngIf="!!getErrorMessage(form, 'eventName')">
+                      <svg vds-icon icon="error" [tiny]="true"></svg>
+                      Error: {{ getErrorMessage(form, 'eventName') }}
+                  </ng-container>
+                </span>
+              </vds-form-field>
+
+              <vds-form-field>
+                <label vdsLabel>Description</label>
+                <textarea
+                  vdsInput
+                  placeholder="Enter description"
+                  formControlName="eventDescription"
+                  [autoGrow]="true"
+                  [readonly]="disabled"
+                  [tabindex]="disabled ? -1 : 0"
+                  [invalid]="!!getErrorMessage(form, 'eventDescription')"
+                ></textarea>
+                <span vdsErrorMessage aria-atomic="true" aria-live="assertive">
+                  <ng-container *ngIf="!!getErrorMessage(form, 'eventDescription')">
+                      <svg vds-icon icon="error" [tiny]="true"></svg>
+                      Error: {{ getErrorMessage(form, 'eventDescription') }}
+                  </ng-container>
+                </span>
+              </vds-form-field>
+  
+              <vds-form-field>
+                <label vdsLabel>Event Type *</label>
+                <select vdsSelect 
+                  formControlName="eventTypeId" 
+                  [required]="true"
+                  [disabled]="disabled || (dialogMode !== DialogMode.CREATE)"
+                  [invalid]="!!getErrorMessage(form, 'eventTypeId')"
+                >
+                  <option
+                    *ngFor="let type of eventTypes"
+                    [value]="type.value"
+                  >
+                    {{ type.label }}
+                  </option>
+                </select>
+                <span vdsErrorMessage aria-atomic="true" aria-live="assertive">
+                  <ng-container *ngIf="!!getErrorMessage(form, 'eventTypeId')">
+                      <svg vds-icon icon="error" [tiny]="true"></svg>
+                      Error: {{ getErrorMessage(form, 'eventTypeId') }}
+                  </ng-container>
+                </span>
+              </vds-form-field>
+
+              <ng-container *ngIf="event.eventTypeId == EventType.Statement_Credit_Response">
+                <vds-form-field *ngIf="statementCreditEventIds?.length">
+                  <label vdsLabel>Statement Credit ID</label>
+                  <select vdsSelect 
+                    formControlName="statementCreditEventId" 
+                    [disabled]="disabled"
+                    [invalid]="!!getErrorMessage(form, 'statementCreditEventId')"
+                  >
+                    <option
+                      *ngFor="let type of statementCreditEventIds"
+                      [value]="type.value"
+                    >
+                      {{ type.label }}
+                    </option>
+                  </select>
+                  <span vdsErrorMessage aria-atomic="true" aria-live="assertive">
+                    <ng-container *ngIf="!!getErrorMessage(form, 'statementCreditEventId')">
+                        <svg vds-icon icon="error" [tiny]="true"></svg>
+                        Error: {{ getErrorMessage(form, 'statementCreditEventId') }}
+                    </ng-container>
+                  </span>
+                </vds-form-field>              
+  
+                <vds-form-field *ngIf="statementCreditStatuses?.length">
+                  <label vdsLabel>Statement Credit Status</label>
+                  <select vdsSelect 
+                    formControlName="statementCreditStatus" 
+                    name="statementCreditStatus"
+                    [disabled]="disabled"
+                    [invalid]="!!getErrorMessage(form, 'statementCreditStatus')"
+                  >
+                    <option
+                      *ngFor="let type of statementCreditStatuses"
+                      [value]="type.value"
+                    >
+                      {{ type.label }}
+                    </option>
+                  </select>
+                  <span vdsErrorMessage aria-atomic="true" aria-live="assertive">
+                    <ng-container *ngIf="!!getErrorMessage(form, 'statementCreditStatus')">
+                        <svg vds-icon icon="error" [tiny]="true"></svg>
+                        Error: {{ getErrorMessage(form, 'statementCreditStatus') }}
+                    </ng-container>
+                  </span>
+                </vds-form-field>  
+              </ng-container>
+            
+
+              <div class="vds-grid">
+                <div class="row">
+                    <div class="col--lg-3">
+                         <vds-radio-group role="radiogroup"
+                          formControlName="recurrenceLimit"
+                          [disabled]="disabled"
+                          [required]="true"
+                        >
+                          <legend vdsLegend class="radio-title">Recurrence Limit *</legend>
+                          <vds-radio
+                              *ngFor="let option of recurrenceLimits"
+                              [label]="option.label"
+                              [radioValue]="option.value"
+                              [checked]="(option.value === event.recurrenceLimit) || (
+                                option.value === RecurrenceLimit.UpTo &&
+                                (event.recurrenceLimit! > option.value)
+                                )"
+                              name="recurrenceLimit"
+                              [disabled]="disabled"
+                              [invalid]="!!getErrorMessage(form, 'recurrenceLimit')"
+                          ></vds-radio>
+                          <span vdsErrorMessage aria-atomic="true" aria-live="assertive" class="flex-container">
+                            <ng-container *ngIf="!!getErrorMessage(form, 'recurrenceLimit')">
+                                <svg vds-icon icon="error" [tiny]="true"></svg>
+                                Error: {{ getErrorMessage(form, 'recurrenceLimit') }}
+                            </ng-container>
+                          </span>
+                      </vds-radio-group>
+                    </div>
+    
+                    <div *ngIf="showOccurrenceInput()" class="col col--align-start col--valign-bottom">
+                        <div class="row">
+                            <div class="col">
+                                <vds-form-field>
+                                    <input
+                                      vdsInput
+                                      aria-label="occurrence-input"
+                                      formControlName="occurrence"
+                                      [readonly]="disabled"
+                                      [tabindex]="disabled ? -1 : 0"
+                                      aria-required="true"
+                                      [invalid]="!!getErrorMessage(form, 'occurrence')"
+                                    /> 
+                                    <span vdsErrorMessage aria-atomic="true" aria-live="assertive">
+                                      <ng-container *ngIf="!!getErrorMessage(form, 'occurrence')">
+                                          <svg vds-icon icon="error" [tiny]="true"></svg>
+                                          Error: {{ getErrorMessage(form, 'occurrence') }}
+                                      </ng-container>
+                                    </span>
+                                </vds-form-field>
+                            </div>
+                            <div class="col col--align-start col--valign-center">
+                                <label vdsLabel>occurrences per enrollee (numeric)
+                                </label>
+                            </div>
+                            <div *ngIf="isTemplateEvent" class="col">
+                              <vds-checkbox
+                                label="Locked"
+                                formControlName="recurrenceLimitLocked"
+                                [checked]="!!form.value?.recurrenceLimitLocked"
+                                [disabled]="disabled"
+                              ></vds-checkbox>
+                          </div>
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="!isTemplateEvent" class="row">
+                  <div class="col--lg-6" [class.date-selector-wrapper]="!!disabledStartDateTimeMessage">
+                      <vds-date-selector
+                          label="Start Date (MM/DD/YYYY) *"
+                          formControlName="eventStartDate"
+                          [required]="true"
+                          [placement]="CALENDAR_PLACEMENT.TOP"
+                          [formatInputValue]="DateFormat.MM_DD_YYYY"
+                          [disabled]="disabled || !!disabledStartDateTimeMessage"
+                          [valid]="!getErrorMessage(form, 'eventStartDate')"
+                      ></vds-date-selector>
+                      <span vdsErrorMessage aria-atomic="true" aria-live="assertive" class="flex-container">
+                        <ng-container *ngIf="!!getErrorMessage(form, 'eventStartDate')">
+                            <svg vds-icon icon="error" [tiny]="true"></svg>
+                            Error: {{ getErrorMessage(form, 'eventStartDate') }}
+                        </ng-container>
+                      </span>
+
+                      <span *ngIf="!!disabledStartDateTimeMessage" class="info-icon" [matTooltip]="disabledStartDateTimeMessage" matTooltipPosition="above">
+                        <svg vds-icon [icon]="VisaIcon.INFO" [tiny]="true"></svg>
+                    </span>
+                  </div>
+      
+                  <div class="col--lg-3">
+                    <app-time-picker
+                      formControlName="startTime"
+                      [isRequired]="true"
+                      aria-required="true"
+                      [invalid]="!!getErrorMessage(form, 'startTime')"
+                      [disabled]="!!disabledStartDateTimeMessage"
+                    >
+                    </app-time-picker>
+                    <span vdsErrorMessage aria-atomic="true" aria-live="assertive" class="flex-container">
+                      <ng-container *ngIf="!!getErrorMessage(form, 'startTime')">
+                        <svg vds-icon icon="error" [tiny]="true"></svg>
+                        Error: {{ getErrorMessage(form, 'startTime') }}
+                      </ng-container>
+                    </span>
+                  </div>   
+      
+                  <div class="col--lg-3 col--valign-center">
+                    <vds-badge>
+                    {{ timeZone }}
+                  </vds-badge>
+                </div>
+              </div>
+              <div *ngIf="!isTemplateEvent" class="row">
+                  <div class="col--lg-6" [class.date-selector-wrapper]="!!disabledEndDateTimeMessage">
+                      <vds-date-selector
+                          label="End Date (MM/DD/YYYY) *"
+                          formControlName="eventEndDate"
+                          [required]="true"
+                          [formatInputValue]="DateFormat.MM_DD_YYYY"
+                          [placement]="CALENDAR_PLACEMENT.TOP"                        
+                          [disabled]="disabled || !!disabledEndDateTimeMessage"
+                          [valid]="!getErrorMessage(form, 'eventEndDate')"
+                      ></vds-date-selector>
+                      <span vdsErrorMessage aria-atomic="true" aria-live="assertive" class="flex-container">
+                        <ng-container *ngIf="!!getErrorMessage(form, 'eventEndDate')">
+                            <svg vds-icon icon="error" [tiny]="true"></svg>
+                            Error: {{ getErrorMessage(form, 'eventEndDate') }}
+                        </ng-container>
+                      </span>
+
+                      <span *ngIf="!!disabledEndDateTimeMessage" class="info-icon" [matTooltip]="disabledEndDateTimeMessage" matTooltipPosition="above">
+                        <svg vds-icon [icon]="VisaIcon.INFO" [tiny]="true"></svg>
+                    </span>
+                  </div>
+      
+                  <div class="col--lg-3">
+                      <app-time-picker
+                        formControlName="endTime"
+                        [isRequired]="true"
+                        aria-required="true"
+                        [disabled]="!!disabledEndDateTimeMessage"
+                        [invalid]="!!getErrorMessage(form, 'endTime')"
+                      >
+                      </app-time-picker>
+                      <span vdsErrorMessage aria-atomic="true" aria-live="assertive" class="flex-container">
+                        <ng-container *ngIf="!!getErrorMessage(form, 'endTime')">
+                          <svg vds-icon icon="error" [tiny]="true"></svg>
+                          Error: {{ getErrorMessage(form, 'endTime') }}
+                        </ng-container>
+                      </span>
+                  </div>  
+      
+                  <div class="col--lg-3 col--valign-center">
+                    <vds-badge>
+                    {{ timeZone }}
+                  </vds-badge>
+                </div>
+              </div>
+              <div *ngIf="!isTemplateEvent" class="row">
+
+              </div> 
+            </div>
+          </form>
+      </div>
+    </div>
+  </section>
+</div>

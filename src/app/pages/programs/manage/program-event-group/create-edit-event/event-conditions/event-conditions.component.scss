@@ -1,0 +1,22 @@
+.existing-conditions {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    grid-gap: 16px;
+    gap: 16px;
+    padding: 20px;
+    border-radius: 4px;
+    box-shadow: 0 0 4px 0 #797979;
+    background-color: #fff;
+    margin-bottom: 20px;
+}
+
+.add-condition {
+    border-bottom: solid 1px #dfdfdf;
+    padding: 24px 25px 25px 24px;
+    background-color: #fafafa;
+
+    .button>span {
+        padding: 8px 180px 8px 8px;
+    }
+}

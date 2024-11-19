@@ -1,0 +1,339 @@
+<div class="page-content" [ngClass]="{ 'panel-open': isPanelOpen }">
+  <app-header screenTitle="Uncategorized Offers"> </app-header>
+
+  <div class="page-wrapper" [ngClass]="{ 'body-panel-open': isPanelOpen }">
+    <div class="filter-bar" *ngIf="searchActivate">
+      <strong>Results for</strong>
+      <form [formGroup]="searchPanel">
+        <vds-form-field *ngIf="searchPanel.getRawValue().name">
+          <label vdsLabel>Offer Name</label>
+          <input vdsInput formControlName="name" />
+        </vds-form-field>
+        <vds-date-selector
+          label="Effective Start Date"
+          [selectsStart]="true"
+          [startDate]="searchPanel.getRawValue().offerStart"
+          [endDate]="searchPanel.getRawValue().offerEnd"
+          [valid]="!errorOffer"
+          formControlName="offerStart"
+          *ngIf="
+            searchPanel.getRawValue().offerStart ||
+            searchPanel.getRawValue().offerEnd
+          "
+        ></vds-date-selector>
+        <vds-date-selector
+          label="Effective End Date"
+          [selectsEnd]="true"
+          [startDate]="searchPanel.getRawValue().offerStart"
+          [endDate]="searchPanel.getRawValue().offerEnd"
+          [minDate]="searchPanel.getRawValue().offerStart"
+          formControlName="offerEnd"
+          *ngIf="
+            searchPanel.getRawValue().offerStart ||
+            searchPanel.getRawValue().offerEnd
+          "
+        ></vds-date-selector>
+        <vds-date-selector
+          label="Last Updated Date From"
+          [selectsStart]="true"
+          [startDate]="searchPanel.getRawValue().updateFrom"
+          [endDate]="searchPanel.getRawValue().updateTo"
+          [valid]="!errorUpdate"
+          formControlName="updateFrom"
+          *ngIf="
+            searchPanel.getRawValue().updateFrom ||
+            searchPanel.getRawValue().updateTo
+          "
+        ></vds-date-selector>
+        <vds-date-selector
+          label="Last Updated Date To"
+          [selectsEnd]="true"
+          [startDate]="searchPanel.getRawValue().updateFrom"
+          [endDate]="searchPanel.getRawValue().updateTo"
+          [minDate]="searchPanel.getRawValue().updateFrom"
+          formControlName="updateTo"
+          *ngIf="
+            searchPanel.getRawValue().updateFrom ||
+            searchPanel.getRawValue().updateTo
+          "
+        ></vds-date-selector>
+        <vds-checkbox
+          label="Inactive components"
+          formControlName="includeInactive"
+        ></vds-checkbox>
+      </form>
+      <div class="clear-section">
+        <span>
+          Clear search
+        </span>
+        <button
+          vds-button-icon
+          [iconType]="buttonIconType.LIGHT_TINY"
+          (click)="clearSearch()"
+        >
+          <svg vds-icon [tiny]="true" icon="clear"></svg>
+        </button>
+      </div>
+    </div>
+    <div class="action-bar">
+      <div class="button-group">
+        <vds-button-group>
+          <button
+            vds-button
+            [color]="buttonColor.SECONDARY"
+            (click)="openPanel(0)"
+          >
+            <svg vds-icon [icon]="'search'" [low]="true"></svg>
+          </button>
+          <!-- <button
+              vds-button
+              [color]="buttonColor.SECONDARY"
+              (click)="openPanel(1)"
+            >
+              <svg vds-icon [icon]="'filter'" [low]="true"></svg>
+            </button> -->
+          <button
+            vds-button
+            [color]="buttonColor.SECONDARY"
+            [disabled]="!selectedIndex.length"
+            (click)="assignModal()"
+          >
+            assign to program
+          </button>
+        </vds-button-group>
+      </div>
+      <app-show-columns [columns]="tableHeader"></app-show-columns>
+    </div>
+
+    <div class="table-wrapper">
+      <div class="table-container" [style.width]="tableWidth">
+        <table vdsDataTable>
+          <caption vdsScreenReader>
+            Uncategorized offers list
+          </caption>
+          <thead vdsThead>
+            <tr vdsTr>
+              <th vdsTh scope="col" class="fix fix-left">
+                <vds-tooltip
+                  tooltipId="select-all-tooltip"
+                  [text]="
+                    selectedIndex.length === tableData.length
+                      ? 'Deselect All'
+                      : 'Select All'
+                  "
+                  [position]="tooltipPosition.RIGHT"
+                >
+                  <vds-checkbox
+                    label=""
+                    (click)="selectAllHandler($event)"
+                    [indeterminate]="
+                      selectedIndex.length > 0 &&
+                      selectedIndex.length < tableData.length
+                    "
+                    [checked]="
+                      tableData.length > 0 &&
+                      selectedIndex.length === tableData.length
+                    "
+                  ></vds-checkbox>
+                </vds-tooltip>
+              </th>
+              <ng-container *ngFor="let column of tableHeader; let i = index">
+                <th
+                  vdsTh
+                  scope="col"
+                  *ngIf="column.checked"
+                  [ngClass]="i == 0 ? 'fix fix-left-1' : ''"
+                >
+                  <div class="sort-btn">
+                    {{ column.label }}
+                    <vds-tooltip
+                      *ngIf="column.sortable"
+                      [text]="'Sort ' + sortBy[i].slice(1) | titlecase"
+                      [position]="tooltipPosition.RIGHT"
+                    >
+                      <button
+                        vds-button-icon
+                        [iconType]="buttonIconType.LIGHT_TINY"
+                        (click)="handleSort(column.value, i)"
+                        [attr.aria-label]="'sort ' + column.label + sortBy[i]"
+                      >
+                        <svg
+                          vds-icon
+                          [icon]="'sortable' + sortBy[i]"
+                          [tiny]="true"
+                        ></svg>
+                      </button>
+                    </vds-tooltip>
+                  </div>
+                </th>
+              </ng-container>
+              <th vdsTh scope="col" width="5%" class="fix fix-right">
+                Actions
+              </th>
+            </tr>
+          </thead>
+          <tbody vdsTbody>
+            <tr
+              vdsTr
+              *ngFor="let row of tableData; let i = index"
+              [class.selected-row]="selectedIndex.includes(i)"
+            >
+              <td vdsTd class="fix fix-left">
+                <vds-checkbox
+                  label=""
+                  (changed)="checkboxHandler($event, i)"
+                  [checked]="selectedIndex.includes(i)"
+                ></vds-checkbox>
+              </td>
+              <td vdsTd *ngIf="tableHeader[0].checked" class="fix fix-left-1">
+                <a vdsLink class="link"> {{ row.offerName }} </a>
+              </td>
+              <td vdsTd *ngIf="tableHeader[1].checked" class="description">
+                {{ row.offerDescription || "-" }}
+              </td>
+              <td vdsTd *ngIf="tableHeader[2].checked">
+                {{ row.offerStartDate | date: "MM/dd/yyyy hh:mm a z" }}
+              </td>
+              <td vdsTd *ngIf="tableHeader[3].checked">
+                {{ row.offerEndDate | date: "MM/dd/yyyy hh:mm a z" }}
+              </td>
+              <td vdsTd *ngIf="tableHeader[4].checked">
+                <vds-badge
+                  [type]="
+                    row.enabledIndicator ? badgeType.STABLE : badgeType.CRITICAL
+                  "
+                >
+                  {{ row.enabledIndicator ? "Active" : "Inactive" }}
+                </vds-badge>
+              </td>
+              <td vdsTd *ngIf="tableHeader[5].checked">
+                {{ row.modifiedDate }}
+              </td>
+
+              <td vdsTd class="fix fix-right">
+                <button
+                  vds-button-icon
+                  [iconType]="buttonIconType.LIGHT"
+                  (click)="openedMenu = i"
+                  class="ignore-host-blur"
+                >
+                  <svg vds-icon icon="options" [low]="true"></svg>
+                </button>
+                <vds-menu
+                  class="vds-menu--absolute options-menu"
+                  [class.vds-menu--show]="openedMenu == i"
+                >
+                  <ul vds-listbox>
+                    <li vds-listbox-item>
+                      <label>
+                        Edit
+                      </label>
+                    </li>
+                    <li vds-listbox-item>
+                      <label vdsLabel>
+                        Archive
+                      </label>
+                    </li>
+                  </ul>
+                </vds-menu>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div *ngIf="isLoading" class="progress-container">
+        <vds-linear-progress></vds-linear-progress>
+      </div>
+    </div>
+  </div>
+
+  <vds-pagination
+    ariaLabel="program-list-pagination"
+    [pageIndex]="page"
+    [pageSize]="size"
+    [length]="totalElements"
+    (paginationEvent)="handlePagination($event)"
+    [ariaFirstPage]="'First Page'"
+    [ariaPreviousPage]="'Previous Page'"
+    [ariaNextPage]="'Next Page'"
+    [ariaLastPage]="'Last Page'"
+  >
+  </vds-pagination>
+
+  <app-footer [panelOpen]="isPanelOpen"></app-footer>
+</div>
+
+<div class="panel-content" *ngIf="isPanelOpen">
+  <app-panel
+    [selectedTab]="panelSection"
+    [hideFilter]="true"
+    (activeSection)="panelSection = $event"
+  >
+    <div search>
+      <form [formGroup]="searchPanel">
+        <vds-form-field>
+          <label vdsLabel>Offer Name</label>
+          <input vdsInput formControlName="name" />
+        </vds-form-field>
+        <vds-date-selector
+          label="Effective Start Date"
+          [selectsStart]="true"
+          [startDate]="searchPanel.getRawValue().offerStart"
+          [endDate]="searchPanel.getRawValue().offerEnd"
+          [valid]="!errorOffer"
+          formControlName="offerStart"
+        ></vds-date-selector>
+        <vds-date-selector
+          label="Effective End Date"
+          [selectsEnd]="true"
+          [startDate]="searchPanel.getRawValue().offerStart"
+          [endDate]="searchPanel.getRawValue().offerEnd"
+          [minDate]="searchPanel.getRawValue().offerStart"
+          formControlName="offerEnd"
+        ></vds-date-selector>
+        <vds-date-selector
+          label="Last Updated Date From"
+          [selectsStart]="true"
+          [startDate]="searchPanel.getRawValue().updateFrom"
+          [endDate]="searchPanel.getRawValue().updateTo"
+          [valid]="!errorUpdate"
+          formControlName="updateFrom"
+        ></vds-date-selector>
+        <vds-date-selector
+          label="Last Updated Date To"
+          [selectsEnd]="true"
+          [startDate]="searchPanel.getRawValue().updateFrom"
+          [endDate]="searchPanel.getRawValue().updateTo"
+          [minDate]="searchPanel.getRawValue().updateFrom"
+          formControlName="updateTo"
+        ></vds-date-selector>
+
+        <div>
+          <vds-checkbox
+            label="Include inactive offers"
+            formControlName="includeInactive"
+          ></vds-checkbox>
+        </div>
+      </form>
+      <div class="panel-footer">
+        <vds-button-group>
+          <button
+            vds-button
+            [color]="buttonColor.PRIMARY"
+            (click)="search()"
+            [disabled]="errorOffer || errorUpdate"
+          >
+            Search
+          </button>
+          <button
+            vds-button
+            [color]="buttonColor.SECONDARY"
+            (click)="clearSearch()"
+          >
+            Reset
+          </button>
+        </vds-button-group>
+      </div>
+    </div>
+  </app-panel>
+</div>

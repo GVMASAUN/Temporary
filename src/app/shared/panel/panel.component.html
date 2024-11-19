@@ -1,0 +1,108 @@
+<vds-panel
+  *ngIf="isPanelOpen"
+  [ariaLabel]="panelId"
+  [openPanel]="isPanelOpen"
+  [attr.aria-expanded]="isPanelOpen"
+  [id]="panelId"
+>
+  <div vds-panel-panel>
+    <ng-template #tabSection>
+      <button
+        vds-button-icon
+        role="button"
+        aria-label="Close Panel"
+        [iconType]="ButtonIconType.LIGHT_TINY"
+        (click)="closePanel()"
+      >
+        <svg
+          vds-icon
+          [tiny]="true"
+          [icon]="VisaIcon.ARROW_END"
+        ></svg>
+      </button>
+
+      <div class="panel-tab-menu-btns">
+        <ul
+          *ngIf="panelTabs.length"
+          vds-tab-list
+          [orientation]="TabsOrientation.HORIZONTAL"
+          [selectedIndex]="selectedTab"
+        >
+          <li
+            *ngFor="let panelTab of panelTabs; let tabIndex = index"
+            vds-tab-item
+          >
+            <button
+              vdsTab
+              role="button"
+              (click)="selectedTab = tabIndex; sendOutput(); panelTab.click && panelTab.click();"
+            >
+              <svg
+                *ngIf="panelTab.icon"
+                vds-icon
+                [low]="true"
+                [icon]="panelTab.icon"
+              ></svg>
+              {{panelTab.label}}
+            </button>
+          </li>
+        </ul>
+        <ul
+        *ngIf="!panelTabs.length"
+        vds-tab-list
+        [orientation]="TabsOrientation.HORIZONTAL"
+        [selectedIndex]="selectedTab"
+      >
+        <li vds-tab-item>
+          <button
+            vdsTab
+            role="button"
+            (click)="selectedTab = 0; sendOutput()"
+          >
+            <svg
+              vds-icon
+              [low]="true"
+              [icon]="VisaIcon.SEARCH"
+            ></svg>
+            Search
+          </button>
+        </li>
+      </ul>
+
+      </div>
+    </ng-template>
+
+    <div
+      vds-panel-content
+      [openPanelContent]="true"
+    >
+      <div *ngIf="false; else tabSection"></div>
+
+      <div #manualSearch class="search-panel">
+        <ng-content select="[search]"></ng-content>
+      </div>
+
+      <div class="search-filters">
+        <ng-content select="[searchFilters]"></ng-content>
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="panel-footer"
+    *ngIf="panelActions?.length"
+  >
+    <vds-button-group>
+      <button
+        *ngFor="let action of panelActions"
+        vds-button
+        role="button"
+        [color]="action.buttonColor"
+        [disabled]="action.disabled && action.disabled()"
+        (click)="action.click && action.click()"
+      >
+        {{action.label}}
+      </button>
+    </vds-button-group>
+  </div>
+</vds-panel>

@@ -1,0 +1,174 @@
+.footer-container {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  background-color: #fafafa;
+
+  left: 56px;
+  z-index: 2;
+
+  &.row-selected {
+    background-color: #e6f2ff;
+
+    vds-footer ::ng-deep footer {
+      background-color: #e6f2ff;
+    }
+  }
+
+  &.nav-open {
+    left: 240px;
+  }
+
+  &.overlay {
+    left: 0;
+    padding: 0px 74px;
+  }
+
+  &.filter-open {
+    right: 640px;
+  }
+
+  .action-bar {
+    align-items: center;
+    display: flex;
+    justify-content: flex-end;
+
+    .breadcrumb-icon {
+      display: none;
+
+      vds-tooltip {
+        white-space: nowrap;
+
+        ::ng-deep .vds-state--show.vds-tooltip {
+          max-width: unset;
+        }
+      }
+    }
+
+    .breadcrumb {
+      flex-grow: 1;
+      padding-top: 10px;
+    }
+
+    .actions {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 10px 0 50px;
+    }
+
+  }
+
+
+  .build-version {
+    color: #1434cb;
+  }
+
+  .footer-info-text {
+    margin-top: 1rem;
+    font-size: .75rem;
+    line-height: 1.125rem;
+  }
+
+  @media (min-width: 426px) and (max-width: 768px) {
+    padding: 0 40px;
+
+    &.overlay {
+      padding: 0 40px 0 28px;
+    }
+
+    .action-bar {
+      .breadcrumb-icon {
+        display: block;
+        flex-grow: 1;
+      }
+
+      .breadcrumb {
+        display: none;
+      }
+    }
+
+    vds-footer {
+      & ::ng-deep {
+        footer {
+          .vds-grid {
+            padding: unset;
+            max-width: unset;
+
+            .row.col--no-gutter:last-of-type {
+              display: grid;
+              grid-template-columns: auto auto;
+              align-items: center;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  @media (max-width: 960px) {
+    padding: 0 40px;
+
+    &.overlay {
+      padding: 0 40px 0 28px;
+    }
+
+    .action-bar {
+      .breadcrumb-icon {
+        display: block;
+        flex-grow: 1;
+      }
+
+      .breadcrumb {
+        display: none;
+      }
+    }
+
+    vds-footer {
+      & ::ng-deep {
+        footer {
+          .vds-grid {
+            padding: unset;
+            max-width: unset;
+
+            .row.col--no-gutter:last-of-type {
+              display: grid;
+              grid-template-columns: auto auto;
+              align-items: center;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  @media (max-width: 425px) {
+    padding: 0 20px;
+
+    &.overlay {
+      padding: 0 20px 0 28px;
+    }
+
+    .action-bar {
+      .breadcrumb-icon {
+        display: block;
+        flex-grow: 1;
+      }
+
+      .breadcrumb {
+        display: none;
+      }
+    }
+
+    vds-footer {
+      & ::ng-deep {
+        footer {
+          .vds-grid {
+            padding-left: unset;
+            margin: unset;
+          }
+        }
+      }
+    }
+  }
+}

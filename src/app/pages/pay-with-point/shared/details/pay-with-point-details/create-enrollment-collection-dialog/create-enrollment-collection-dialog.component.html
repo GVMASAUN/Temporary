@@ -1,0 +1,13 @@
+
+<app-dialog
+    title="Create Enrollment Collection"
+    [buttons]="dialogButtons"   
+
+>
+    <div class="m-t-20" dialogContent>
+        <app-enrollment-collection-create
+            [createByPwp]="true"
+            (onCreate)="dialogRef?.close($event)"
+        ></app-enrollment-collection-create>
+    </div>
+</app-dialog>

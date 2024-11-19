@@ -1,0 +1,48 @@
+.vds-grid {
+  max-width: unset;
+
+  .form-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 24px 0;
+  }
+
+  vds-date-selector {
+    &::ng-deep .vds-date-selector {
+      height: 50px;
+
+      &::ng-deep .vds-input-label {
+        display: none;
+      }
+
+      &::ng-deep .vds-input {
+        width: unset;
+        min-width: unset;
+        height: unset;
+        min-height: unset;
+      }
+    }
+  }
+
+  .input-row {
+    background-color: #dfebff;
+    vertical-align: middle;
+
+    .action-btns {
+      display: flex;
+      align-items: center;
+    }
+  }
+
+  hr {
+    width: 100%;
+    border-top: 1px solid #cacaca;
+  }
+
+  .add-bin-btn {
+    &::ng-deep :not(.vds-input--focused)>.vds-input-bar {
+      border: 1px solid #797979;
+    }
+  }
+}

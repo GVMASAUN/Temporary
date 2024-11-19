@@ -1,0 +1,42 @@
+form {
+  display: block !important;
+
+  .vsid-search-form-field {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 25px;
+    row-gap: 15px;
+
+    div {
+      grid-column-start: 1;
+      vds-radio-group ::ng-deep fieldset {
+        display: flex;
+      }
+    }
+  }
+
+  .merchant-search-form-divider {
+    margin: 24px 0;
+  }
+
+  .merchant-search-action {
+    .loading-spinner ::ng-deep .vds-progress--spinner {
+      &,
+      svg {
+        height: 40px;
+        width: 113px;
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    .vsid-search-form-field {
+      grid-template-columns: 1fr;
+      column-gap: unset;
+
+      vds-form-field {
+        grid-column: 1 !important;
+      }
+    }
+  }
+}

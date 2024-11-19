@@ -1,0 +1,132 @@
+<table vdsDataTable>
+  <thead vdsThead>
+    <tr vdsTr>
+      <th vdsTh scope="col" width="5%">
+          <vds-checkbox
+            [matTooltip]="
+              selectedIndex.length === tableData.length
+                ? 'Deselect All'
+                : 'Select All'
+            "
+            [matTooltipPosition]="TooltipPosition.RIGHT"
+            label="Select"
+            (click)="selectAllHandler($event)"
+            [indeterminate]="
+              selectedIndex.length > 0 &&
+              selectedIndex.length < tableData.length
+            "
+            [checked]="
+              tableData.length > 0 && selectedIndex.length === tableData.length
+            "
+          ></vds-checkbox>
+
+          <!-- Added label with 0 opacity for VGAR Requirement -->
+          <!-- Table Header shouldn't be empty -->
+          <label vdsLabel class="hidden-label">Select</label>
+      </th>
+
+      <ng-container *ngFor="let column of columns; let i = index">
+        <th vdsTh scope="col" *ngIf="column.checked">
+          <div class="sort-btn">
+            {{ column.label }}
+
+              <button 
+                *ngIf="column.sortable"
+                [matTooltip]="'Sort ' + sortBy[i]?.slice(1) | titlecase"
+                [matTooltipPosition]="TooltipPosition.RIGHT"
+                role="button"
+                vds-button-icon
+                [iconType]="ButtonIconType.LIGHT_TINY"
+                (click)="handleSort(column.value, i)"
+                [attr.aria-label]="'sort ' + column.label + sortBy[i]"
+              >
+                <svg
+                  vds-icon
+                  [icon]="'sortable' + sortBy[i]"
+                  [tiny]="true"
+                ></svg>
+              </button>
+          </div>
+        </th>
+      </ng-container>
+    </tr>
+  </thead>
+  <tbody vdsTbody>
+    <tr
+      vdsTr
+      *ngFor="let row of tableData; let i = index"
+      [class.selected-row]="selectedIndex.includes(i)"
+    >
+      <td vdsTd>
+        <vds-checkbox
+          label="Select"
+          (changed)="checkboxHandler($event, i)"
+          [checked]="selectedIndex.includes(i)"
+          [disabled]="acquirerMerchantType ? (row.bin === '-' || row.caid === '-') : false"
+        ></vds-checkbox>
+      </td>
+      <td vdsTd>
+        {{ row.visaMerchantId }}
+      </td>
+      <td vdsTd>
+        {{ row.visaMerchantName }}
+      </td>
+      <td vdsTd>
+        <vds-form-field>
+          <input
+            vdsInput
+            aria-label="External Id"
+            [maxLength]="30"
+            (input)="assingValue($event, i)"
+            [readonly]="!selectedIndex.includes(i)"
+            [tabindex]="!selectedIndex.includes(i) ? -1 : 0"
+            [value]="extraInfo[i].externalId"
+            [invalid]="!alphaNumeric.test(extraInfo[i].externalId)"
+          />
+        </vds-form-field>
+      </td>
+      <td vdsTd>
+        <div class="vmid-date-selector">
+          <vds-date-selector
+            [hint]="
+              this.extraInfo[i].startDateInMerchantGroup
+                ? ''
+                : 'yyyy-MM-dd HH:mm:ss'
+            "
+            [disabled]="!selectedIndex.includes(i)"
+            (formattedDateChange)="selectDate($event, 'start', i)"
+            [formatInputValue]="'yyyy-MM-dd HH:mm:ss'"
+            [value]="extraInfo[i].startDateInMerchantGroup"
+            [valid]="this.DateRange[i].isValid"
+            [selectsStart]="true"
+            [startDate]="DateRange[i].sDate!"
+            [endDate]="DateRange[i].eDate!"
+            label="Select"
+          ></vds-date-selector>
+          <vds-badge>{{ timeZone }}</vds-badge>
+        </div>
+      </td>
+      <td vdsTd>
+        <div class="vmid-date-selector">
+          <vds-date-selector
+            [hint]="
+              this.extraInfo[i].endDateInMerchantGroup
+                ? ''
+                : 'yyyy-MM-dd HH:mm:ss'
+            "
+            [disabled]="!selectedIndex.includes(i)"
+            (formattedDateChange)="selectDate($event, 'end', i)"
+            [formatInputValue]="'yyyy-MM-dd HH:mm:ss'"
+            [value]="extraInfo[i].endDateInMerchantGroup"
+            [selectsEnd]="true"
+            [startDate]="DateRange[i].sDate!"
+            [endDate]="DateRange[i].eDate!"
+            [minDate]="DateRange[i].sDate!"
+            label="Select"
+          ></vds-date-selector>
+          <vds-badge>{{ timeZone }}</vds-badge>
+        </div>
+      </td>
+    </tr>
+  </tbody>
+</table>

@@ -1,0 +1,21 @@
+.dialog-center {
+  &>div {
+    width: 100%;
+
+    .row {
+      align-items: baseline;
+
+      .timezone {
+        flex-grow: 0;
+      }
+    }
+  }
+
+  .update-dialog-container {
+    width: 620px;
+  }
+
+  .detail-panel {
+    position: relative;
+  }
+}

@@ -1,0 +1,39 @@
+.section {
+  padding: 2rem 0;
+
+  .title {
+    font-size: 1.2rem;
+  }
+
+  .vds-grid {
+    hr {
+      width: 100%;
+      margin: 12px 0;
+    }
+
+    .row.baseline {
+      align-items: baseline;
+    }
+    .col {
+      ::ng-deep {
+        .vds-input {
+          width: 100%;
+        }
+      }
+    }
+  }
+
+  .box {
+    margin-top: 24px;
+    padding: 20px;
+    background: #fafafa;
+
+    .title {
+      font-weight: 600;
+      font-size: unset;
+    }
+    .sub-title {
+      margin-top: 1rem;
+    }
+  }
+}

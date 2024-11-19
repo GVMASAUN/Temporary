@@ -1,0 +1,45 @@
+<div class="dialog-center">
+    <div class="dialog-container">
+
+        <!-- <div class="vds-grid">
+            <div class="row dialog-header-bar">
+                <div class="col--align-end">
+                  <button role="button"
+                    vds-button-icon
+                    aria-label="Close"
+                    [iconType]="ButtonIconType.LIGHT_TINY"
+                    (click)="close()"
+                  >
+                    <svg vds-icon [icon]="VisaIcon.CLOSE" [tiny]="true"></svg>
+                  </button>
+                </div>
+            </div>
+        </div> -->
+
+        <div vds-dialog-card-head>
+            <h2 vds-dialog-card-head-title>ALERT</h2>
+        </div>
+
+        <div vds-dialog-card-body class="detail-panel">
+            <p>
+                Your session is about to expire in 60 seconds.
+            </p>
+            <br>
+            <p>
+                Please click the [CONTINUE] button if you'd like to remain logged in.
+            </p>
+        </div>
+
+        <div vds-dialog-card-footer>
+            <vds-button-group>
+                <button role="button" vds-button [color]="ButtonColor.PRIMARY" (click)="continue()">
+                    CONTINUE
+                </button>
+
+                <button role="button" vds-button [color]="ButtonColor.SECONDARY" (click)="close()">
+                    LOGOUT
+                </button>
+            </vds-button-group>
+        </div>
+    </div>
+</div>

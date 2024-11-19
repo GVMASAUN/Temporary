@@ -1,0 +1,36 @@
+table {
+  margin-top: 16px;
+
+  .selected-row {
+    background: #e1e1e1;
+  }
+  .sort-btn {
+    display: flex;
+    align-items: center;
+  }
+}
+.inactive {
+  &::ng-deep.vds-action-bar--active-controls {
+    background-color: unset;
+  }
+}
+.wrapper-action-bar {
+  min-height: 48px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  .vl {
+    border-left: 1px solid #cacaca;
+    height: 40px;
+    margin: 0 16px;
+  }
+}
+.progress-container {
+  min-height: 100px;
+}
+
+@media (max-width: 768px) {
+  .progress-container {
+    display: none;
+  }
+}

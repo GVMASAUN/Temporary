@@ -1,0 +1,49 @@
+<vds-panel
+    [openPanel]="panelExpended"
+    [attr.aria-expanded]="panelExpended"
+    >
+    <div vds-panel-panel *ngIf="data">
+        <div class="panel-header" vds-panel-content [openPanelContent]="true">
+            <h4>{{panelTitle}}</h4>
+        <hr vdsDivider/>
+        <br>
+        <div class="row">
+            <div vds-dialog-card-head-icon >
+                <img [src]="panelTitleIcon" alt="panel-title" width="20" height="20"/>
+            </div>
+            <div vds-dialog-card-head-title>
+                <h3 *ngIf="panelTitle">{{name}}</h3>
+            </div>
+        </div>
+    </div>
+    
+        <div  vds-panel-content [openPanelContent]="true">
+            <div class="row">
+                <app-detail-view
+                    [fields]="fields"
+                    [data]="data"
+                ></app-detail-view>
+            </div>
+        </div>
+    </div>
+
+    <!-- <vds-tooltip
+        [position]="TooltipPosition.TOP"
+        [text]="panelExpended ? 'Hide Side Panel' : 'Show Side Panel'"
+        >
+        <button role="button"
+            vds-button-icon
+            
+            aria-label="Toggle Panel"
+            (click)='panelExpended = !panelExpended'
+            [iconType]="ButtonIconType.LIGHT_FILL"
+            >
+            <svg
+                vds-icon
+                [tiny]="false"
+                [low]="true"
+                [icon]="panelExpended ?  'arrow_previous' :'arrow_next' ">
+            </svg>    
+        </button>
+    </vds-tooltip> -->
+</vds-panel>

@@ -1,0 +1,73 @@
+<app-header
+[screenTitle]="'Mange '.concat(ENROLLMENT_COLLECTION.name).concat(' - ').concat(enrollmentCollection.enrollmentCollectionName! || '')"
+>
+</app-header>
+<div class="tabs-section">
+  <ul
+    vds-tab-list
+    aria-label="Vertical group on tabs"
+    [orientation]="TabsOrientation.HORIZONTAL"
+  >
+    <li
+      *ngFor="let tab of tabs; let tabIndex = index"
+      vds-tab-item
+    >
+      <button
+        vdsTab
+        role="button"
+        [selected]="(selectedTabIndex === tabIndex)"
+        (focus)="selectedTabIndex = tabIndex"
+      >
+        {{ tab }}
+      </button>
+    </li>
+  </ul>
+</div>
+
+<div
+    *ngIf="initialized"
+    class="w-70"
+>
+    <app-enrollment-collection-detail
+        #detailTab
+        [id]="getTabId(viewName, selectedTabIndex, EnrollmentCollectionStep.DETAILS)"
+        [attr.aria-labelledby]="getTabLabelledById(viewName, selectedTabIndex, EnrollmentCollectionStep.DETAILS)"
+        [enrollmentCollectionFormGroup]="enrollmentCollectionFormGroup"
+        [mode]="mode"
+        [disabled]="!editable"
+    ></app-enrollment-collection-detail>
+</div>
+
+<app-footer
+  [overlay]="false"
+>
+  <vds-button-group *ngIf="editable">
+    <button
+    vds-button
+        role="button"
+        [color]="ButtonColor.PRIMARY"
+        (click)="updateEnrollmentCollection()"
+    >
+      SAVE
+    </button>
+    <button
+        vds-button
+        role="button"
+        [color]="ButtonColor.SECONDARY"
+        (click)="updateEnrollmentCollection(true)"
+    >
+      SAVE & EXIT
+    </button>
+  </vds-button-group>
+  <vds-button-group>
+    <button
+        vds-button
+        role="button"
+        [color]="ButtonColor.TERTIARY"
+        (click)="enrollmentCollectionService.returnToEnrollmentCollectionListPage();"
+    >
+    {{editable ? 'CANCEL' : 'CLOSE'}}
+    </button>
+  </vds-button-group>
+</app-footer>
+<app-progress-spinner></app-progress-spinner>

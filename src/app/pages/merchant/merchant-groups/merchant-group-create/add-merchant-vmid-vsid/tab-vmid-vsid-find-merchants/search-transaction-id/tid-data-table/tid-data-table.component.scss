@@ -1,0 +1,23 @@
+.hidden-label {
+  opacity: 0;
+  font-size: 0;
+}
+
+table {
+  vds-checkbox {
+    ::ng-deep label {
+      font-size: 0 !important;
+    }
+  }
+  
+  .selected-row {
+    background: #e1e1e1;
+  }
+  .sort-btn {
+    display: flex;
+    align-items: center;
+  }
+  .options-menu {
+    right: 0;
+  }
+}

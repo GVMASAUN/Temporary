@@ -1,0 +1,11 @@
+<div
+  [ngClass]="{ header: true, 'nav--open': navOpen }"
+  [ngStyle]="headerStyles"
+>
+  <h1
+    *ngIf="!!screenTitle"
+    class="title"
+  >{{ screenTitle}}</h1>
+
+  <ng-content></ng-content>
+</div>

@@ -1,0 +1,5 @@
+<ng-container *ngIf="value">
+    <span class="m-r-10" [ngClass]="styleClass">{{ formatDate(value, DateFormatEnum.MOMENT_MM_DD_YYYY_HH_MM_A) }}</span>
+
+    <span class="sp-badge vds-badge--neutral"> {{ !convertToLocal ? TimeZoneEnum.GMT : getTimeZone() }}</span>
+</ng-container>

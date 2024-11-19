@@ -1,0 +1,117 @@
+<div>
+  <div vds-dialog-card-head>
+    <h2 vds-dialog-card-head-title>
+      Select Completed Events
+    </h2>
+  </div>
+  <div vds-dialog-card-body>
+    <form 
+      [formGroup]="eventSearchForm" 
+      (ngSubmit)="findCompletedEvents()"
+      class="vds-grid"
+      >
+      <div class="row">
+        <div class="col col--align-center">
+          <vds-form-field>
+            <label vdsLabel>Event ID</label>
+            <input vdsInput number [pattern]="NUMBER_PATTERN" formControlName="eventId" />
+          </vds-form-field>
+        </div>
+        <div class="col col--align-start">
+          <vds-form-field>
+            <label vdsLabel>Event Name</label>
+            <input vdsInput formControlName="eventName" />
+          </vds-form-field>
+        </div>
+        <div class="col col--align-start">
+          <vds-form-field>
+            <label vdsLabel>Offer Status</label>
+            <select vdsSelect formControlName="offerStatusCode" name="create-edit-event-condition-offerStatusCode">
+              <option *ngFor="let option of statuses" [value]="option.value">
+                {{option.label}}
+              </option>
+            </select>
+          </vds-form-field>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col col--align-center">
+          <vds-date-selector
+            label="Event Start Date" 
+            formControlName="startDate"
+            [minDate]="minStartDate"
+            [startDate]="minDate"
+            [endDate]="maxDate"
+            [formatInputValue]="DateFormat.MM_DD_YYYY"
+            (change)="setMinDate($event)"
+          ></vds-date-selector>
+        </div>
+        <div class="col col--align-center">
+          <vds-date-selector 
+            label="Event End Date" 
+            formControlName="endDate"
+            [minDate]="minDate" 
+            [startDate]="minDate"
+            [endDate]="maxDate"
+            [maxDate]="maxEndDate"
+            [formatInputValue]="DateFormat.MM_DD_YYYY"
+            (change)="setMaxDate($event)"
+          ></vds-date-selector>
+        </div>
+        <div class="col--lg-4 col--align-center"></div>
+
+      </div>
+      <div class="row">
+        <div class="col col--align-center">
+          <vds-button-group>
+            <button role="button" vds-button [type]="ButtonType.SUBMIT" [color]="ButtonColor.PRIMARY">
+              SEARCH
+            </button>
+            <button role="button" vds-button [type]="ButtonType.RESET" [color]="ButtonColor.SECONDARY" (click)="eventSearchForm.reset()">
+              CLEAR
+            </button>
+          </vds-button-group>
+        </div>
+
+      </div>
+   </form>
+
+    <app-search-table 
+      #completedEventTable 
+      notFound="No data exists for the provided search filter."
+      [columns]="completedEventColumns"
+      [hideSelectAll]="false"
+      [hideSearchFieldFilters]="true" 
+      [moreColumns]="false" 
+      [dataSource]="dataSource"
+      [sorting]="SortType.STATIC"
+      [isLoading]="isLoading"
+      [tableStyle]="{
+        height: '45vh',
+        overflow: 'auto'
+        }"
+    ></app-search-table>
+   </div>
+
+  <div vds-dialog-card-footer>
+    <vds-button-group direction="right">
+      <button role="button"
+        vds-button
+        [color]="ButtonColor.PRIMARY"
+        (click)="addEvents()"
+        [disabled]="!selected"
+        >
+        ADD Events
+       </button>
+       <button
+        vds-button
+        [color]="ButtonColor.SECONDARY"
+        (click)="close()"
+        >
+       CLOSE
+        </button>
+    </vds-button-group>
+  </div>
+</div>
+
+

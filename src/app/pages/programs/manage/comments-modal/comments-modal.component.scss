@@ -1,0 +1,55 @@
+.dialog-center {
+  .comment-modal {
+    width: 120vh;
+    height: 90vh;
+    display: flex;
+    flex-direction: column;
+
+    .comment-modal-body {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+
+      .add-comment-section {
+        display: flex;
+        align-items: baseline;
+        background: #fafafa;
+        padding: 20px;
+
+        vds-form-field {
+          flex: 1;
+        }
+      }
+
+      .comment-wrapper {
+        overflow: auto;
+
+        .comment-not-found {
+          padding: 20px;
+        }
+
+        .comment-section {
+          .comment-card {
+            margin: 15px;
+
+            .comment-header {
+              display: flex;
+              justify-content: space-between;
+
+              h4 {
+                color: #0052e1;
+              }
+              span {
+                color: #4a4a4a;
+                font-size: 12px;
+              }
+            }
+            .comment-body {
+              margin: 0 10px;
+            }
+          }
+        }
+      }
+    }
+  }
+}

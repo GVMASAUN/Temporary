@@ -1,0 +1,120 @@
+<div class="vds-grid">
+    <div class="row dialog-header-bar">
+        <div class="col--align-end">
+        <button
+            vds-button-icon
+            aria-label="close-button"
+            [iconType]="ButtonIconType.LIGHT_TINY"
+            (click)="close()"
+        >
+            <svg
+                vds-icon
+                [icon]="VisaIcon.CLOSE"
+                [tiny]="true"
+            ></svg>
+        </button>
+        </div>
+    </div>
+</div>
+
+<div class="graph">
+    <ngx-graph
+        [view]="[1240, 540]"
+        [links]="links"
+        [nodes]="nodes"
+        [layoutSettings]="layoutSettings"
+        [layout]="layout"
+        [curve]="curve"
+        [enableZoom]="false"
+        [autoZoom]="false"
+        [autoCenter]="true"
+        [draggingEnabled]="false"
+        [nodeWidth]="140"
+    >
+        <ng-template
+            #nodeTemplate
+            let-node
+            let-index
+        >
+            <svg:g
+                class="nt-svg"
+                [id]="'svg-' + node.id"
+                (click)="handleNodeClick(node)"
+            >
+                <ng-container *ngIf="node?.data?.nodeLevel !== NODE_LEVEL.LEAF">
+                    <!-- Rectangle For Actual Node -->
+                    <rect
+                        tabindex="0"
+                        role="button"
+                        class="node-rectangle f-node-rect"
+                        width="140"
+                        height="80"
+                        fill="#F5F5F5"
+                        [id]="'rect-' + node.id"
+                        [attr.aria-label]="node?.label"
+                        (keyup.enter)="handleNodeClick(node)"
+                    />
+                        <!-- Node label -->
+                        <text
+                            fill="#272727"
+                            font-size="12px"
+                            font-weight="bold"
+                            text-anchor="middle"
+                            dominant-baseline="middle"
+                            [attr.width]="30"
+                            [attr.x]="70"
+                            [attr.y]="20"
+                        >{{ node.label }}
+                        </text>
+                </ng-container>
+                <ng-container *ngIf="node?.data?.nodeLevel === NODE_LEVEL.LEAF">
+                        <rect
+                            tabindex="0"
+                            role="button"
+                            class="node-rectangle f-node-rect"
+                            width="140"
+                            height="40"
+                            fill="#F5F5F5"
+                            rx="20"
+                            [id]="'rect-' + node.id"
+                            [attr.aria-label]="node?.label"
+                            (keyup.enter)="handleNodeClick(node)"
+                        />
+                        <text
+                            fill="#272727"
+                            font-size="12px"
+                            font-weight="bold"
+                            text-anchor="middle"
+                            dominant-baseline="middle"
+                            [attr.width]="30"
+                            [attr.x]="70"
+                            [attr.y]="20" 
+                        >{{ node.label }}
+                        </text>   
+                </ng-container>
+            </svg:g>
+        </ng-template>
+        <ng-template
+            #linkTemplate
+            let-link
+        >
+            <svg:g class="edge">
+                <svg:path
+                    class="line"
+                    stroke-dasharray="3"
+                    stroke-width="1"
+                    stroke="#979797"
+                >
+                </svg:path>
+                <svg:text
+                    class="edge-label"
+                    text-anchor="middle"
+                >
+                <!-- <textPath class="text-path" [attr.href]="'#' + link.id" startOffset="50%" [attr.tabindex]="link.label?.length>0 ? '0':'-1'">
+                    {{link.label}}
+                </textPath> -->
+                </svg:text>
+            </svg:g>
+        </ng-template>
+    </ngx-graph>
+</div>

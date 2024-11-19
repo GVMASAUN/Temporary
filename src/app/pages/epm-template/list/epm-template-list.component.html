@@ -1,0 +1,39 @@
+<app-header 
+    screenTitle="EPM Templates"
+></app-header>
+
+<!-- <div>
+    <ul
+        vds-tab-list
+        [orientation]="TabsOrientation.HORIZONTAL"
+        >
+        <li vds-tab-item *ngFor="let tab of tabs; let tabIndex = index">
+            <button role="button" 
+                vdsTab
+                [selected]="selectedTabIndex === tabIndex"
+                (focus)="selectedTabIndex = tabIndex"
+            >
+                {{ tab }}
+            </button>
+        </li>
+    </ul>
+</div>
+
+<hr vdsDivider/> -->
+
+<app-search-table
+    tableId="epm-template-list"
+    [tableActions]="tableActions"
+    [columns]="tableColumns"
+    [searchFields]="advancedSearchFields"
+    [hideSelectAll]="true"
+    [hideSearchFieldFilters]="true"
+    [search]="getTemplateList.bind(this)"
+    [tableStyle]="{
+        height: '63vh',
+        overflow: 'auto'
+        }"
+    notFound="No data exists for the provided search filter.">
+</app-search-table>
+
+<app-footer [panelOpen]="isPanelOpen"></app-footer>

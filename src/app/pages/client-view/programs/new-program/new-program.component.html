@@ -1,0 +1,15 @@
+<app-header>
+  <div class="sections">
+    Sections
+    <vds-badge [type]="badgeType.NEUTRAL">
+      <svg vds-icon [icon]="'circle-filled'" [tiny]="true"></svg>
+      Basics
+    </vds-badge>
+    <vds-badge [type]="badgeType.STATUS">
+      <svg vds-icon icon="circle-empty" [tiny]="true"></svg>
+      Program Builder
+    </vds-badge>
+  </div>
+</app-header>
+
+<router-outlet></router-outlet>

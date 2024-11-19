@@ -1,0 +1,669 @@
+<div class="vds-grid">
+    <section [formGroup]="form" class="detail-container">
+        <div class="row status-container" *ngIf="showStatusDetails">
+            <div class="row">
+                <strong>Status</strong>
+            </div>
+            <div class="row">
+                <div class="col--lg-2">
+                    <span> Status Details</span>
+                </div>
+                <div class="col">
+                    <vds-badge
+                    [type]="STATUS_BADGE_TYPE[eventGroup.eventGroupStatusCode || StatusCode.DRAFT]"
+                    >{{STATUS_DESC[eventGroup.eventGroupStatusCode || StatusCode.DRAFT]}}
+                    </vds-badge>
+                </div>
+            </div>
+    
+            <div class="row">
+                <button role="button" *ngIf="eventGroup.eventGroupStatusCode === StatusCode.DRAFT || eventGroup.eventGroupStatusCode === StatusCode.REJECTED" 
+                    vds-button
+                    [isFullWidth]="false"
+                    [disabled]="(mode === DialogMode.CREATE) || userRole === UserRole.CLIENT_READ_ONLY || disabled"
+                    (click)="workflowChangeEmitter.emit(WorkFlowAction.SUBMIT_FOR_APPROVAL)"
+                    >Submit For Approval
+                </button>
+               
+                <button role="button" *ngIf="eventGroup.eventGroupStatusCode === StatusCode.APPROVED" 
+                    vds-button
+                    [isFullWidth]="false"
+                    [disabled]="disabledPublish"
+                    (click)="workflowChangeEmitter.emit(WorkFlowAction.PUBLISH)"
+                    >Publish
+                </button>
+               
+                <button role="button" *ngIf="eventGroup.eventGroupStatusCode === StatusCode.PENDING_REVIEW" 
+                    vds-button
+                    [isFullWidth]="false"
+                    [disabled]="disabledApproveOrReject"
+                    (click)="workflowChangeEmitter.emit(WorkFlowAction.APPROVE)"
+                    >Approve
+                </button>
+
+                <button role="button" *ngIf="eventGroup.eventGroupStatusCode === StatusCode.PENDING_REVIEW" 
+                    vds-button
+                    [isFullWidth]="false"
+                    [disabled]="disabledApproveOrReject"
+                    (click)="workflowChangeEmitter.emit(WorkFlowAction.REJECT)"
+                    >Reject
+                </button> 
+
+                <button role="button" *ngIf="(eventGroup.workflowVersionNumber === 1) && !isPublishedVersion && (userRole !== UserRole.CLIENT_READ_ONLY)"
+                    vds-button
+                    [isFullWidth]="false"
+                    (click)="workflowChangeEmitter.emit(WorkFlowAction.DELETE)"
+                    >Delete
+                </button>
+
+                <button role="button" *ngIf="(eventGroup.workflowVersionNumber! > 1) && !isPublishedVersion && (userRole !== UserRole.CLIENT_READ_ONLY)"
+                    vds-button
+                    [isFullWidth]="false"
+                    (click)="workflowChangeEmitter.emit(WorkFlowAction.DISCARD)"
+                    >Discard
+                </button>
+            </div>
+            
+            <div class="row" *ngIf="(mode === DialogMode.EDIT ) && (!editable && disabledApproveOrReject)">
+                <p [show]="eventGroup.modifiedUserId === currentUserId" vdsErrorMessage>
+                    <svg vds-icon [icon]="VisaIcon.ERROR" [tiny]="true"></svg>
+                   A different user account is required to approve or reject this event group.
+                </p>  
+            </div>
+        </div>
+
+        <hr vdsDivider *ngIf="showStatusDetails"/>
+
+        <div class="row">
+            <div class="col col--align-center">
+                <label vdsLabel>Event Group Information</label>
+            </div>
+        </div>
+        <div class="row form-container">
+            <div class="col">
+                <form [formGroup]="form">
+                    <vds-form-field>
+                        <label vdsLabel>Event Group Name *</label>
+                        <input vdsInput 
+                            formControlName="eventGroupName"
+                            name="eventGroupName" 
+                            [readonly]="disabled || !editable"
+                            [tabindex]="disabled || !editable ? -1 : 0"
+                            aria-required="true"
+                            [invalid]="!!getErrorMessage(form, 'eventGroupName')"
+                        />
+                        <span vdsErrorMessage aria-atomic="true" aria-live="assertive">
+                            <ng-container *ngIf="!!getErrorMessage(form, 'eventGroupName')">
+                                <svg vds-icon [icon]="VisaIcon.ERROR" [tiny]="true"></svg>
+                                Error: {{ getErrorMessage(form, 'eventGroupName') }}
+                            </ng-container>
+                        </span>
+                    </vds-form-field>
+            
+                    <vds-form-field>
+                        <label vdsLabel>Description</label>
+                        <textarea vdsInput 
+                            formControlName="eventGroupDescription"
+                            [readonly]="disabled || !editable"
+                            [tabindex]="disabled || !editable ? -1 : 0"
+                            [invalid]="!!getErrorMessage(form, 'eventGroupDescription')"
+                        ></textarea>
+                        <span vdsErrorMessage aria-atomic="true" aria-live="assertive">
+                            <ng-container *ngIf="!!getErrorMessage(form, 'eventGroupDescription')">
+                                <svg vds-icon [icon]="VisaIcon.ERROR" [tiny]="true"></svg>
+                                Error: {{ getErrorMessage(form, 'eventGroupDescription') }}
+                            </ng-container>
+                        </span>
+                    </vds-form-field>
+                    
+                    <div class="row">
+                        <div class="col--lg-6" [class.date-selector-wrapper]="!!disabledStartDateTimeMessage">
+                            <vds-date-selector
+                                label="Start Date (MM/DD/YYYY) *"
+                                formControlName="eventGroupStartDate"
+                                [required]="true"
+                                [placement]="CALENDAR_PLACEMENT.BOTTOM"
+                                [formatInputValue]="DateFormat.MM_DD_YYYY"
+                                [disabled]="disabled || !!disabledStartDateTimeMessage"
+                                [valid]="!getErrorMessage(form, 'eventGroupStartDate')"
+                            ></vds-date-selector>
+                            <span vdsErrorMessage aria-atomic="true" aria-live="assertive" class="flex-container">
+                                <ng-container *ngIf="!!getErrorMessage(form, 'eventGroupStartDate')">
+                                    <svg vds-icon [icon]="VisaIcon.ERROR" [tiny]="true"></svg>
+                                    Error: {{ getErrorMessage(form, 'eventGroupStartDate') }}
+                                </ng-container>
+                            </span>
+
+                            <span *ngIf="!!disabledStartDateTimeMessage" class="info-icon" [matTooltip]="disabledStartDateTimeMessage" matTooltipPosition="above">
+                                <svg vds-icon [icon]="VisaIcon.INFO" [tiny]="true"></svg>
+                            </span>
+                        </div>
+            
+                        <div class="col--lg-3">
+                            <app-time-picker
+                                formControlName="startTime"
+                                aria-required="true"
+                                [isRequired]="true"
+                                [disabled]="disabled || !!disabledStartDateTimeMessage"
+                                [invalid]="!!getErrorMessage(form, 'startTime')"
+                            >
+                            </app-time-picker>
+                            <span vdsErrorMessage aria-atomic="true" aria-live="assertive" class="flex-container">
+                                <ng-container *ngIf="!!getErrorMessage(form, 'startTime')">
+                                    <svg vds-icon icon="error" [tiny]="true"></svg>
+                                    Error: {{ getErrorMessage(form, 'startTime') }}
+                                </ng-container>
+                            </span>
+                        </div>
+            
+                        <div class="col--lg-3 col--valign-center">
+                            <vds-badge>
+                            {{ timeZone }}
+                          </vds-badge>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col--lg-6" [class.date-selector-wrapper]="!!disabledEndDateTimeMessage">
+                            <vds-date-selector
+                                label="End Date (MM/DD/YYYY) *"
+                                formControlName="eventGroupEndDate"
+                                [required]="true"
+                                [formatInputValue]="DateFormat.MM_DD_YYYY"
+                                [placement]="CALENDAR_PLACEMENT.TOP"
+                                [disabled]="disabled || !!disabledEndDateTimeMessage"
+                                [valid]="!getErrorMessage(form, 'eventGroupEndDate')"
+                            ></vds-date-selector>
+                            <span vdsErrorMessage aria-atomic="true" aria-live="assertive" class="flex-container">
+                                <ng-container *ngIf="!!getErrorMessage(form, 'eventGroupEndDate')">
+                                    <svg vds-icon [icon]="VisaIcon.ERROR" [tiny]="true"></svg>
+                                    Error: {{ getErrorMessage(form, 'eventGroupEndDate') }}
+                                </ng-container>
+                            </span>
+
+                            <span *ngIf="!!disabledEndDateTimeMessage" class="info-icon" [matTooltip]="disabledEndDateTimeMessage" matTooltipPosition="above">
+                                <svg vds-icon [icon]="VisaIcon.INFO" [tiny]="true"></svg>
+                            </span>
+                        </div>
+            
+                        <div class="col--lg-3">
+                            <app-time-picker
+                                formControlName="endTime"
+                                aria-required="true"
+                                [isRequired]="true"
+                                [disabled]="disabled || !!disabledEndDateTimeMessage"
+                                [invalid]="!!getErrorMessage(form, 'endTime')"
+                            >
+                            </app-time-picker>
+                            <span vdsErrorMessage aria-atomic="true" aria-live="assertive" class="flex-container">
+                                <ng-container *ngIf="!!getErrorMessage(form, 'endTime')">
+                                    <svg vds-icon icon="error" [tiny]="true"></svg>
+                                    Error: {{ getErrorMessage(form, 'endTime') }}
+                                </ng-container>
+                            </span>
+                        </div>  
+            
+                        <div class="col--lg-3 col--valign-center">
+                            <vds-badge>
+                            {{ timeZone }}
+                          </vds-badge>
+                        </div>
+                    </div>          
+                </form>
+            </div>
+        </div>
+
+        <hr vdsDivider/>
+
+        <div class="row">
+            <h3 class="f-s-1">Events</h3>
+        </div>
+
+        <div *ngIf="initData" class="accordion-panel">
+            <vds-accordion>
+                <vds-accordion-item [id]="getEventAccordionViewId(eventFormGroup?.value)" *ngFor="let eventFormGroup of getFormArray(form, 'eventStageList'); let index=index; trackBy:eventTrackBy">
+                    <vds-accordion-heading>
+                        <vds-accordion-title >Event | {{eventFormGroup.value?.eventName}}</vds-accordion-title>
+                    </vds-accordion-heading>
+                    <vds-accordion-body>
+                        <div [formGroup]="eventFormGroup" class="vds-grid gray-panel">
+                            <div class="row">
+                                <div class="col">
+                                    Essentials
+                                </div>
+                            </div>
+                            <!-- Event Name -->
+                            <ng-template 
+                                [ngTemplateOutlet]="detailRow"
+                                [ngTemplateOutletContext]="{label:'Event Name', value: getFormValue(eventFormGroup).eventName}"
+                            ></ng-template> 
+                            <!-- Description -->
+                            <ng-template 
+                                [ngTemplateOutlet]="detailRow"
+                                [ngTemplateOutletContext]="{label:'Description', value: getFormValue(eventFormGroup).eventDescription}"
+                            ></ng-template> 
+                            <!-- Event Type -->
+                            <ng-template 
+                                [ngTemplateOutlet]="detailRow"
+                                [ngTemplateOutletContext]="{label:'Event Type', value: getFormValue(eventFormGroup).eventType}"
+                            ></ng-template>                             
+                              
+                            <div class="row">
+                                <div class="col--lg-3">
+                                     <vds-radio-group role="radiogroup"
+                                        formControlName="recurrenceLimit"
+                                        [required]="true"
+                                        [disabled]="disabled || getFormValue(eventFormGroup)?.recurrenceLimitLocked"
+                                    >
+                                      <legend vdsLegend>Recurrence Limit *
+                                        <svg *ngIf="getFormValue(eventFormGroup)?.recurrenceLimitLocked" vds-icon [icon]="VisaIcon.LOCK" [tiny]="true"></svg>
+                                      </legend>
+                                      <vds-radio
+                                          *ngFor="let option of recurrenceLimits; let option_index = index"
+                                          [label]="option.label"
+                                          [radioValue]="option.value"
+                                          [checked]="(getFormValue(eventFormGroup).recurrenceLimit >= RecurrenceLimit.UpTo) ? option.value === RecurrenceLimit.UpTo : option.value === getFormValue(eventFormGroup).recurrenceLimit"
+                                          [name]="'recurrenceLimit'+index"
+                                          [disabled]="disabled || getFormValue(eventFormGroup)?.recurrenceLimitLocked"
+                                          [invalid]="!!getErrorMessage(eventFormGroup, 'recurrenceLimit')"
+                                      ></vds-radio>
+                                      <span vdsErrorMessage aria-atomic="true" aria-live="assertive" class="flex-container">
+                                        <ng-container *ngIf="!!getErrorMessage(eventFormGroup, 'recurrenceLimit')">
+                                            <svg vds-icon [icon]="VisaIcon.ERROR" [tiny]="true"></svg>
+                                            Error: {{ getErrorMessage(eventFormGroup, 'recurrenceLimit') }}
+                                        </ng-container>
+                                      </span>
+                                  </vds-radio-group>
+                                </div>
+                
+                                
+                                <div *ngIf="getFormValue(eventFormGroup)?.recurrenceLimit >= RecurrenceLimit.UpTo" class="col col--align-start col--valign-bottom">
+                                    <div class="row">
+                                        <div class="col">
+                                            <vds-form-field>
+                                                <input
+                                                  vdsInput
+                                                  formControlName="occurrence"
+                                                  [name]="'occurrence'+index"
+                                                  [readonly]="disabled || getFormValue(eventFormGroup)?.recurrenceLimitLocked"
+                                                  [tabindex]="disabled || getFormValue(eventFormGroup)?.recurrenceLimitLocked ? -1 : 0"
+                                                  aria-required="true"
+                                                  [invalid]="!!getErrorMessage(eventFormGroup, 'occurrence')"
+                                                />
+                                                <span vdsErrorMessage aria-atomic="true" aria-live="assertive" class="flex-container">
+                                                    <ng-container *ngIf="!!getErrorMessage(eventFormGroup, 'occurrence')">
+                                                        <svg vds-icon [icon]="VisaIcon.ERROR" [tiny]="true"></svg>
+                                                        Error: {{ getErrorMessage(eventFormGroup, 'occurrence') }}
+                                                    </ng-container>
+                                                </span>
+                                            </vds-form-field>
+                                        </div>
+                                        <div class="col col--align-start col--valign-center">
+                                            <label vdsLabel>occurrences per enrollee (numeric)
+                                            </label>
+                                        </div>
+            
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row divider"></div>
+
+                            <div class="row">
+                                Event Conditions
+                            </div>
+                            <div class="row">
+                                <vds-accordion class="accordion-panel">
+                                    <vds-accordion-item>
+                                        <vds-accordion-heading>
+                                            <vds-accordion-title >Attribute</vds-accordion-title>
+                                        </vds-accordion-heading>
+                                        <vds-accordion-body>
+                                            <app-create-edit-condition
+                                                *ngFor="let conditionForm of getFormArray(eventFormGroup,'eventDetails')"
+                                                [eventConditionForm]="getEventConditionFormGroup(conditionForm)"
+                                                [disabled]="disabled"
+                                                [eventFormGroup]="eventFormGroup"
+                                                [event]="eventFormGroup.value"
+                                                [action]="EventConditionAction.EDIT"
+                                                [attributes]="(conditionForm?.value?.attributeCategory === AttributeCategory.EVENT) ? eventConditionAttributesForEvent : eventConditionAttributesForTargeting"
+                                                [attributeGroups]="(conditionForm?.value?.attributeCategory === AttributeCategory.EVENT) ? eventConditionAttributeGroupsForEvent : eventConditionAttributeGroupsForTargeting"
+                                                [eventConditionDetails]="conditionForm?.value"
+                                                [attributeCategory]="conditionForm?.value?.attributeCategory"
+                                                [isTemplateEvent]="false"
+                                                [creatingByEventGroupTemplate]="true"
+                                                (onSubmitEmitter)="handleEventConditionSubmit($event)"   
+                                            ></app-create-edit-condition>
+                                        </vds-accordion-body>
+                                    </vds-accordion-item>
+                                </vds-accordion>
+                            </div>  
+
+                            <div class="row divider"></div>
+
+                            <div class="row m-t-20">
+                                Event Actions
+                            </div>
+                            <div class="row">
+                                <vds-accordion class="accordion-panel">
+                                    <vds-accordion-item  
+                                        [id]="getEventActionAccordionViewId(eventActionFormGroup?.value)"
+                                        *ngFor="let eventActionFormGroup of getFormArray(eventFormGroup,'eventActions'); let index_action=index;trackBy:eventActionTrackBy"
+                                        (change)="handleEventActionAccordionChange()"
+                                        >
+                                        <vds-accordion-heading>
+                                            <vds-accordion-title >Event Action | {{eventActionFormGroup?.value?.eventActionName}}</vds-accordion-title>
+                                        </vds-accordion-heading>
+                                        <vds-accordion-body>
+                                            <div *ngIf="initializeEventActionForm" [formGroup]="eventActionFormGroup" class="vds-grid ">
+                                                <ng-template 
+                                                    class="col--no-gutter"
+                                                    [ngTemplateOutlet]="detailRow"
+                                                    [ngTemplateOutletContext]="{label:'Name', value: eventActionFormGroup?.value?.eventActionName}"
+                                                ></ng-template>
+
+                                                <div class="row divider"></div>
+
+                                                <ng-container *ngIf="(EventActionType.Endpoint === getFormValue(eventActionFormGroup)?.eventActionType)
+                                                    || (EventActionType.EndpointAggregate === getFormValue(eventActionFormGroup)?.eventActionType)">
+                                                    <vds-form-field class="row col--no-gutter">
+                                                        <label vdsLabel>Endpoint*
+                                                        </label>
+                                                        <select
+                                                            vdsSelect
+                                                            formControlName="endpointUrlName"
+                                                            [required]="true"
+                                                            [disabled]="disabled"
+                                                            [invalid]="!!getErrorMessage(eventActionFormGroup, 'endpointUrlName')"
+                                                        >
+                                                            <option value="" disabled hidden>Select Option</option>
+                                                            <option
+                                                            *ngFor="let endpoint of eventActionEndpoints"
+                                                            [selected]="endpoint.name == getFormValue(eventActionFormGroup)?.endpointUrlName"
+                                                            [value]="endpoint.name"
+                                                        >
+                                                            {{ endpoint.name }}
+                                                        </option>
+                                                        </select>
+                                                        <span vdsErrorMessage aria-atomic="true" aria-live="assertive" class="flex-container">
+                                                            <ng-container *ngIf="!!getErrorMessage(eventActionFormGroup, 'endpointUrlName')">
+                                                                <svg vds-icon [icon]="VisaIcon.ERROR" [tiny]="true"></svg>
+                                                                Error: {{ getErrorMessage(eventActionFormGroup, 'endpointUrlName') }}
+                                                            </ng-container>
+                                                        </span>
+                                                    </vds-form-field>
+
+                                                    <div class="row">
+                                                        <div class="col--lg-10 col--valign-center col--no-gutter">
+                                                          <label vdsLabel>Select Endpoint Message*
+                                                            <svg *ngIf="getFormValue(eventActionFormGroup)?.endpointMessageNameLocked" vds-icon [icon]="VisaIcon.LOCK" [tiny]="true"></svg>
+                                                          </label>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div class="row combobox-container">
+                                                        <div vds-combobox [type]="ComboboxType.AUTO">
+                                                          <vds-form-field class="row">
+                                                            <label vdsLabel></label>
+                                                            <input 
+                                                                vdsInput 
+                                                                aria-required="true" 
+                                                                [value]="getFormValue(eventActionFormGroup)?.endpointMessageName" 
+                                                                placeholder="Search in Message"
+                                                                [readonly]="disabled || getFormValue(eventActionFormGroup)?.endpointMessageNameLocked"
+                                                                [tabindex]="disabled || getFormValue(eventActionFormGroup)?.endpointMessageNameLocked ? -1 : 0" 
+                                                            />
+                                                            
+                                                            <button role="button"
+                                                              vdsSuffix
+                                                              vds-button-icon
+                                                              aria-label="expand-field-button"
+                                                              [iconType]="ButtonIconType.LIGHT_TINY"
+                                                              [disabled]="disabled || getFormValue(eventActionFormGroup)?.endpointMessageNameLocked"
+
+                                                            >
+                                                              <svg vds-icon [icon]="VisaIcon.ARROW_EXPAND" [tiny]="true"></svg>
+                                                            </button>
+                                                          </vds-form-field>
+                                                          <vds-menu class="row">
+                                                            <ul 
+                                                                vds-listbox 
+                                                                formControlName="endpointMessageId"
+                                                                aria-required="true"
+                                                                id="event-group-endpoint-message-listbox"
+                                                                [disabled]="disabled || getFormValue(eventActionFormGroup)?.endpointMessageNameLocked"
+                                                                (change)="handleMessageChange($event, eventActionFormGroup)">
+                                                                <li
+                                                                    *ngFor="let item of endPointMessageList"
+                                                                    vds-listbox-item
+                                                                    [value]="item.messageId"
+                                                                    [disabled]="disabled || getFormValue(eventActionFormGroup)?.endpointMessageNameLocked"
+                                                                    [selected]="item.messageId == getFormValue(eventActionFormGroup)?.endpointMessageId"
+                                                                >
+                                                                {{ item.messageName }}
+                                                              </li>
+                                                            </ul>
+                                                          </vds-menu>
+                                                          <span vdsErrorMessage aria-atomic="true" aria-live="assertive" class="flex-container">
+                                                            <ng-container *ngIf="!!getErrorMessage(eventActionFormGroup, 'endpointMessageId')">
+                                                                <svg vds-icon [icon]="VisaIcon.ERROR" [tiny]="true"></svg>
+                                                                Error: {{ getErrorMessage(eventActionFormGroup, 'endpointMessageId') }}
+                                                            </ng-container>
+                                                            </span>
+                                                        </div>
+                                                      </div>                                                    
+                                                    <div class="row">
+                                                        <div class="block">
+                                                          <div class="title">
+                                                            <h5>Custom Fields</h5>
+                                                            <svg *ngIf="getFormValue(eventActionFormGroup)?.customFieldValuesLocked" vds-icon [icon]="VisaIcon.LOCK" [tiny]="true"></svg>
+
+                                                            <span>
+                                                              Enter value(s) for custom Field(s):
+                                                            </span>
+                                                          </div>
+                                                          <div class="field-section">
+                                                            <div class="user-field-section">
+                                                                <div formArrayName="customFieldValueList"
+                                                                *ngFor="let customValueForm of getFormArray(eventActionFormGroup,'customFieldValueList')">
+                                                                    <vds-form-field [formGroup]="customValueForm">
+                                                                        <label vdsLabel>{{ getFormValue(customValueForm).key }}</label>
+                                                                        <input vdsInput                                                             
+                                                                        [readonly]="disabled || getFormValue(eventActionFormGroup)?.customFieldValuesLocked"
+                                                                        [tabindex]="disabled || getFormValue(eventActionFormGroup)?.customFieldValuesLocked ? -1 : 0"
+                                                                        formControlName="value" />
+                                                                    
+                                                                    </vds-form-field>
+                                                                </div>
+
+                                                            </div>
+                                            
+                                                            <hr vdsDivider />
+                                            
+                                                            <div class="system-field-section">
+                                                              <h5>Included Message Fields</h5>
+                                                              <table vdsDataTable>
+                                                                <caption vdsScreenReader>
+                                                                  System Defined Fields
+                                                                </caption>
+                                                                <tbody vdsTbody>
+                                                                  <tr vdsTr *ngFor="let filed of systemFieldsList">
+                                                                    <td vdsTd>
+                                                                      {{ filed }}
+                                                                    </td>
+                                                                  </tr>
+                                                                </tbody>
+                                                              </table>
+                                                            </div>
+                                                          </div>
+                                                        </div>
+                                                    </div>  
+                                                    
+                                                    
+
+
+                                                </ng-container> 
+                                                <ng-container *ngIf="EventActionType.StatementCredit === getFormValue(eventActionFormGroup)?.eventActionType">
+                                                     <vds-radio-group role="radiogroup"
+                                                    formControlName="fulfillmentMonetaryType"
+                                                    [required]="true"
+                                                    [disabled]="disabled"
+                                                  >
+                                                    <legend vdsLegend>Reward Type*</legend>
+                                                    <vds-radio
+                                                      [disabled]="disabled"
+                                                      [invalid]="!!getErrorMessage(eventActionFormGroup, 'fulfillmentMonetaryType')"
+                                                      label="Fixed Amount"
+                                                      [radioValue]="EventActionFulfillmentMonetaryType.Fixed"
+                                                      [name]="'radioValue'+index+index_action"
+                                                      [checked]="eventActionFormGroup.value?.fulfillmentMonetaryType === EventActionFulfillmentMonetaryType.Fixed"
+                                                    >
+                                                    </vds-radio>
+                                                    <vds-radio
+                                                      [disabled]="disabled"
+                                                      [invalid]="!!getErrorMessage(eventActionFormGroup, 'fulfillmentMonetaryType')"
+                                                      label="Percentage of Transaction"
+                                                      [radioValue]=EventActionFulfillmentMonetaryType.Pct
+                                                      [name]="'radioValue'+index+index_action"
+                                                      [checked]="eventActionFormGroup.value?.fulfillmentMonetaryType === EventActionFulfillmentMonetaryType.Pct"
+                                                    >
+                                                    </vds-radio>
+                                                    <span vdsErrorMessage aria-atomic="true" aria-live="assertive" class="flex-container">
+                                                        <ng-container *ngIf="!!getErrorMessage(eventActionFormGroup, 'fulfillmentMonetaryType')">
+                                                            <svg vds-icon [icon]="VisaIcon.ERROR" [tiny]="true"></svg>
+                                                            Error: {{ getErrorMessage(eventActionFormGroup, 'fulfillmentMonetaryType') }}
+                                                        </ng-container>
+                                                    </span>
+                                                  </vds-radio-group>
+                                                  <div class="row">
+                                                    <div class="block">
+                                                      <div *ngIf="eventActionFormGroup.value?.fulfillmentMonetaryType === EventActionFulfillmentMonetaryType.Pct; else fixedBlock">
+                                                        <vds-form-field>
+                                                          <label vdsLabel>Percentage (%)*</label>
+                                                          <input vdsInput 
+                                                            [readonly]="disabled"
+                                                            [tabindex]="disabled ? -1 : 0"
+                                                            formControlName="fulfillmentMonetaryValue"
+                                                            aria-required="true"
+                                                            [invalid]="!!getErrorMessage(eventActionFormGroup, 'fulfillmentMonetaryValue')"
+                                                            />
+                                                          <span vdsErrorMessage aria-atomic="true" aria-live="assertive" class="flex-container">
+                                                            <ng-container *ngIf="!!getErrorMessage(eventActionFormGroup, 'fulfillmentMonetaryValue')">
+                                                                <svg vds-icon [icon]="VisaIcon.ERROR" [tiny]="true"></svg>
+                                                                Error: {{ getErrorMessage(eventActionFormGroup, 'fulfillmentMonetaryValue') }}
+                                                            </ng-container>
+                                                        </span>
+                                                        </vds-form-field>
+                                                        <vds-form-field>
+                                                          <label vdsLabel>Transaction Attribute*</label>
+                                                          <select vdsSelect 
+                                                          [disabled]="disabled"
+                                                          formControlName="amountType"
+                                                          [required]="true"
+                                                          [invalid]="!!getErrorMessage(eventActionFormGroup, 'amountType')"
+                                                          >
+                                                            <option value="" disabled hidden>Select Option</option>
+                                                            <option  *ngFor="let op of amountTypeList">
+                                                                {{op.name}}
+                                                            </option>
+                                                          </select>
+                                                          <span vdsErrorMessage aria-atomic="true" aria-live="assertive" class="flex-container">
+                                                            <ng-container *ngIf="!!getErrorMessage(eventActionFormGroup, 'amountType')">
+                                                                <svg vds-icon [icon]="VisaIcon.ERROR" [tiny]="true"></svg>
+                                                                Error: {{ getErrorMessage(eventActionFormGroup, 'amountType') }}
+                                                            </ng-container>
+                                                        </span>
+                                                        </vds-form-field>
+                                                        <vds-form-field>
+                                                          <label vdsLabel>Max Amount Permitted (USD) *</label>
+                                                          <input vdsInput 
+                                                            [readonly]="disabled"
+                                                            [tabindex]="disabled ? -1 : 0"
+                                                            formControlName="fulfillmentConstraint"
+                                                            aria-required="true"
+                                                            [invalid]="!!getErrorMessage(eventActionFormGroup, 'fulfillmentConstraint')"
+                                                            />
+                                                        </vds-form-field>
+                                                        <vds-error vdsErrorMessage [show]="!!getErrorMessage(eventActionFormGroup, 'fulfillmentConstraint')">{{getErrorMessage(eventActionFormGroup, 'fulfillmentConstraint')}}</vds-error>
+                                                      </div>
+                                                      <ng-template #fixedBlock>
+                                                        <div>
+                                                          <vds-form-field>
+                                                            <label vdsLabel>Amount (USD)*</label>
+                                                            <input vdsInput 
+                                                            [readonly]="disabled"
+                                                            [tabindex]="disabled ? -1 : 0"
+                                                            formControlName="fulfillmentMonetaryValue"
+                                                            aria-required="true"
+                                                            [invalid]="!!getErrorMessage(eventActionFormGroup, 'fulfillmentMonetaryValue')" 
+                                                            />
+                                                            <span vdsErrorMessage aria-atomic="true" aria-live="assertive" class="flex-container">
+                                                                <ng-container *ngIf="!!getErrorMessage(eventActionFormGroup, 'fulfillmentMonetaryValue')">
+                                                                    <svg vds-icon [icon]="VisaIcon.ERROR" [tiny]="true"></svg>
+                                                                    Error: {{ getErrorMessage(eventActionFormGroup, 'fulfillmentMonetaryValue') }}
+                                                                </ng-container>
+                                                            </span>
+                                                          </vds-form-field>
+                                                        </div>
+                                                      </ng-template>
+                                                      <vds-form-field>
+                                                        <label vdsLabel>Merchant Descriptor Name*</label>
+                                                        <input vdsInput
+                                                        [readonly]="disabled"
+                                                        [tabindex]="disabled ? -1 : 0"
+                                                        formControlName="merchantDescriptor"
+                                                        aria-required="true"
+                                                        [invalid]="!!getErrorMessage(eventActionFormGroup, 'merchantDescriptor')"
+                                                        />
+                                                        <span vdsErrorMessage aria-atomic="true" aria-live="assertive" class="flex-container">
+                                                            <ng-container *ngIf="!!getErrorMessage(eventActionFormGroup, 'merchantDescriptor')">
+                                                                <svg vds-icon [icon]="VisaIcon.ERROR" [tiny]="true"></svg>
+                                                                Error: {{ getErrorMessage(eventActionFormGroup, 'merchantDescriptor') }}
+                                                            </ng-container>
+                                                        </span>
+                                                      </vds-form-field>
+                                                      <vds-form-field>
+                                                        <label vdsLabel>Merchant Descriptor City</label>
+                                                        <input vdsInput 
+                                                        [readonly]="disabled"
+                                                        [tabindex]="disabled ? -1 : 0"
+                                                        formControlName="merchantCity" />
+                                                      </vds-form-field>
+                                                    </div>
+                                                  </div>                                                  
+                                                </ng-container>
+                                            
+                                            </div>
+                                    
+                                        </vds-accordion-body>
+                                    </vds-accordion-item>
+                                </vds-accordion>
+                            </div>                                  
+                        </div>
+                    </vds-accordion-body>
+                </vds-accordion-item>
+            </vds-accordion>
+        </div>
+
+            <!-- Essentials -->
+
+
+
+            
+    </section>
+</div>
+
+
+<!-- To show every row -->
+<ng-template #detailRow let-label="label" let-value="value">
+    <div class="row">
+        <div class="col--lg-3">
+            <span class="summary-field-heading">{{label}}</span>
+        </div>
+        <div class="col--lg-9">
+            <span class="summary-field-value">
+                {{value}}
+            </span>
+        </div>
+    </div>
+</ng-template>
+

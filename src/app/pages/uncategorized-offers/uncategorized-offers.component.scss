@@ -1,0 +1,131 @@
+.page-content {
+  .page-wrapper {
+    .filter-bar {
+      background: #dfebff;
+      display: flex;
+      align-items: baseline;
+      padding: 0 10px;
+      gap: 5px;
+
+      form {
+        display: flex;
+        align-items: baseline;
+        gap: 5px;
+        flex: 1;
+
+        vds-form-field {
+          & ::ng-deep {
+            .vds-input-bar,
+            input,
+            select {
+              border-radius: 20px;
+              text-align: center;
+              width: fit-content;
+            }
+          }
+        }
+        ::ng-deep {
+          .vds-input {
+            min-width: unset;
+            width: unset;
+          }
+        }
+      }
+      .clear-section {
+        display: flex;
+        align-items: center;
+
+        span {
+          color: #0042b3;
+        }
+      }
+    }
+    .action-bar {
+      margin: 10px 0 30px;
+      display: flex;
+      justify-content: space-between;
+
+      app-show-columns {
+        margin-right: 25px;
+      }
+    }
+    .table-wrapper {
+      position: relative;
+
+      .table-container {
+        overflow: auto;
+        margin-left: 272px;
+
+        table {
+          .sort-btn {
+            display: flex;
+            align-items: center;
+          }
+          tr {
+            // position: relative;
+
+            &.selected-row td {
+              background: #e1e1e1 !important;
+            }
+
+            .description {
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+              max-width: 200px;
+            }
+
+            .options-menu {
+              top: 0;
+              right: 0;
+              padding: unset;
+
+              ::ng-deep .vds-menu {
+                margin: unset;
+              }
+            }
+          }
+
+          td:nth-child(2),
+          th:nth-child(2) {
+            max-width: 200px;
+            box-sizing: border-box;
+          }
+
+          tr:nth-child(even) td {
+            background: #f5f5f5;
+          }
+
+          .fix {
+            position: absolute;
+            display: flex;
+            align-items: center;
+            background-color: white;
+
+            &.fix-left {
+              left: 0;
+            }
+            &.fix-left-1 {
+              left: 72px;
+              width: 200px;
+
+              a {
+                overflow: hidden;
+                text-overflow: ellipsis;
+              }
+            }
+
+            &.fix-right {
+              right: 0;
+              width: 80px;
+              box-sizing: border-box;
+            }
+          }
+        }
+      }
+    }
+  }
+  .link {
+    cursor: pointer;
+  }
+}

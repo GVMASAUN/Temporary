@@ -1,0 +1,88 @@
+<div
+  vdsAlert
+  role="alert"
+  [type]="AlertType"
+  [class.full-screen]="alertConfig?.mode === AlertMode.FULL_SCREEN"
+  [style.display]="!globalAlertShown ? 'none' : ''"
+  [position]="AlertPosition.FIXED"
+  [sidenav]="isSideNavOpen ? AlertSideNav.OPEN : AlertSideNav.CLOSED"
+>
+  <div
+    *ngIf="globalAlertShown"
+    class="vds-grid"
+  >
+    <div class="row">
+      <div class="col">
+        <span vdsAlertIcon>
+          <svg
+            vds-icon
+            [icon]="AlertIcon[alertConfig.type]"
+            [low]="true"
+          ></svg>
+        </span>
+        <span vdsAlertLabel>
+          <span vdsAlertLabelTitle> {{ alertConfig.title }} </span>
+          <div>
+            <ng-container *ngIf="alertConfig?.responseErrors?.length;else plainMessage">
+              <ul vdsList>
+                <li
+                  *ngFor="let responseError of alertConfig?.responseErrors"
+                  vdsListItem
+                >
+                  <strong>{{responseError.errorMessage}}</strong>
+                  <ul
+                    *ngIf="responseError?.responseStatusDetails?.length"
+                    vdsList
+                  >
+                    <li *ngFor="let errorDetail of responseError?.responseStatusDetails">
+                      {{errorDetail.message}}
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </ng-container>
+            
+            <ng-template #plainMessage >
+              <ng-container *ngIf="isString(alertConfig.message);else multipleMessages">
+                <span [innerHTML]="alertConfig.message"></span>
+              </ng-container>
+            </ng-template> 
+
+            <ng-template #multipleMessages >
+              <ng-container *ngIf="isArray(alertConfig.message)">
+              <ul vdsList>
+                <li
+                  *ngFor="let listItem of alertConfig.message"
+                  vdsListItem
+                >
+                  <strong>{{listItem}}</strong>
+                </li>
+              </ul></ng-container>
+
+            </ng-template>
+
+          </div>
+        </span>
+      </div>
+      <div class="col col--sm-1">
+        <vds-button-group
+          [direction]="ButtonDirection.REVERSE"
+        >
+          <button
+            vds-button-icon
+            role="button"
+            aria-label="Close alert"
+            [iconType]="ButtonIconType.LIGHT_TINY"
+            (click)="closeAlert()"
+          >
+            <svg
+              vds-icon
+              [icon]="VisaIcon.CLOSE"
+              [tiny]="true"
+            ></svg>
+          </button>
+        </vds-button-group>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,1100 @@
+
+<ng-template #infoSuffix let-tooltipText="tooltipText">
+  <label 
+    [matTooltip]="tooltipText"  
+    [matTooltipPosition]="tooltipPosition"
+  >
+    <img 
+      [src]="VisaImage.QUESTION_MARK"
+      width="16"
+      height="16"
+     /> 
+  </label>
+</ng-template>
+
+
+<ng-template #error let-formControl="formControl"; let-formGroup="formGroup">
+  <vds-error
+    vdsErrorMessage
+    [show]="!!payWithPointService.getErrorMessage(formGroup || planForm, formControl)"
+    > 
+    {{payWithPointService.getErrorMessage(formGroup || planForm, formControl)}}
+  </vds-error>  
+</ng-template>
+
+
+
+
+
+
+<div class="detail-container">
+  <div class="vds-grid status-container">
+    <div class="row">
+        <strong>Status</strong>
+    </div>
+    <div *ngIf="previousVersionExist" class="row">
+      <div class="col">
+        <div vdsAlert [type]="AlertType.ERROR">
+          <span vdsAlertIcon>
+              <svg vds-icon [icon]="VisaIcon.ERROR" [low]="true"></svg>
+          </span>
+          <span vdsAlertLabel>
+              <span vdsAlertLabelTitle>A previously published Plan exists for this Plan version!</span>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col--lg-2"  >
+          <span> Status Details</span>
+      </div>
+      <div class="col">
+        <app-status 
+          [statusCode]="planStatusCode"
+        ></app-status>
+      </div>
+    </div>
+    <div *ngIf="!!plan.comment" class="row">
+      <div class="col--lg-2">
+          <span>
+            Rejection Comment
+          </span>
+      </div>
+      <div class="col">
+          <span>
+              {{plan.comment}}
+          </span>
+      </div>
+    </div>
+
+
+    <div *ngIf="mode === Mode.Manage" class="m-t-10">
+      <ng-container *ngIf="(planStatusCode === StatusCode.DRAFT) || (planStatusCode === StatusCode.REJECTED)">
+        <button   
+          vds-button
+          role="button"
+          [isFullWidth]="false"
+          [disabled]="!hasPwpRole"
+          (click)="workflowChangeEmitter.emit(WorkFlowAction.SUBMIT_FOR_APPROVAL)"
+          >Submit For Approval
+        </button> 
+        <button
+          vds-button
+          role="button"
+          [isFullWidth]="false"
+          [disabled]="!hasPwpRole"
+          (click)="workflowChangeEmitter.emit(WorkFlowAction.DELETE)"
+          >Delete
+        </button>
+      </ng-container>
+
+      <ng-container *ngIf="(planStatusCode === StatusCode.PENDING_APPROVAL) && ((userRole === UserRole.VISA_GLOBAL_ADMIN) || (userRole === UserRole.VISA_REGIONAL_ADMIN_WITH_PAY_WITH_POINTS))" >
+        <button 
+          vds-button
+          role="button" 
+          [isFullWidth]="false"
+          [disabled]="disabledApproveOrReject"
+          (click)="workflowChangeEmitter.emit(WorkFlowAction.APPROVE)"
+          >Approve
+        </button>   
+        <button 
+          vds-button
+          role="button" 
+          [isFullWidth]="false"
+          [disabled]="disabledApproveOrReject"
+          (click)="workflowChangeEmitter.emit(WorkFlowAction.REJECT)"
+          >Reject
+        </button>
+
+        <div *ngIf="disabledApproveOrReject" class="row">
+          <p [show]="true" vdsErrorMessage>
+              <svg vds-icon [icon]="VisaIcon.ERROR" [tiny]="true"></svg>
+              The user performing the review must be different than the user that submitted the plan for review.
+          </p>  
+        </div> 
+      </ng-container>
+
+      <button 
+        *ngIf="(planStatusCode === StatusCode.INACTIVE)"
+        vds-button
+        role="button" 
+        [isFullWidth]="false"
+        [disabled]="!hasPwpRole"
+        (click)="workflowChangeEmitter.emit(WorkFlowAction.ARCHIVE)"
+        >Archive
+      </button>
+
+
+      <button 
+        *ngIf="[
+          StatusCode.APPROVED,
+          StatusCode.ACTIVE
+        ].includes(planStatusCode)"
+        vds-button
+        role="button" 
+        [isFullWidth]="false"
+        [disabled]="!hasPwpRole"
+        (click)="workflowChangeEmitter.emit(WorkFlowAction.DEACTIVATE)"
+        >Deactivate
+      </button>
+
+
+    </div>
+  </div>
+  
+  <ng-container *ngIf="isDataLoaded">
+    <hr vdsDivider class="m-t-30"/>
+  
+    <div class="section-title"> 
+        <svg vds-icon [low]="true" [icon]="VisaIcon.FOLDER"></svg>
+        <h3>Plan Information</h3>
+  
+    </div>
+    <div class="accordion-panel">
+      <vds-accordion>
+        <vds-accordion-item>
+          <vds-accordion-heading>
+            <vds-accordion-title>Basics</vds-accordion-title>
+          </vds-accordion-heading>
+          <vds-accordion-body>
+            <div class="vds-grid">
+              <!-- Plan Name -->
+              <div class="row">
+                <div class="col">
+                  <vds-form-field>
+                    <label vdsLabel>Plan Name*</label>
+                    <input
+                      vdsInput  
+                      aria-required="true"
+                      [formControl]="planForm.controls.planName | controlConverter"
+                      [disabled]="disabled"
+                      [invalid]="!!payWithPointService.getErrorMessage(planForm, planForm.controls.planName)"
+                   />
+                  </vds-form-field>
+                  <ng-container 
+                    [ngTemplateOutlet]="error" 
+                    [ngTemplateOutletContext]="{formControl:this.planForm.controls.planName}">
+                  </ng-container>
+                </div>
+              </div>
+    
+              <!-- Description -->
+              <!-- <div class="row">
+                <div class="col">
+                  <vds-form-field>
+                    <label vdsLabel>Description</label>
+                    <textarea
+                      vdsInput
+                      [formControl]="planForm.controls.description | controlConverter"
+                      [autoGrow]="true"
+                      [rows]="1"
+                    ></textarea>
+                  </vds-form-field>
+                </div>
+              </div> -->
+    
+              <!-- Client Plan ID -->
+              <div class="row">
+                <div class="col">
+                  <vds-form-field>
+                    <label vdsLabel>Client Point ID *</label>
+                    <input
+                      vdsInput
+                      [formControl]="planForm.controls.pointTemplateId | controlConverter"
+                      [disabled]="disabled"
+                      [invalid]="!!payWithPointService.getErrorMessage(planForm, planForm.controls.pointTemplateId)"
+                   />
+                  </vds-form-field>
+                  <ng-container 
+                    [ngTemplateOutlet]="error" 
+                    [ngTemplateOutletContext]="{formControl:this.planForm.controls.pointTemplateId}">
+                  </ng-container>
+                </div>
+              </div>
+    
+              <!-- Plan Type -->
+              <!-- <div class="row">
+                <div class="col">
+                  <vds-form-field>
+                    <label vdsLabel>Plan Type</label>
+                    <input 
+                      vdsInput 
+                      [formControl]="planForm.controls.planType | controlConverter"
+                     />
+                  </vds-form-field>
+                </div>
+              </div> -->
+    
+              
+              <div class="row">
+                <div class="col col--lg-6">
+                  <vds-date-selector
+                    class="date-field"
+                    label="Start Date (MM/DD/YYYY)*"
+                    [required]="true"
+                    [formControl]="planForm.controls.startDate | controlConverter"
+                    [disabled]="disabled"
+                    [valid]="!payWithPointService.getErrorMessage(planForm, planForm.controls.startDate)"
+                  ></vds-date-selector>
+
+                  <ng-container 
+                    [ngTemplateOutlet]="error" 
+                    [ngTemplateOutletContext]="{formControl:this.planForm.controls.startDate}">
+                  </ng-container>
+                </div>
+                <div class="col col--lg-3">
+                  <app-time-picker
+                    placeholder="Time"
+                    [disabled]="disabled"
+                    [formControl]="planForm.controls.startTime! | controlConverter"
+                    [isRequired]="true"
+                    [invalid]="!!payWithPointService.getErrorMessage(planForm, planForm.controls.startTime!)"
+                  ></app-time-picker>
+
+                  <ng-container 
+                    [ngTemplateOutlet]="error" 
+                    [ngTemplateOutletContext]="{formControl:this.planForm.controls.startTime!}">
+                  </ng-container>                  
+                </div>
+                <div class="col">
+                  <div class="row">
+                    <label 
+                    class="timezone-label"
+                    vdsLabel 
+                    [ngTemplateOutlet]="infoSuffix" 
+                    [ngTemplateOutletContext]="
+                      {
+                        tooltipText:'Timezone cannot be adjusted from GMT. Please convert the intended local time accordingly.'
+                      }
+                    "
+                  >Timezone
+                  </label>
+                  </div>
+                  <div class="row">
+
+                    <vds-badge >
+                      {{ TimeZone.GMT }}
+                      </vds-badge>
+                  </div>
+                </div>
+              </div>
+    
+              <div class="row baseline">
+                <div class="col col--lg-6">
+                  <vds-date-selector
+                    class="date-field"
+                    label="End Date (MM/DD/YYYY)*"
+                    [required]="true"
+                    [formControl]="planForm.controls.endDate | controlConverter"
+                    [disabled]="disabled"
+                    [valid]="!payWithPointService.getErrorMessage(planForm, planForm.controls.endDate)"
+                  ></vds-date-selector>
+
+                  <ng-container 
+                    [ngTemplateOutlet]="error" 
+                    [ngTemplateOutletContext]="{formControl:this.planForm.controls.endDate}">
+                  </ng-container>                  
+                </div>
+                <div class="col col--lg-3">
+                  <app-time-picker
+                    placeholder="Time"
+                    [formControl]="planForm.controls.endTime! | controlConverter"
+                    [disabled]="disabled"
+                    [isRequired]="true"
+                    [invalid]="!!payWithPointService.getErrorMessage(planForm, planForm.controls.endTime!)"
+                  ></app-time-picker>
+
+                  <ng-container 
+                    [ngTemplateOutlet]="error" 
+                    [ngTemplateOutletContext]="{formControl:this.planForm.controls.endTime!}">
+                  </ng-container>                  
+                </div>
+                <div class="col">
+                  <div class="row">
+                    <label 
+                    class="timezone-label"
+                    vdsLabel 
+                    [ngTemplateOutlet]="infoSuffix" 
+                    [ngTemplateOutletContext]="
+                      {
+                        tooltipText:'Timezone cannot be adjusted from GMT. Please convert the intended local time accordingly.'
+                      }
+                    "
+                  >Timezone
+                  </label>
+                  </div>
+                  <div class="row">
+
+                    <vds-badge >
+                      {{ TimeZone.GMT }}
+                      </vds-badge>
+                  </div>
+
+
+
+                </div>
+              </div>
+            </div>
+          </vds-accordion-body>
+        </vds-accordion-item>
+      </vds-accordion>
+      
+    </div>
+
+    <hr vdsDivider class="m-t-20"/>
+    
+    <div class="section-title">
+      <svg vds-icon [low]="true" [icon]="VisaIcon.FORK_CODE"></svg>
+      <h3>Eligibility</h3>
+    </div>
+    
+    <div class="accordion-panel">
+      <vds-accordion>
+        <vds-accordion-item>
+          <vds-accordion-heading>
+            <vds-accordion-title>Enrollment Collection</vds-accordion-title>
+          </vds-accordion-heading>
+          <vds-accordion-body>
+            <div>
+              <div class="title">Assign Enrollment Collection</div>
+              <div class="sub-title">
+                Please assign an available Enrollment Collection to this Pay with
+                Points plan or create a new Enrollment Collection below.
+              </div>
+              <form class="vds-grid">
+                <div class="row">
+                  <div class="col">
+                    <vds-form-field>
+                      <label vdsLabel>Tenant ID </label>
+                      <select 
+                        vdsSelect
+                        name="tenantIdSelector"
+                        id="tenantIdSelector"
+                        [formControl]="planForm.controls.tenantId! | controlConverter"
+                        [disabled]="disabled"
+                      >
+                        
+                        <option *ngFor="let option of tenants" [value]="option.value">{{option.label}}</option>
+                      </select>
+                    </vds-form-field>
+                  </div>
+                  <div class="col">
+                    <vds-form-field>
+                      <label vdsLabel>Sub-Tenant ID </label>
+                      <select 
+                        vdsSelect
+                        name="subTenantIdSelector"
+                        id="subTenantIdSelector"
+                        
+                        [formControl]="planForm.controls.subtenantId! | controlConverter"
+                        [disabled]="disabled"
+                      >
+                      
+                      <option 
+                        *ngFor="let option of subTenants" 
+                        [value]="option.value"
+                        
+                        >{{option.label}}</option>
+                      </select>
+                    </vds-form-field>
+                  </div>
+                  <div class="vertical-line col--valign-center m-t-20">
+                  </div>
+                  <div class="col col--lg-3 col--valign-center m-t-20">
+                    <button 
+                      vds-button-icon
+                      role="button"
+                      [iconType]="ButtonIconType.LIGHT_TINY"
+                      [disabled]="disabled"
+                      (click)="createEnrollmentCollection()"
+                      >
+                        <svg vds-icon [tiny]="true" [icon]="VisaIcon.ADD"></svg>
+                        Create New Collection
+                    </button>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col">
+                    <vds-form-field id="abcEC">
+                      <label vdsLabel>Select an Enrollment Collection*</label>
+                      <select 
+                        vdsSelect
+                        name="enrollmentCollectionSelector"
+                        id="enrollmentCollectionSelectorId"
+                        [required]="true"
+                        [formControl]="planForm.controls.enrollmentCollectionId | controlConverter"
+                        [disabled]="disabled"
+                        [invalid]="!!payWithPointService.getErrorMessage(planForm, planForm.controls.enrollmentCollectionId)"
+                      >
+                        <option 
+                        *ngFor="let enCol of enrolmentCollections"
+                        [selected]="planForm.controls.enrollmentCollectionId === enCol.value"
+                        [value]="enCol.value"
+                       >{{enCol.label}}
+                      </option>
+
+        
+                      </select>
+                    </vds-form-field>
+
+                    <ng-container 
+                      [ngTemplateOutlet]="error" 
+                      [ngTemplateOutletContext]="{formControl:this.planForm.controls.enrollmentCollectionId}">
+                    </ng-container>                    
+                  </div>
+                </div>
+    
+                <div class="row">
+                  <div class="col">
+                    <vds-form-field>
+                      <label vdsLabel>Eligible Card Type*</label>
+                      <select 
+                        vdsSelect
+                        name="eligibleCardTypeSelector"
+                        id="eligibleCardTypeSelector"
+                        [required]="true"
+                        [formControl]="planForm.controls.eligibleCardType | controlConverter"
+                        [disabled]="disabled"
+                        [invalid]="!!payWithPointService.getErrorMessage(planForm, planForm.controls.eligibleCardType)"
+                      >
+                        <option value="CREDIT">CREDIT</option>
+                      </select>
+                    </vds-form-field>
+
+                    <ng-container 
+                      [ngTemplateOutlet]="error" 
+                      [ngTemplateOutletContext]="{formControl:this.planForm.controls.eligibleCardType}">
+                    </ng-container>                      
+                  </div>
+                </div>
+              </form>
+            </div>
+          </vds-accordion-body>
+        </vds-accordion-item>
+      </vds-accordion>
+    </div>
+
+    
+  
+    
+    <hr vdsDivider class="m-t-30"/>
+    
+    <div class="section-title">
+      <svg vds-icon [low]="true" [icon]="VisaIcon.CURRENCY_USD"></svg>
+      <h3>Reward Currency</h3>
+    </div>
+
+    <div class="accordion-panel">
+      <vds-accordion>
+        <vds-accordion-item>
+          <vds-accordion-heading>
+            <vds-accordion-title>Reward Names</vds-accordion-title>
+          </vds-accordion-heading>
+          <vds-accordion-body>
+            <div>
+              <form class="vds-grid">
+                <div class="row">
+                  <div class="col">
+                    <vds-form-field>
+                      <label vdsLabel>Shorthand, Singular Name (ex. Point)*</label>
+                      <input 
+                        vdsInput
+                        aria-required="true"
+                        [formControl]="planForm.controls.singularShortName | controlConverter"
+                        [disabled]="disabled"
+                        [invalid]="!!payWithPointService.getErrorMessage(planForm, planForm.controls.singularShortName)"
+                     />
+                    </vds-form-field>
+
+                    <ng-container 
+                      [ngTemplateOutlet]="error" 
+                      [ngTemplateOutletContext]="{formControl:this.planForm.controls.singularShortName}">
+                    </ng-container>                      
+                  </div>
+                  <div class="col">
+                    <vds-form-field>
+                      <label vdsLabel>Shorthand, Plural Name (ex. Points)*</label>
+                      <input 
+                        vdsInput
+                        aria-required="true"
+                        [formControl]="planForm.controls.pluralShortName | controlConverter"
+                        [disabled]="disabled"
+                        [invalid]="!!payWithPointService.getErrorMessage(planForm, planForm.controls.pluralShortName)"
+                     />
+                    </vds-form-field>
+
+                    <ng-container 
+                      [ngTemplateOutlet]="error" 
+                      [ngTemplateOutletContext]="{formControl:this.planForm.controls.pluralShortName}">
+                    </ng-container>                      
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col">
+                    <vds-form-field>
+                      <label vdsLabel>
+                        Longhand, Singular Name (ex. Reward Point)
+                      </label>
+                      <input
+                        vdsInput
+                        [formControl]="planForm.controls.singularLongName | controlConverter"
+                        [disabled]="disabled"
+                        [invalid]="!!payWithPointService.getErrorMessage(planForm, planForm.controls.singularLongName)"
+                       />
+                    </vds-form-field>
+
+                    <ng-container 
+                      [ngTemplateOutlet]="error" 
+                      [ngTemplateOutletContext]="{formControl:this.planForm.controls.singularLongName}">
+                    </ng-container>  
+                  </div>
+                  <div class="col">
+                    <vds-form-field>
+                      <label vdsLabel>
+                        Longhand, Plural Name (ex. Reward Points)
+                      </label>
+                      <input 
+                        vdsInput
+                        [formControl]="planForm.controls.pluralLongName | controlConverter"
+                        [disabled]="disabled"
+                        [invalid]="!!payWithPointService.getErrorMessage(planForm, planForm.controls.pluralLongName)"
+                     />
+                    </vds-form-field>
+
+                    <ng-container 
+                      [ngTemplateOutlet]="error" 
+                      [ngTemplateOutletContext]="{formControl:this.planForm.controls.pluralLongName}">
+                    </ng-container>                      
+                  </div>
+                </div>
+              </form>
+            </div>
+          </vds-accordion-body>
+        </vds-accordion-item>
+        <vds-accordion-item>
+          <vds-accordion-heading>
+            <vds-accordion-title>Eligible Currency</vds-accordion-title>
+          </vds-accordion-heading>
+          <vds-accordion-body>
+            <div>
+              <form class="vds-grid">
+                <div class="row baseline">
+                  <div class="col col--lg-5">
+                    <vds-form-field>
+                      <label vdsLabel>Select Currency*</label>
+                      <select 
+                        vdsSelect
+                        name="currencySelector"
+                        id="currencySelector"
+                        [required]="true"
+                        [formControl]="planForm.controls.issuerCurrency | controlConverter"
+                        [disabled]="disabled"
+                        [invalid]="!!payWithPointService.getErrorMessage(planForm, planForm.controls.issuerCurrency)"
+                      >
+                      
+                        <option 
+                          *ngFor="let currency of currencies" 
+                          [value]="currency.value"
+                        >{{currency.label}}
+                        </option>
+                      </select>
+                    </vds-form-field>
+
+                    <ng-container 
+                      [ngTemplateOutlet]="error" 
+                      [ngTemplateOutletContext]="{formControl:this.planForm.controls.issuerCurrency}">
+                    </ng-container>                      
+                  </div>
+                  <div class="col">
+                    <vds-form-field>
+                      <label 
+                        vdsLabel
+                        [ngTemplateOutlet]="infoSuffix" 
+                        [ngTemplateOutletContext]="
+                          {
+                            tooltipText:'Issuer fiat value of a single unit of reward currency (e.g., &quot;point&quot;).'
+                          }
+                        "
+                        >Conversion Rate*</label>
+                      <input 
+                        vdsInput
+                        aria-required="true"
+                        [formControl]="planForm.controls.conversionRate | controlConverter"
+                        [disabled]="disabled"
+                        [invalid]="!!payWithPointService.getErrorMessage(planForm, planForm.controls.conversionRate)"
+                     />
+                    </vds-form-field>
+
+                    <ng-container 
+                      [ngTemplateOutlet]="error" 
+                      [ngTemplateOutletContext]="{formControl:this.planForm.controls.conversionRate}">
+                    </ng-container>                      
+                  </div>
+                  <div class="col col--valign-center m-t-20">
+                    USD = 1 Unit of (Reward Currency)
+                  </div>
+                </div>
+              </form>
+            </div>
+          </vds-accordion-body>
+        </vds-accordion-item>
+      </vds-accordion>
+    </div>
+
+
+    
+    <hr vdsDivider class="m-t-30"/>
+    
+    <div class="section-title">
+      <svg vds-icon [low]="true" [icon]="VisaIcon.NOTIFICATION"></svg>
+      <h3>Notifications</h3>
+    </div>
+
+    <div class="accordion-panel">
+      <vds-accordion>
+        <vds-accordion-item>
+          <vds-accordion-heading>
+            <vds-accordion-title>Template Details</vds-accordion-title>
+          </vds-accordion-heading>
+          <vds-accordion-body>
+            <div>
+              <form class="vds-grid">
+                <div class="row">
+                  <div class="col">
+                    <vds-form-field>
+                      <label vdsLabel>Select Endpoint Template</label>
+                      <select 
+                        vdsSelect
+                        name="endpointTemplateSelector"
+                        id="endpointTemplateSelector"
+                        [formControl]="planForm.controls.endpointDefinitionId | controlConverter"
+                        [disabled]="disabled"
+                        [invalid]="!!payWithPointService.getErrorMessage(planForm, planForm.controls.endpointDefinitionId)"
+                        >
+                      
+                        <option 
+                          *ngFor="let template of endpointTemplates" 
+                          [value]="template.value"
+                        >{{template.label}}
+                        </option>
+                      </select>
+                    </vds-form-field>
+                    <ng-container 
+                      [ngTemplateOutlet]="error" 
+                      [ngTemplateOutletContext]="{formControl:this.planForm.controls.endpointDefinitionId}">
+                    </ng-container>                      
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col">
+                    <vds-form-field>
+                      <label vdsLabel>Select Notification Template</label>
+                      <select 
+                        vdsSelect
+                        name="notificationTemplateSelector"
+                        id="notificationTemplateSelector"
+                        [formControl]="planForm.controls.notificationTemplateId | controlConverter"
+                        [disabled]="disabled"
+                        [invalid]="!!payWithPointService.getErrorMessage(planForm, planForm.controls.notificationTemplateId)"
+                      >
+                        
+                        <option 
+                          *ngFor="let notTemp of notificationTemplates"
+                          [value]="notTemp.value"
+                          >{{notTemp.label}}
+                        </option>
+                      </select>
+                    </vds-form-field>
+                    <ng-container 
+                      [ngTemplateOutlet]="error" 
+                      [ngTemplateOutletContext]="{formControl:this.planForm.controls.notificationTemplateId}">
+                    </ng-container>                      
+                  </div>
+                </div>
+      
+                <div class="row">
+                  <div class="col">
+                    <hr vdsDivider/>
+                  </div>
+                </div>
+      
+                <div class="row">
+                  <div class="col">
+                    <legend vdsLegend>
+                      Settlement Notifications
+                      <ng-container 
+                        [ngTemplateOutlet]="infoSuffix" 
+                        [ngTemplateOutletContext]="{
+                          tooltipText:'Enable if the client expects to receive endpoint notifications when redeemed transactions settle.'
+                          }"
+                      ></ng-container>
+                    </legend>
+                    <vds-checkbox 
+                      label="Enable" 
+                      name="settlement"
+                      [formControl]="planForm.controls.settlementNotification | controlConverter"
+                      [disabled]="disabled"
+                      [invalid]="!!payWithPointService.getErrorMessage(planForm, planForm.controls.settlementNotification)"
+                    ></vds-checkbox>
+
+                    <ng-container 
+                      [ngTemplateOutlet]="error" 
+                      [ngTemplateOutletContext]="{formControl:this.planForm.controls.settlementNotification}">
+                    </ng-container>                      
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col">
+                    <legend vdsLegend>
+                      Cancellation Notifications
+                      <ng-container 
+                        [ngTemplateOutlet]="infoSuffix" 
+                        [ngTemplateOutletContext]="{
+                          tooltipText:'Enable if the client expects to receive endpoint notifications when redeemed transactions are returned.'
+                        }">
+                      </ng-container>
+                    </legend>
+                    <vds-checkbox 
+                      label="Enable" 
+                      name="cancellation"
+                      [formControl]="planForm.controls.cancellationNotification | controlConverter"
+                      [disabled]="disabled"
+                      [invalid]="!!payWithPointService.getErrorMessage(planForm, planForm.controls.cancellationNotification)"
+                    ></vds-checkbox>
+
+                    <ng-container 
+                      [ngTemplateOutlet]="error" 
+                      [ngTemplateOutletContext]="{formControl:this.planForm.controls.cancellationNotification}">
+                    </ng-container>                      
+                  </div>
+                </div>
+              </form>
+            </div>
+          </vds-accordion-body>
+        </vds-accordion-item>
+      </vds-accordion>
+    </div>
+
+    
+    <hr vdsDivider class="m-t-30"/>
+    
+    <div class="section-title">
+      <svg vds-icon [low]="true" [icon]="VisaIcon.OFFER_DEALS"></svg>
+      <h3>Fulfillment</h3>
+    </div>
+   
+    <div class="accordion-panel">
+      <vds-accordion>
+        <vds-accordion-item>
+          <vds-accordion-heading>
+            <vds-accordion-title>Fulfillment Details</vds-accordion-title>
+          </vds-accordion-heading>
+          <vds-accordion-body>
+            <div>
+              <form class="vds-grid">
+
+                <div class="row">
+                  <div class="col">
+                    <vds-form-field>
+                      <label vdsLabel>Statement Credit Source*</label>
+                      <select 
+                        vdsSelect
+                        name="statementCreditSourceSelector"
+                        id="statementCreditSourceSelector"
+                        [required]="true"
+                        [formControl]="planForm.controls.statementCreditSource | controlConverter"
+                        [disabled]="disabled"
+                        [invalid]="!!payWithPointService.getErrorMessage(planForm, planForm.controls.statementCreditSource)"
+                        >
+                        
+                        <option 
+                          [value]="StatementCreditSource.Visa"
+                          >{{StatementCreditSource.Visa.toString()}}
+                        </option>
+                        
+                        <option 
+                          [value]="StatementCreditSource.Client">
+                          {{StatementCreditSource.Client.toString()}}
+                        </option>
+                      </select>
+                    </vds-form-field>
+
+                    <ng-container 
+                      [ngTemplateOutlet]="error" 
+                      [ngTemplateOutletContext]="{formControl:this.planForm.controls.statementCreditSource}">
+                    </ng-container>                      
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col">
+                    <vds-form-field>
+                      <label vdsLabel>Select Fulfillment Template{{(this.plan.statementCreditSource === StatementCreditSource.Visa) ? '*' : ''}}</label>
+                      <select 
+                        vdsSelect
+                        name="fulfillmentTemplateSelector"
+                        id="fulfillmentTemplateSelector"
+                        [required]="this.plan?.statementCreditSource === StatementCreditSource.Visa"
+                        [formControl]="planForm.controls.fulfillmentTemplateId | controlConverter"
+                        [disabled]="disabled"
+                        [invalid]="!!payWithPointService.getErrorMessage(planForm, planForm.controls.fulfillmentTemplateId)"
+                      >
+                        <option 
+                          *ngFor="let option of fulfillmentTemplates" 
+                          [value]="option.value"
+                        >{{option.label}}
+                        </option>
+                      </select>
+                    </vds-form-field>
+
+                    <ng-container 
+                      [ngTemplateOutlet]="error" 
+                      [ngTemplateOutletContext]="{formControl:this.planForm.controls.fulfillmentTemplateId}">
+                    </ng-container>                                          
+                  </div>
+                </div>                
+                <div class="row">
+                  <div class="col">
+                    <vds-form-field >
+                      <label 
+                        vdsLabel 
+                        [ngTemplateOutlet]="infoSuffix" 
+                        [ngTemplateOutletContext]="{
+                          tooltipText:'Number of days from authorization that the system should continue checking for an associated settlement.'
+                          }"
+                      >
+                        Settlement Days
+                      </label>
+
+                      <input 
+                        vdsInput
+                        [formControl]="planForm.controls.settlementDays | controlConverter"
+                        [disabled]="disabled"
+                       />
+
+                    </vds-form-field>
+
+                    <ng-container 
+                      [ngTemplateOutlet]="error" 
+                      [ngTemplateOutletContext]="{formControl:this.planForm.controls.settlementDays}">
+                    </ng-container>                      
+                  </div>
+                </div>                
+              </form>
+            </div>
+          </vds-accordion-body>
+        </vds-accordion-item>
+      </vds-accordion>
+    </div>    
+
+    
+    <hr vdsDivider class="m-t-30"/>
+    
+    <div class="section-title">
+      <svg vds-icon [low]="true" [icon]="VisaIcon.REPORT"></svg>
+      <h3>Display Preferences</h3>
+    </div>
+
+
+    <div class="accordion-panel">
+      <vds-accordion>
+        <vds-accordion-item>
+          <vds-accordion-heading>
+            <vds-accordion-title>Display Requirements</vds-accordion-title>
+          </vds-accordion-heading>
+          <vds-accordion-body>
+            <div class="vds-grid">
+              <div class="row">
+                <div class="col">
+                  <vds-form-field>
+                    <label vdsLabel>Purchase Total Minimum</label>
+                    <input 
+                      vdsInput
+                      [formControl]="planForm.controls.purchaseTotalMin | controlConverter"
+                      [disabled]="disabled"
+                      [invalid]="!!payWithPointService.getErrorMessage(planForm, planForm.controls.purchaseTotalMin)"
+                     />
+                  </vds-form-field>
+                  <ng-container 
+                    [ngTemplateOutlet]="error" 
+                    [ngTemplateOutletContext]="{formControl:this.planForm.controls.purchaseTotalMin}">
+                  </ng-container>                                     
+                </div>
+                <div class="col">
+                  <vds-form-field>
+                    <label vdsLabel>Purchase Total Maximum</label>
+                    <input 
+                      vdsInput
+                      [formControl]="planForm.controls.purchaseTotalMax | controlConverter"
+                      [disabled]="disabled"
+                      [invalid]="!!payWithPointService.getErrorMessage(planForm, planForm.controls.purchaseTotalMax)"
+                   />
+                  </vds-form-field>
+                  <ng-container 
+                    [ngTemplateOutlet]="error" 
+                    [ngTemplateOutletContext]="{formControl:this.planForm.controls.purchaseTotalMax}">
+                  </ng-container>                         
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <vds-form-field>
+                    <label vdsLabel>Minimum Reward Balance</label>
+                    <input 
+                      vdsInput
+                      [formControl]="planForm.controls.minRewardBalance | controlConverter"
+                      [disabled]="disabled"
+                      [invalid]="!!payWithPointService.getErrorMessage(planForm, planForm.controls.minRewardBalance)"
+                   />
+                  </vds-form-field>
+                  <ng-container 
+                    [ngTemplateOutlet]="error" 
+                    [ngTemplateOutletContext]="{formControl:this.planForm.controls.minRewardBalance}">
+                  </ng-container>                         
+                </div>
+                <div class="col col--valign-center m-t-20">Units
+                </div>
+              </div>
+    
+              <div class="row">
+                <div class="col">
+                  <hr vdsDivider/>
+                </div>
+              </div>
+    
+              <div class="row">
+                <div class="col">
+                  <legend 
+                    vdsLegend
+                  >
+                    Partial Redemption Allowance
+                    <ng-container 
+                      [ngTemplateOutlet]="infoSuffix" 
+                      [ngTemplateOutletContext]="{tooltipText:'Indicates that Issuer allows cardholders to redeem points for a portion of the total transaction amount, when enabled by Merchant or Acceptance Enabler.'}">
+                    </ng-container>
+                  </legend>
+                  <vds-checkbox 
+                    label="Enable"
+                    name="partial-redemption"
+                    [formControl]="planForm.controls.partialRedemptionAllowance | controlConverter"
+                    [disabled]="disabled"
+                    [invalid]="!!payWithPointService.getErrorMessage(planForm, planForm.controls.partialRedemptionAllowance)"
+                  ></vds-checkbox> 
+                  <ng-container 
+                    [ngTemplateOutlet]="error" 
+                    [ngTemplateOutletContext]="{formControl:this.planForm.controls.partialRedemptionAllowance}">
+                  </ng-container>                        
+                </div>
+              </div>
+            </div>
+          </vds-accordion-body>
+        </vds-accordion-item>
+        <vds-accordion-item>
+          <vds-accordion-heading>
+            <vds-accordion-title>Redemption Requirements</vds-accordion-title>
+          </vds-accordion-heading>
+          <vds-accordion-body>
+            <div>
+              <form class="vds-grid" *ngFor="let redemptionRestrictionFormGroup of (planForm.controls.redemptionRestrictions | controlConverter:'formArray')?.controls">
+                <div class="row baseline" >
+                  <div class="col">
+                    <vds-form-field>
+                      <label vdsLabel>Select Redemption Restrictions</label>
+                      <select 
+                        vdsSelect
+                        name="redemptionRestrictionSelector"
+                        id="redemptionRestrictionSelector"
+                        [formControl]="redemptionRestrictionFormGroup.controls.type | controlConverter"
+                        [disabled]="disabled"
+                        [invalid]="!!payWithPointService.getErrorMessage(redemptionRestrictionFormGroup, redemptionRestrictionFormGroup.controls.type)"
+                      >
+                      
+                        <option 
+                          *ngFor="let item of redemptionRestrictions" 
+                          [value]="item.value"
+                        >{{item.label}}
+                        </option>
+                      </select>
+                    </vds-form-field>
+                    <ng-container 
+                      [ngTemplateOutlet]="error" 
+                      [ngTemplateOutletContext]="
+                        {
+                          formControl:redemptionRestrictionFormGroup.controls.type,
+                          formGroup: redemptionRestrictionFormGroup
+                        }
+                      "
+                    ></ng-container>      
+                  </div>
+                </div>
+                <div class="row">
+                  <app-search-table
+                    *ngIf="!!planForm?.value?.redemptionRestrictions?.length"
+                    class="mcc-table-container"
+                    tableId="merchant-category-code-table"
+                    [sorting]="SortType.STATIC"
+                    [moreColumns]="false"
+                    [canSelectMultipleRow]="true"
+                    [columns]="mccTableColumns"
+                    [tableActions]="disabled ? [] : mccTableActions"
+                    [dataSource]="mccDataSource"
+                    [hideSelectAll]="disabled"
+                  ></app-search-table>
+                </div>
+              </form>
+            </div>
+          </vds-accordion-body>
+        </vds-accordion-item>
+        <vds-accordion-item>
+          <vds-accordion-heading>
+            <vds-accordion-title>Terms & Conditions</vds-accordion-title>
+          </vds-accordion-heading>
+          <vds-accordion-body>
+            <div>
+              <div class="sub-title">
+                Lorem ipsum dolor sit amet consectetur adipisicing elit.
+              </div>
+              <form class="vds-grid">
+                <div class="row">
+                  <div class="col  col--no-gutter" *ngIf="!!termsAndConditionForm">
+                    <vds-form-field >
+                      <label vdsLabel>Details*</label>
+                      <textarea 
+                        vdsInput
+                        aria-required="true"
+                        [formControl]="termsAndConditionForm.controls.content | controlConverter"
+                        [disabled]="disabled"
+                        [autoGrow]="true" 
+                        [rows]="5"
+                        [maxRows]="8"
+                        [invalid]="!!payWithPointService.getErrorMessage(termsAndConditionForm, termsAndConditionForm.controls.content)"
+                      >       
+                      
+             
+                    </textarea>
+                    </vds-form-field>
+                    <ng-container 
+                      [ngTemplateOutlet]="error" 
+                      [ngTemplateOutletContext]="
+                        {
+                          formControl:termsAndConditionForm.controls.content,
+                          formGroup: termsAndConditionForm
+                        }
+                      "
+                    ></ng-container>                       
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col--no-gutter col--align-end">
+                    <span>NOTE: Maximum 15,000 characters</span>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </vds-accordion-body>
+        </vds-accordion-item>
+      </vds-accordion>  
+    </div>    
+  </ng-container>
+</div>
+
+  

@@ -1,0 +1,323 @@
+<form
+  *ngIf="initializeForm"
+  [formGroup]="dynamicForm"
+>
+  <ng-container *ngFor="let field of formFields; trackBy:formFieldTrackBy">
+      <ng-container *ngIf="(field.type === FormFieldType.DROPDOWN) && !(field.hidden && field?.hidden(field, this)); else searchSelect">
+          <div
+            [ngClass]="getSpanClass(field)"
+            [style]="field.fieldStyle && field.fieldStyle(field, this)"
+          >
+            <vds-form-field>
+              <label vdsLabel>{{getFieldLabel(field)}}</label>
+              <select
+                vdsSelect
+                [name]="'dynamic-form-dropdown-'.concat(field.key)"
+                [required]="isRequiredField(field)"
+                [formControlName]="field.key"
+                [invalid]="!!getErrorMessage(dynamicForm.get(field.key)! | controlConverter)"
+                [disabled]="(field?.disable && field?.disable(field, this))!"
+              >
+                <option
+                  *ngFor="let option of getOptionList(field)"
+                  [value]="option.value"
+                >
+                  {{option.label}}
+                </option>
+              </select>
+            </vds-form-field>
+
+            <vds-error
+             
+              vdsErrorMessage
+              [show]="!!getErrorMessage(dynamicForm.get(field.key)! | controlConverter)"
+            >
+              {{ getErrorMessage(dynamicForm.get(field.key)! | controlConverter) }}
+            </vds-error>
+          </div>
+      </ng-container>
+
+      <ng-template #searchSelect>
+          <ng-container *ngIf="(field.type === FormFieldType.SEARCH_SELECT)  && !(field.hidden && field?.hidden(field, this)); else date">
+            <div
+              [ngClass]="getSpanClass(field)"
+              [style]="field.fieldStyle && field.fieldStyle(field, this)"
+            >
+              <div
+                vds-combobox
+                [id]="'dynamic-from-search-select-'.concat(field.key)"
+                [formControlName]="field.key"
+                [type]="ComboBoxType.MANUAL"
+                [invalid]="!!getErrorMessage(dynamicForm.get(field.key)! | controlConverter)"
+                [disabled]="(field?.disable && field?.disable(field, this))!"
+              >
+                <vds-form-field>
+                  <label vdsLabel>{{getFieldLabel(field)}}</label>
+                  <input 
+                    vdsInput 
+                    [required]="isRequiredField(field)"
+                    [invalid]="!!getErrorMessage(dynamicForm.get(field.key)! | controlConverter)"
+                    [disabled]="(field?.disable && field?.disable(field, this))!"
+                  />
+                  <button
+                    vdsSuffix 
+                    vds-button-icon
+                    role="button"
+                    [iconType]="ButtonIconType.LIGHT_TINY"
+                  >
+                    <svg
+                      vds-icon
+                      icon="visa_arrow-expand"
+                      [tiny]="true"
+                    ></svg>
+                  </button>
+                </vds-form-field>
+                <vds-menu
+
+                >
+                  <ul vds-listbox >
+                    <li
+                      *ngFor="let option of getOptionList(field)"
+                      vds-listbox-item
+                      [value]="option.value"
+                    >
+                      {{option.label}}
+                    </li>
+                  </ul>
+                </vds-menu>
+              </div>
+
+              <vds-error
+                vdsErrorMessage
+                [show]="!!getErrorMessage(dynamicForm.get(field.key)! | controlConverter)"
+              >
+                {{ getErrorMessage(dynamicForm.get(field.key)! | controlConverter) }}
+              </vds-error>
+            </div>
+          </ng-container>
+      </ng-template>
+
+      <ng-template #date>
+          <ng-container *ngIf="(field.type === FormFieldType.DATE) && !(field.hidden && field?.hidden(field, this)); else checkbox">
+            <div
+              [ngClass]="getSpanClass(field)"
+              [style]="field.fieldStyle && field.fieldStyle(field, this)"
+            >
+              <vds-date-selector
+                [required]="isRequiredField(field)"
+                [label]="getFieldLabel(field)"
+                [formControlName]="field.key"
+                [formatInputValue]="field.dateFormat ? field.dateFormat : DateFormat.MM_DD_YYYY"
+                [valid]="!getErrorMessage(dynamicForm.get(field.key)! | controlConverter)"
+                [disabled]="(field?.disable && field?.disable(field, this))!"
+              ></vds-date-selector>
+
+              <vds-error
+                vdsErrorMessage
+                [show]="!!getErrorMessage(dynamicForm.get(field.key)! | controlConverter)"
+              >
+                {{ getErrorMessage(dynamicForm.get(field.key)! | controlConverter) }}
+              </vds-error>
+            </div>
+          </ng-container>
+      </ng-template>
+
+      <ng-template #checkbox>
+          <ng-container *ngIf="(field.type === FormFieldType.CHECKBOX) && !(field.hidden && field?.hidden(field, this)); else radioGroup">
+            <div
+              [ngClass]="getSpanClass(field)"
+              [style]="field.fieldStyle && field.fieldStyle(field, this)"
+            >
+              <vds-checkbox
+                [required]="isRequiredField(field)"
+                [label]="getFieldLabel(field)"
+                [formControlName]="field.key"
+                [nullBased]="false"
+                [invalid]="!!getErrorMessage(dynamicForm.get(field.key)! | controlConverter)"
+                [disabled]="(field?.disable && field?.disable(field, this))!"
+              ></vds-checkbox>
+
+              <vds-error
+                vdsErrorMessage
+                [show]="!!getErrorMessage(dynamicForm.get(field.key)! | controlConverter)"
+              >
+                {{ getErrorMessage(dynamicForm.get(field.key)! | controlConverter) }}
+              </vds-error>
+            </div>
+          </ng-container>
+      </ng-template>
+
+      <ng-template #radioGroup>
+          <ng-container *ngIf="(field.type === FormFieldType.RADIO_GROUP) && !(field.hidden && field?.hidden(field, this)); else time">
+              <div
+                [ngClass]="getSpanClass(field)"
+                [style]="field.fieldStyle && field.fieldStyle(field, this)"
+              >
+                <vds-radio-group
+                  role="radiogroup"
+                  [required]="isRequiredField(field)"
+                  [formControlName]="field.key">
+                  <legend vdsLegend >{{ getFieldLabel(field) }}</legend>
+                  <vds-radio
+                      *ngFor="let option of getOptionList(field)"
+                      label="{{option.label}}"
+                      [checked]="option.value === dynamicForm.get(field.key)?.value"
+                      [radioValue]="option.value"
+                      [name]="option.label"
+                      [disabled]="option.disabled ? option.disabled : false"
+                      [invalid]="!!getErrorMessage(dynamicForm.get(field.key)!)"
+                  >
+                  </vds-radio>
+                </vds-radio-group>
+
+                <vds-error
+                  vdsErrorMessage
+                  [show]="!!getErrorMessage(dynamicForm.get(field.key)! | controlConverter)"
+                >
+                  {{ getErrorMessage(dynamicForm.get(field.key)! | controlConverter) }}
+                </vds-error>
+              </div>
+          </ng-container>
+      </ng-template>
+
+
+      <ng-template #time>
+          <ng-container *ngIf="(field.type === FormFieldType.TIME) && !(field.hidden && field?.hidden(field, this)); else number">
+            <div
+              [ngClass]="getSpanClass(field)"
+              [style]="field.fieldStyle && field.fieldStyle(field, this)"
+            >
+              <app-time-picker
+                aria-required="true"
+                [required]="isRequiredField(field)"
+                [formControlName]="field.key"
+                [placeholder]="getFieldLabel(field)"
+                [invalid]="!!getErrorMessage(dynamicForm.get(field.key)! | controlConverter)"
+                [disabled]="(field?.disable && field?.disable(field, this))!"
+              >
+              </app-time-picker>
+
+              <vds-error
+                vdsErrorMessage
+                [show]="!!getErrorMessage(dynamicForm.get(field.key)! | controlConverter)"
+              >
+                {{ getErrorMessage(dynamicForm.get(field.key)! | controlConverter) }}
+              </vds-error>
+            </div>
+          </ng-container>
+      </ng-template>
+
+      <ng-template #number>
+        <ng-container *ngIf="(field.type === FormFieldType.INPUT_NUMBER) && !(field.hidden && field?.hidden(field, this)); else textArea">
+          <div
+            [ngClass]="getSpanClass(field)"
+            [style]="field.fieldStyle && field.fieldStyle(field, this)"
+          >
+            <vds-form-field>
+              <label vdsLabel>{{getFieldLabel(field)}}</label>
+              <input
+                vdsInput
+                type="number"
+                [min]="0"
+                [required]="isRequiredField(field)"
+                [formControlName]="field.key"
+                [invalid]="!!getErrorMessage(dynamicForm.get(field.key)! | controlConverter)"
+                [disabled]="(field?.disable && field?.disable(field, this))!"
+              />
+            </vds-form-field>
+
+            <vds-error
+              vdsErrorMessage
+              [show]="!!getErrorMessage(dynamicForm.get(field.key)! | controlConverter)"
+            >
+              {{ getErrorMessage(dynamicForm.get(field.key)! | controlConverter) }}
+            </vds-error>
+          </div>
+        </ng-container>
+      </ng-template>
+
+      <ng-template #textArea>
+        <ng-container *ngIf="(field.type === FormFieldType.TEXTAREA) && !(field.hidden && field?.hidden(field, this)); else customField">
+          <div
+            [ngClass]="getSpanClass(field)"
+            [style]="field.fieldStyle && field.fieldStyle(field, this)"
+          >
+            <vds-form-field>
+              <label 
+                vdsLabel
+                [ngTemplateOutlet]="infoSuffix" 
+                [ngTemplateOutletContext]="{tooltipText:field?.labelHintTooltip}"
+              >{{ getFieldLabel(field) }}</label>
+              <textarea
+                vdsInput
+                [required]="isRequiredField(field)"
+                [autoGrow]="true"
+                [rows]="4"
+                [formControlName]="field.key"
+                [invalid]="!!getErrorMessage(dynamicForm.get(field.key)! | controlConverter)"
+                [disabled]="(field.disable && field.disable(field, this))!"
+              ></textarea>
+            </vds-form-field>
+
+            <vds-error
+              vdsErrorMessage
+              [show]="!!getErrorMessage(dynamicForm.get(field.key)! | controlConverter)"
+            >
+              {{ getErrorMessage(dynamicForm.get(field.key)! | controlConverter) }}
+            </vds-error>
+          </div>
+        </ng-container>
+      </ng-template>
+
+      <ng-template #customField>
+        <ng-container *ngIf="(((field.type === FormFieldType.CUSTOM) && !!field.templateRef) && !(field.hidden && field?.hidden(field, this))); else default"
+          [ngTemplateOutlet]="field.templateRef"
+          [ngTemplateOutletContext]="{ dynamicForm: dynamicForm, field: field }"
+        >
+        </ng-container>
+      </ng-template>
+
+      <ng-template #default>
+          <ng-container *ngIf="!(field.hidden && field?.hidden(field, this))">
+            <div
+              [ngClass]="getSpanClass(field)"
+              [style]="field.fieldStyle && field.fieldStyle(field, this)"
+            >
+              <vds-form-field>
+                <label vdsLabel>{{getFieldLabel(field)}}</label>
+                <input
+                  vdsInput
+                  [required]="isRequiredField(field)"
+                  [formControlName]="field.key"
+                  [invalid]="!!getErrorMessage(dynamicForm.get(field.key)! | controlConverter)"
+                  [disabled]="(field.disable && field.disable(field, this))!"
+                />
+              </vds-form-field>
+
+              <vds-error
+                vdsErrorMessage
+                [show]="!!getErrorMessage(dynamicForm.get(field.key)! | controlConverter)"
+              >
+                {{ getErrorMessage(dynamicForm.get(field.key)! | controlConverter) }}
+              </vds-error>
+            </div>
+          </ng-container>
+        </ng-template>
+  </ng-container>
+</form>
+
+
+
+<ng-template #infoSuffix let-tooltipText="tooltipText">
+  <label
+    *ngIf="!!tooltipText" 
+    [matTooltip]="tooltipText"  
+    [matTooltipPosition]="'above'"
+  >
+  <img 
+    [src]="VisaImage.QUESTION_MARK"
+    width="16"
+    height="16"
+  /> 
+  </label>
+</ng-template>

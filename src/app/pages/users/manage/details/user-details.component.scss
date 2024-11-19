@@ -1,0 +1,50 @@
+.vds-grid {
+    max-width: unset;
+}
+
+.header-title {
+    font-family: OpenSans;
+    font-size: 16px;
+    font-weight: normal;
+    margin-top: 30px;
+}
+
+.divider {
+    border-top: 2px solid #cacaca;
+    margin-bottom: 25px;
+    margin-top: 25px;
+}
+
+.user-details-panel {
+    background: #fafafa;
+}
+
+@media (max-width: 960px) {
+    .vds-grid {
+      width: calc(100vw - 100px - 65px);
+
+      .vds-grid [class^=col--][class*="-1"], .vds-grid [class^=col--][class*="-2"], .vds-grid [class^=col--][class*="-3"], .vds-grid [class^=col--][class*="-4"], .vds-grid [class^=col--][class*="-5"], .vds-grid [class^=col--][class*="-6"], .vds-grid [class^=col--][class*="-7"], .vds-grid [class^=col--][class*="-8"], .vds-grid [class^=col--][class*="-9"] {
+        width: 40% !important;
+      }
+  
+      .user-details-panel {
+        position: relative;
+        overflow: auto;
+      }
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .vds-grid {
+      width: calc(100vw - 100px - 65px);
+
+      .vds-grid [class^=col--][class*="-1"], .vds-grid [class^=col--][class*="-2"], .vds-grid [class^=col--][class*="-3"], .vds-grid [class^=col--][class*="-4"], .vds-grid [class^=col--][class*="-5"], .vds-grid [class^=col--][class*="-6"], .vds-grid [class^=col--][class*="-7"], .vds-grid [class^=col--][class*="-8"], .vds-grid [class^=col--][class*="-9"] {
+        width: 40% !important;
+      }
+  
+      .user-details-panel {
+        position: relative;
+        overflow: auto;
+      }
+    }
+  }

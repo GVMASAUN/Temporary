@@ -1,0 +1,22 @@
+.dialog-container {
+  width: 1250px;
+  max-width: 1250px;
+}
+
+.detail-panel {
+  height: 60vh;
+  position: relative;
+  padding-top: 15px;
+}
+
+.name {
+  height: 20px;
+}
+
+.comment {
+  margin-top: 16px;
+  cursor: pointer;
+  color: #0052e1;
+  font-size: 14px;
+  line-height: 20px;
+}

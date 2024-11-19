@@ -1,0 +1,67 @@
+<app-overlay
+  [backLink]="['..']"
+  [backQueryParams]="{ type: 'AcquirerInfo' }"
+  backPage="merchant"
+  screenTitle="Merchants"
+>
+  <!-- Overlay content starts -->
+  <app-progress-spinner></app-progress-spinner>
+
+  <div class="menu-container">
+    <ul
+      vds-tab-list
+      aria-label="Tabs"
+      [orientation]="TabsOrientation.HORIZONTAL"
+      [selectedIndex]="selectedTab"
+    >
+      <li vds-tab-item>
+        <button role="button" vdsTab (click)="selectedTab = 0">
+          BIN-CAID
+        </button>
+      </li>
+      <li vds-tab-item *ngIf="binCaidFlagEnabled">
+        <button role="button" vdsTab (click)="selectedTab = 1">
+          Find Merchants
+        </button>
+      </li>
+      <li vds-tab-item>
+        <button role="button" vdsTab (click)="selectedTab = 2">
+          Bulk Upload
+        </button>
+      </li>
+    </ul>
+  </div>
+
+  <div
+    class="vds-tab-panel-example"
+    tabIndex="0"
+    role="tabpanel"
+    [hidden]="selectedTab === 0 ? undefined : 'hidden'"
+    id="bin-caid-tab"
+    aria-labelledby="bin-caid-tab-label"
+  >
+    <app-tab-bin-caid></app-tab-bin-caid>
+  </div>
+  <div
+    class="vds-tab-panel-example"
+    tabIndex="0"
+    role="tabpanel"
+    [hidden]="selectedTab === 1 ? undefined : 'hidden'"
+    id="vmid-vsid-tab"
+    aria-labelledby="vmid-vsid-tab-label"
+  >
+    <app-tab-vmid-vsid-find-merchants></app-tab-vmid-vsid-find-merchants>
+  </div>
+  <div
+    class="vds-tab-panel-example"
+    tabIndex="0"
+    role="tabpanel"
+    [hidden]="selectedTab === 2 ? undefined : 'hidden'"
+    id="bulk-upload-tab"
+    aria-labelledby="bulk-upload-tab-label"
+  >
+    <app-tab-bin-caid-bulk-upload></app-tab-bin-caid-bulk-upload>
+  </div>
+
+  <!-- Overlay content ends -->
+</app-overlay>

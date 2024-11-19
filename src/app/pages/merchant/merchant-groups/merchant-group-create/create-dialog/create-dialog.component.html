@@ -1,0 +1,104 @@
+<div>
+  <vds-linear-progress *ngIf="isLoading"></vds-linear-progress>
+  <div vds-dialog-card-head>
+    <h2 vds-dialog-card-head-title>Create Merchant Group</h2>
+  </div>
+  <div vds-dialog-card-body>
+    <form [formGroup]="merchantGroup">
+      <div class="form-field">
+        <vds-form-field>
+          <label vdsLabel>Merchant Group Name*</label>
+          <input
+            vdsInput
+            aria-required="true"
+            placeholder="Enter Merchant Group Name"
+            formControlName="merchantGroupName"
+            name="merchantGroupName"
+            [invalid]="!!getErrorMessage('merchantGroupName')"
+          />
+          <span vdsErrorMessage aria-atomic="true" aria-live="assertive">
+              <ng-container *ngIf="!!getErrorMessage('merchantGroupName')">
+                  <svg vds-icon [icon]="VisaIcon.ERROR" [tiny]="true"></svg>
+                  Error: {{ getErrorMessage('merchantGroupName') }}
+              </ng-container>
+          </span>
+        </vds-form-field>
+      </div>
+      <div class="form-field">
+         <vds-radio-group role="radiogroup" #radioGroupOne formControlName="type" (changed)="selectType($event)"
+        >
+          <legend vdsLegend class="radio-title">Merchant Group Type</legend>
+          <vds-radio
+            label="VMID/VSID"
+            name="type"
+            radioValue="MerchantInfo"
+            [checked]="'MerchantInfo' === merchantGroup.value.type"
+            [invalid]="!!getErrorMessage('type')"
+          ></vds-radio>
+          <vds-radio
+            label="BIN/CAID"
+            name="type"
+            radioValue="AcquirerInfo"
+            [checked]="'AcquirerInfo' === merchantGroup.value.type"
+            [invalid]="!!getErrorMessage('type')"
+          >
+          </vds-radio>
+          <span vdsErrorMessage aria-atomic="true" aria-live="assertive" class="flex-container">
+            <ng-container *ngIf="!!getErrorMessage('type')">
+                <svg vds-icon [icon]="VisaIcon.ERROR" [tiny]="true"></svg>
+                Error: {{ getErrorMessage('type') }}
+            </ng-container>
+          </span>
+        </vds-radio-group>
+      </div>
+      <div class="form-field">
+        <vds-form-field>
+          <label vdsLabel>Description</label>
+          <textarea
+            vdsInput
+            placeholder="Enter description"
+            [autoGrow]="true"
+            [rows]="3"
+            formControlName="merchantGroupDescription"
+            [invalid]="!!getErrorMessage('merchantGroupDescription')"
+          ></textarea> 
+          <span vdsErrorMessage aria-atomic="true" aria-live="assertive">
+            <ng-container *ngIf="!!getErrorMessage('merchantGroupDescription')">
+                <svg vds-icon [icon]="VisaIcon.ERROR" [tiny]="true"></svg>
+                Error: {{ getErrorMessage('merchantGroupDescription') }}
+            </ng-container>
+        </span>          
+        </vds-form-field>
+      </div>
+      <!-- <div class="form-field">
+        <vds-form-field>
+          <label vdsLabel>Optional comment</label>
+          <textarea
+            vdsInput
+            placeholder="Optional comment"
+            [autoGrow]="true"
+            formControlName="optionalComment"
+          ></textarea>
+        </vds-form-field>
+      </div> -->
+    </form>
+  </div>
+  <div vds-dialog-card-footer>
+    <vds-button-group direction="right">
+      <button role="button"
+        vds-button
+        (click)="handleSubmit()"
+      >
+        Save
+      </button>
+      <button role="button"
+        id="close-button"
+        vds-button
+        [color]="ButtonColor.SECONDARY"
+        (click)="this.dialogRef.close()"
+      >
+        Cancel
+      </button>
+    </vds-button-group>
+  </div>
+</div>

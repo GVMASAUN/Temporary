@@ -1,0 +1,41 @@
+<app-header 
+  [headerHeight]="46"
+  screenTitle="Manage Uncategorized Offer - {{ tabs[selectedTabIndex] }}"
+></app-header>
+
+<div class="tabs-section">
+  <ul
+    vds-tab-list
+    [orientation]="TabsOrientation.HORIZONTAL"
+  >
+    <li vds-tab-item *ngFor="let tab of tabs; let tabIndex = index">
+      <button role="button" 
+        vdsTab
+        [selected]="selectedTabIndex === tabIndex"
+        (focus)="selectedTabIndex = tabIndex">
+        {{ tab }}
+      </button>
+    </li>
+  </ul>
+</div>
+
+<div class="vds-grid">
+  <div class="row">
+    <span>
+      {{ 'View Offer' }}
+    </span>
+  </div>
+  <div class="row">
+    <h2 class="f-s-1-point-25">
+      {{ offer.eventGroupName }}
+    </h2>
+  </div>
+</div>
+<div class="row">
+    <app-uncategorized-offer-summary
+      *ngIf="initialized"
+      [form]="form"
+      [id]="getTabId(viewName,selectedTabIndex,UncategorizedOfferStep.Summary)"
+      [attr.aria-labelledby]="getTabLabelledById(viewName,selectedTabIndex,UncategorizedOfferStep.Summary)"
+    ></app-uncategorized-offer-summary>
+</div>

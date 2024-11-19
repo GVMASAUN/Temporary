@@ -1,0 +1,75 @@
+<app-header
+  *ngIf="!createByPwp"
+  [screenTitle]="'Create '.concat(ENROLLMENT_COLLECTION.name)"
+>
+</app-header>
+
+<div class="tabs-section">
+  <ul
+    vds-tab-list
+    aria-label="Vertical group on tabs"
+    [orientation]="TabsOrientation.HORIZONTAL"
+  >
+    <li
+      *ngFor="let tab of tabs; let tabIndex = index"
+      vds-tab-item
+    >
+      <button
+        vdsTab
+        role="button"
+        [selected]="(selectedTabIndex === tabIndex)"
+        (focus)="selectedTabIndex = tabIndex"
+      >
+        {{ tab }}
+      </button>
+    </li>
+  </ul>
+</div>
+
+<div
+  *ngIf="initialized"
+  [ngClass]="{'w-70': !createByPwp}"
+>
+  <app-enrollment-collection-detail
+    #detailTab
+    [id]="getTabId(viewName, selectedTabIndex, EnrollmentCollectionStep.DETAILS)"
+    [attr.aria-labelledby]="getTabLabelledById(viewName, selectedTabIndex, EnrollmentCollectionStep.DETAILS)"
+    [enrollmentCollectionFormGroup]="enrollmentCollectionFormGroup"
+    [mode]="mode"
+  ></app-enrollment-collection-detail>
+</div>
+
+<app-footer
+  *ngIf="!createByPwp"
+  [overlay]="false"
+>
+  <vds-button-group>
+    <button
+      vds-button 
+      role="button"
+      [color]="ButtonColor.PRIMARY"
+      (click)="saveEnrollmentCollection()"
+    >
+      SAVE
+    </button>
+    <button
+      vds-button
+      role="button"
+      [color]="ButtonColor.SECONDARY"
+      (click)="saveEnrollmentCollection(true)"
+    >
+      SAVE & EXIT
+    </button>
+  </vds-button-group>
+  <vds-button-group>
+    <button
+      vds-button
+      role="button"
+      [color]="ButtonColor.TERTIARY"
+      (click)="handleCancel()"
+    >
+      CANCEL
+    </button>
+  </vds-button-group>
+</app-footer>
+<app-progress-spinner></app-progress-spinner>

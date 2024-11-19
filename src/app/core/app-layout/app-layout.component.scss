@@ -1,0 +1,70 @@
+.main-wrapper {
+  .container {
+    position: absolute;
+    left: 70px;
+    // top: 20px;
+    right: 0;
+
+    .contents {
+      overflow: auto;
+      position: absolute;
+      bottom: 30px;
+      top: 0;
+      left: 20px;
+      right: 0;
+      padding: 0px 10px;
+    }
+  }
+
+  .nav-open {
+    left: 250px
+  }
+
+  @media (max-width: 1280px) {
+    .container {
+      overflow: hidden;
+
+      .contents {
+        position: relative;
+        height: 0;
+
+      }
+    }
+  }
+
+  @media (max-width: 1098px) {
+    .container {
+      overflow: hidden;
+
+      .contents {
+        position: relative;
+        height: 0;
+
+      }
+    }
+  }
+
+  @media (max-width: 960px) {
+    .container {
+      overflow: hidden;
+
+      .contents {
+        position: relative;
+        height: 0;
+
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    .container {
+      overflow: hidden;
+
+      .contents {
+        position: relative;
+        height: 0;
+      }
+
+    }
+  }
+}

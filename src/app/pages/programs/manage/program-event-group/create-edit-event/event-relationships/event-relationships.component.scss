@@ -1,0 +1,64 @@
+.page-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+
+  .table-section {
+    table {
+      tbody {
+        td {
+          ::ng-deep {
+            .vds-switch {
+              .vds-switch-value {
+                margin-right: unset;
+                float: unset;
+              }
+              label {
+                &::before {
+                  right: unset;
+                  left: 2rem;
+                }
+                &::after {
+                  right: unset;
+                  left: 1.75rem;
+                }
+              }
+
+              &.vds-state--active {
+                label {
+                  &::after {
+                    right: unset;
+                    left: 3rem;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .execute-event-section {
+    position: relative;
+
+    .custom-radio-section {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      position: absolute;
+      bottom: 0;
+      left: 2.5rem;
+    }
+  }
+
+  .event-prerequisite-deadline {
+    .deadline-section {
+      form {
+        display: grid;
+        grid-template-columns: auto auto auto;
+        gap: 10px;
+      }
+    }
+  }
+}

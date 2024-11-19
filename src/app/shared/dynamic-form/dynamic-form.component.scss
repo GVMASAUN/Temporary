@@ -1,0 +1,25 @@
+vds-radio-group {
+
+    ::ng-deep .vds-radio-group {
+        display: flex;
+    }
+}
+
+form {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, [col-start] minmax(1fr, 8fr) [col-end]);
+    gap: 20px 10px;
+    align-items: normal;
+    margin-bottom: 55px;
+
+    vds-date-selector ::ng-deep .vds-input {
+        width: 100%;
+        min-width: unset;
+    }
+}
+
+@for $col-span from 1 through 12 {
+    .span-#{$col-span} {
+        grid-column: span #{$col-span};
+    }
+}

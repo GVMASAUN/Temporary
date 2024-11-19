@@ -1,0 +1,57 @@
+<app-header>
+  <div class="sections">
+    Sections
+    <vds-badge
+      [type]="listBadgeType[0]"
+      routerLink="./basics"
+      queryParamsHandling="merge"
+    >
+      <svg vds-icon icon="edit" [tiny]="true"></svg>
+      Basics
+    </vds-badge>
+    <vds-badge
+      [type]="listBadgeType[1]"
+      routerLink="./merchants"
+      queryParamsHandling="merge"
+    >
+      <svg vds-icon icon="edit" [tiny]="true"></svg>
+      Merchants
+    </vds-badge>
+  </div>
+</app-header>
+
+<div class="form-header">
+  <div class="vds-grid">
+    <div class="row">
+      <div class="col">
+        <div>
+          <label class="form-header-label"> {{ activeTab | titlecase }} </label>
+          <div class="form-header-value">
+            <p class="merchant-group-title">
+              {{ groupName }}
+            </p>
+            <p class="required-label" *ngIf="activeTab == 'basics'">
+              *required field
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="col col--md-2">
+        <div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<router-outlet></router-outlet>
+
+<app-footer>
+  <vds-button-group>
+    <button role="button" vds-button [color]="ButtonColor.PRIMARY">
+      Save
+    </button>
+    <button role="button" vds-button [color]="ButtonColor.SECONDARY" routerLink="/merchant">
+      Cancel
+    </button>
+  </vds-button-group>
+</app-footer>

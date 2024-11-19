@@ -1,0 +1,157 @@
+<div
+  class="vds-grid"
+  tabindex="0"
+>
+  <div
+    *ngIf="placeholder"
+    class="row"
+  >
+    <label
+      vdsLabel
+      [attr.aria-required]="isRequired"
+    >{{placeholder}}
+      <svg
+        *ngIf="locked"
+        vds-icon
+        [icon]="VisaIcon.LOCK"
+        [tiny]="true"
+      ></svg>
+    </label>
+  </div>
+  <div class="row">
+    <vds-error
+      vdsErrorMessage
+      [show]="!!error"
+    >{{ error }}</vds-error>
+  </div>
+  <br *ngIf="!!error">
+  <div class="row shuttle-box">
+    <div
+      *ngIf="!disabled"
+      class="col--lg-5 left-box"
+    >
+      <vds-form-field *ngIf="searchable">
+        <label vdsLabel>Available Options</label>
+        <input
+          vdsInput
+          tabindex="0"
+          placeholder="Search"
+          aria-label="Search"
+          (changed)="availableSearch = $event.value"
+        />
+        <button
+          vdsPrefix
+          vds-button-icon
+          [iconType]="ButtonIconType.LIGHT"
+        >
+          <img
+            width="24"
+            height="24"
+            [src]="VisaImage.MAGNIFIER"
+          />
+        </button>
+      </vds-form-field>
+      <div class="options">
+        <div
+          *ngFor="let item of availableOptions; trackBy:optionTrackBy"
+          class="option"
+          [class.selectable]="optionSelectable(item)"
+          [class.selected]="currentAvailableOptions.includes(item)"
+          [tabindex]="optionSelectable(item) ? '0' : '-1'"
+          (click)="availableClick(item)"
+          (keyup.enter)="availableClick(item)"
+          (keyup.space)="availableClick(item)"
+          (dblclick)="selectCurrent([item])"
+        >
+          {{item.label}}
+        </div>
+      </div>
+    </div>
+    <div
+      *ngIf="!disabled"
+      class="col--align-center buttons-container"
+      [class.selectable]="!disabled && selectable"
+    >
+      <img
+        alt="double-leftarrow"
+        width="14"
+        tabindex="0"
+        [src]="VisaImage.RIGHT_ARROW_DOUBLE"
+        (click)="selectAll()"
+        (keyup.enter)="selectAll()"
+      >
+      <img
+        alt="single-leftarrow"
+        width="8"
+        tabindex="0"
+        [src]="VisaImage.RIGHT_ARROW"
+        (click)="selectCurrent()"
+        (keyup.enter)="selectCurrent()"
+      >
+      <br>
+      <img
+        alt="single-arrow-left"
+        width="8"
+        tabindex="0"
+        [src]="VisaImage.LEFT_ARROW"
+        (click)="unselectCurrent()"
+        (keyup.enter)="unselectCurrent()"
+      >
+      <img
+        alt="double-arrow-left"
+        width="14"
+        tabindex="0"
+        [src]="VisaImage.LEFT_ARROW_DOUBLE"
+        (click)="unselectAll()"
+        (keyup.enter)="unselectAll()"
+      >
+    </div>
+    <div class="col--lg-5 right-box">
+      <vds-form-field
+        *ngIf="!disabled && searchable"
+        floatLabel="always"
+      >
+        <label
+          aria-label="Selected Options"
+          vdsLabel
+        >Selected Options</label>
+
+        <input
+          vdsInput
+          tabindex="0"
+          placeholder="Search"
+          aria-label="Search"
+          (changed)="selectedSearch = $event.value"
+
+        />
+        <button
+          vdsPrefix
+          vds-button-icon
+          [iconType]="ButtonIconType.LIGHT"
+          >
+          <img
+            [src]="VisaImage.MAGNIFIER"
+            width="24"
+            height="24"
+          />
+        </button>
+      </vds-form-field>
+      <div class="options">
+        <div
+          *ngFor="let item of selectedOptions;trackBy:optionTrackBy"
+          class="option"
+          [class.selectable]="optionSelectable(item)"
+          [class.selected]="currentSelectedOptions.includes(item)"
+          [ngStyle]="rowStyle(item.value)"
+          [tabindex]="optionSelectable(item) ? '0' : '-1'"
+          (click)="selectedClick(item)"
+          (keyup.enter)="selectedClick(item)"
+          (keyup.space)="selectedClick(item)"
+          (dblclick)="unselectCurrent([item])"
+        >
+          {{item.label}}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

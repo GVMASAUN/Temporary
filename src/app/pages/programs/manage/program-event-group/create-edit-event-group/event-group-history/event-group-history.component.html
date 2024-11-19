@@ -1,0 +1,9 @@
+<app-search-table
+  tableId="event-group-history-list"
+  [columns]="tableColumns"
+  [searchFields]="searchFields"
+  [hideSelectAll]="true"
+  [search]="getHistoryList.bind(this)"
+  notFound="No History are associated with this Event."
+>
+</app-search-table>

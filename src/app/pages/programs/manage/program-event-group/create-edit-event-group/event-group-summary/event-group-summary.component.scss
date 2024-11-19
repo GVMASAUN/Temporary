@@ -1,0 +1,78 @@
+.vds-grid {
+    max-width: unset;
+}
+
+.event-group-detail-panel {
+    background-color: #fafafa;
+    padding: 25px;
+
+    .status-container {
+        height: 172px;
+        background-color: #fafafa;
+        padding: 24px;
+    }
+
+    .left-line {
+        margin-left: 40px;
+        border-left: 2px solid #E4E4E4;
+        padding-left: 20px;
+    }
+
+
+    .divider {
+        border-top: 2px solid #cacaca;
+        margin-bottom: 50px;
+        margin-top: 50px;
+    }
+
+    .header-title {
+        margin: 2px 0 2px 8px;
+        font-family: OpenSans;
+        font-size: 14px;
+        color: #0052e1;
+        font-weight: 600;
+    }
+
+    .sub-header-title {
+        margin: 2px 0 2px 8px;
+        font-family: OpenSans;
+        font-size: 12px;
+        color: #0052e1;
+        font-weight: 600;
+    }
+
+    .accordion-panel {
+        background-color: #fff;
+        margin-top: 20px;
+    }
+}
+
+@media (max-width: 960px) {
+
+    .vds-grid [class^=col--][class*="-1"],
+    .vds-grid [class^=col--][class*="-2"],
+    .vds-grid [class^=col--][class*="-3"],
+    .vds-grid [class^=col--][class*="-4"],
+    .vds-grid [class^=col--][class*="-5"],
+    .vds-grid [class^=col--][class*="-6"],
+    .vds-grid [class^=col--][class*="-7"],
+    .vds-grid [class^=col--][class*="-8"],
+    .vds-grid [class^=col--][class*="-9"] {
+        width: 30% !important;
+    }
+}
+
+@media (max-width: 768px) {
+
+    .vds-grid [class^=col--][class*="-1"],
+    .vds-grid [class^=col--][class*="-2"],
+    .vds-grid [class^=col--][class*="-3"],
+    .vds-grid [class^=col--][class*="-4"],
+    .vds-grid [class^=col--][class*="-5"],
+    .vds-grid [class^=col--][class*="-6"],
+    .vds-grid [class^=col--][class*="-7"],
+    .vds-grid [class^=col--][class*="-8"],
+    .vds-grid [class^=col--][class*="-9"] {
+        width: 30% !important;
+    }
+}

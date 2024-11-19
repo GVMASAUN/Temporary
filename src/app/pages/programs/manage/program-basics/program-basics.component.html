@@ -1,0 +1,115 @@
+<div class="page-container">
+  <div class="header-container">
+    <p class="vds-text--body">Basics</p>
+    <div class="group-name-container">
+      <p class="vds-text--body--alt">
+        {{ form.get("programName")?.value }}
+      </p>
+      <p class="vds-text--body">*required field</p>
+    </div>
+  </div>
+
+  <div class="form-header vds-text--body">
+    Program Information
+  </div>
+
+  <form [formGroup]="form" class="form-container">
+    <div class="vds-grid">
+      <div class="row">
+        <vds-form-field class="col">
+          <label vdsLabel>Program Name*</label>
+          <input vdsInput 
+            aria-required="true"
+            formControlName="programName"
+            [invalid]="!!getErrorMessage('programName')"
+          />
+          <span vdsErrorMessage aria-atomic="true" aria-live="assertive">
+            <ng-container *ngIf="!!getErrorMessage('programName')">
+                <svg vds-icon [icon]="VisaIcon.ERROR" [tiny]="true"></svg>
+                Error: {{ getErrorMessage('programName') }}
+            </ng-container>
+          </span>
+        </vds-form-field>
+
+      </div>
+      <div class="row">
+        <vds-form-field class="col">
+          <label vdsLabel>Description</label>
+          <textarea
+            vdsInput
+            [autoGrow]="true"
+            formControlName="programDescription"
+            [invalid]="!!getErrorMessage('programDescription')"
+          ></textarea>
+          <span vdsErrorMessage aria-atomic="true" aria-live="assertive">
+            <ng-container *ngIf="!!getErrorMessage('programDescription')">
+                <svg vds-icon [icon]="VisaIcon.ERROR" [tiny]="true"></svg>
+                Error: {{ getErrorMessage('programDescription') }}
+            </ng-container>
+          </span>
+        </vds-form-field>
+      </div>
+      <div class="row">
+        <vds-form-field class="col">
+          <label vdsLabel>Program Budget(USD)</label>
+          <input 
+            vdsInput 
+            formControlName="programBudget"
+            [invalid]="!!getErrorMessage('programBudget')"
+          />
+          <span vdsErrorMessage aria-atomic="true" aria-live="assertive">
+            <ng-container *ngIf="!!getErrorMessage('programBudget')">
+                <svg vds-icon [icon]="VisaIcon.ERROR" [tiny]="true"></svg>
+                Error: {{ getErrorMessage('programBudget') }}
+            </ng-container>
+          </span>
+        </vds-form-field>
+
+      </div>
+      <div class="row">
+        <vds-checkbox-set class="col">
+          <legend vdsLegend>
+            EPM Response Flow
+          </legend>
+          <ul vdsCheckboxList class="server-checkbox">
+            <li vdsCheckboxListItem>
+              <vds-checkbox
+                label="Enable"
+                formControlName="epmResponseFlowEnabled"
+                [invalid]="!!getErrorMessage('epmResponseFlowEnabled')"
+              ></vds-checkbox>
+            </li>
+          </ul>
+          <span vdsErrorMessage aria-atomic="true" aria-live="assertive">
+            <ng-container *ngIf="!!getErrorMessage('epmResponseFlowEnabled')">
+                <svg vds-icon [icon]="VisaIcon.ERROR" [tiny]="true"></svg>
+                Error: {{ getErrorMessage('epmResponseFlowEnabled') }}
+            </ng-container>
+          </span>        
+        </vds-checkbox-set>
+      </div>
+    </div>
+  </form>
+</div>
+
+<app-footer [overlay]="false">
+  <vds-button-group>
+    <button role="button" vds-button [color]="ButtonColor.PRIMARY" (click)="update()">
+      Save
+    </button>
+    <button role="button" vds-button [color]="ButtonColor.SECONDARY" (click)="update(true)">
+      Save & Exit
+    </button>
+  </vds-button-group>
+
+  <vds-button-group>
+    <button role="button"
+      vds-button
+      [color]="ButtonColor.TERTIARY"
+      routerLink="../../"
+      queryParamsHandling="merge"
+    >
+      CANCEL
+    </button>
+  </vds-button-group>
+</app-footer>

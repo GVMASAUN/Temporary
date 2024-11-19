@@ -1,0 +1,226 @@
+.page-content {
+  .body-wrapper {
+    .search-filter-container {
+      margin-top: 10px;
+      background: #dfebff;
+      display: flex;
+      align-items: baseline;
+      padding: 0 10px;
+      gap: 10px;
+
+      form {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px;
+        flex: 1;
+
+        vds-form-field {
+          & ::ng-deep {
+
+            .vds-input-bar,
+            input,
+            select {
+              border-radius: 20px;
+              text-align: center;
+              width: fit-content;
+            }
+          }
+        }
+
+        vds-date-selector {
+          ::ng-deep {
+            .vds-input {
+              min-width: unset;
+              width: fit-content;
+
+              .vds-input-bar {
+                width: 150px;
+              }
+            }
+          }
+        }
+      }
+
+      .clear-section {
+        display: flex;
+        align-items: center;
+
+        span {
+          color: #0042b3;
+        }
+      }
+    }
+
+    .action-bar-container {
+      margin: 20px 0;
+
+      .inactive {
+        &::ng-deep.vds-action-bar--active-controls {
+          background-color: unset;
+        }
+      }
+
+      .wrapper-action-bar {
+        min-height: 48px;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+      }
+    }
+  }
+
+  .filter-container {
+    width: max-content;
+    margin-top: 10px;
+
+    .filter-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .chip {
+      margin-left: 12px;
+      margin-bottom: 0px;
+      cursor: pointer;
+    }
+
+    .filter-dropdown {
+      margin-top: 0;
+      position: absolute;
+      right: 0;
+      z-index: 4;
+
+      &::ng-deep.vds-listbox-container {
+        margin: 0;
+
+        .vds-state--disabled {
+          background-color: #cacaca;
+
+          label {
+            color: #000000;
+          }
+
+          .vds-state--checked::after {
+            background-color: rgb(170, 170, 170);
+            border-color: rgb(170, 170, 170);
+          }
+        }
+      }
+    }
+  }
+
+  .table-container {
+    overflow: auto;
+    height: 600px;
+    // border: 1px solid #1434cb;
+
+    .not-found-container {
+      background: #ffffff;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .table-header {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
+
+    .hidden-label {
+      &::ng-deep label {
+        font-size: 0;
+      }
+    }
+
+    // Added css to hide label for VGAR requirement
+    // Form elements should have label
+    vds-radio,
+    vds-checkbox {
+      ::ng-deep label {
+        font-size: 0 !important;
+      }
+    }
+
+    .sort-btn {
+      display: flex;
+      align-items: center;
+    }
+
+    tr {
+      position: relative;
+
+      &:nth-child(even) {
+        td {
+          background: #f5f5f5;
+        }
+      }
+
+      &:nth-child(odd) {
+        td {
+          background: #ffffff;
+        }
+      }
+
+      &.selected-row {
+        background: #e1e1e1;
+
+        td {
+          background: #e1e1e1;
+        }
+      }
+
+      .options-menu {
+        top: 0;
+        right: 0;
+        padding: unset;
+
+        ::ng-deep .vds-menu {
+          margin: unset;
+        }
+
+        .disabled {
+          pointer-events: none;
+          opacity: 0.5;
+        }
+      }
+
+      .link {
+        cursor: pointer;
+      }
+
+      .rowActions {
+        display: flex;
+      }
+
+      // th {
+      //   position: sticky;
+      //   top: 0;
+      //   z-index: 1;
+      // }
+    }
+  }
+}
+
+@media (max-width: 960px) {
+  .body-wrapper {
+    width: calc(100vw - 100px - 65px);
+
+    .table-container {
+      position: relative;
+      overflow: auto;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .body-wrapper {
+    width: calc(100vw - 100px - 65px);
+
+    .table-container {
+      position: relative;
+      overflow: auto;
+    }
+  }
+}

@@ -1,0 +1,66 @@
+<div
+  vdsAlert
+  [type]="AlertType"
+  [class.full-screen]="alertData?.mode == 'full'"
+  [style.display]="!globalAlertShown ? 'none' : ''"
+  [position]="AlertPosition.FIXED"
+  [sidenav]="isSideNavOpen ? AlertSideNav.OPEN : AlertSideNav.CLOSED"
+  role="alert"
+>
+  <div *ngIf="globalAlertShown" class="vds-grid">
+    <div class="row">
+      <div class="col">
+        <span vdsAlertIcon>
+          <svg vds-icon [icon]="'visa_' + alertData.type" [low]="true"></svg>
+        </span>
+        <span vdsAlertLabel>
+          <span vdsAlertLabelTitle> {{ alertData.title }} </span>
+          <div>
+            <ng-container *ngIf="alertData?.responseErrors?.length;else plainMessage">
+              <ul vdsList>
+                <li vdsListItem *ngFor="let responseError of alertData?.responseErrors">
+                  <strong>{{responseError.errorMessage}}</strong>
+                  <ul vdsList *ngIf="responseError?.responseStatusDetails?.length">
+                    <li *ngFor="let errorDetail of responseError?.responseStatusDetails">
+                      {{errorDetail.message}}
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </ng-container>
+            
+            <ng-template #plainMessage >
+              <ng-container *ngIf="isString(alertData.message);else multipleMessages">
+                <span [innerHTML]="alertData.message"></span>
+              </ng-container>
+            </ng-template> 
+
+            <ng-template #multipleMessages >
+              <ng-container *ngIf="isArray(alertData.message)">
+              <ul vdsList>
+                <li vdsListItem *ngFor="let listItem of alertData.message">
+                  <strong>{{listItem}}</strong>
+                </li>
+              </ul></ng-container>
+
+            </ng-template> 
+
+            
+          </div>
+        </span>
+      </div>
+      <div class="col col--sm-1">
+        <vds-button-group direction="reverse">
+          <button role="button"
+            vds-button-icon
+            aria-label="Clear Selected"
+            [iconType]="ButtonIconType.LIGHT_TINY"
+            (click)="closeAlert()"
+          >
+            <svg vds-icon icon="close" [tiny]="true"></svg>
+          </button>
+        </vds-button-group>
+      </div>
+    </div>
+  </div>
+</div>

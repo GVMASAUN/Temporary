@@ -1,0 +1,159 @@
+<div class="vds-grid ">
+    <div class="row">
+        <div class="col" *ngIf="mode === Mode.Manage && userRole !== UserRole.CLIENT_READ_ONLY">
+            <a role="link" tabindex="0" vdsLink (keyup.enter)="showComments()" (click)="showComments()">
+                View Comments
+                <svg vds-icon [icon]="VisaIcon.ARROW_NEXT" [tiny]="true"></svg>
+            </a>
+        </div>
+    </div>
+    <section class="from-container">
+        <div class="row status-container">
+            <div class="row">
+                <strong>Status</strong>
+            </div>
+            <div class="row">
+                <div class="col--lg-2">
+                    <span> Status Details</span>
+                </div>
+                <div class="col">
+                    <vds-badge
+                    [type]="STATUS_BADGE_TYPE[eventGroupTemplate.eventGroupStatusCode || StatusCode.DRAFT]"
+                    >{{STATUS_DESC[eventGroupTemplate.eventGroupStatusCode || StatusCode.DRAFT]}}
+                    </vds-badge>
+                </div>
+            </div>
+    
+            <div *ngIf="mode === Mode.Manage" class="row" >
+                <button role="button" *ngIf="eventGroupTemplate.eventGroupStatusCode === StatusCode.DRAFT || eventGroupTemplate.eventGroupStatusCode === StatusCode.REJECTED" 
+                    vds-button
+                    [isFullWidth]="false"
+                    [disabled]="disableSubmitForApproval"
+                    (click)="workflowChangeEmitter.emit(WorkFlowAction.SUBMIT_FOR_APPROVAL)"
+                    >Submit For Approval
+                </button>
+                <button role="button" *ngIf="(eventGroupTemplate.eventGroupStatusCode === StatusCode.DEACTIVATION_REJECTED) && (userRole !== UserRole.CLIENT_READ_ONLY)" 
+                    vds-button
+                    [isFullWidth]="false"
+                    [disabled]="false"
+                    (click)="workflowChangeEmitter.emit(WorkFlowAction.SUBMIT_FOR_DEACTIVATE)"
+                    >Submit For Deactivation
+                </button>
+                <button role="button" *ngIf="(eventGroupTemplate.eventGroupStatusCode === StatusCode.ACTIVE) && 
+                            (
+                                (userRole ===  UserRole.VISA_GLOBAL_ADMIN ) ||
+                                (userRole ===  UserRole.VISA_REGIONAL_ADMIN )||
+                                (userRole ===  UserRole.VISA_CLIENT_ADMIN )
+                            )"
+                    vds-button
+                    [isFullWidth]="false"
+                    [disabled]="false"
+                    (click)="workflowChangeEmitter.emit(WorkFlowAction.DEACTIVATE)"
+                    >Deactivate
+                </button>
+
+               
+                <button role="button" *ngIf="eventGroupTemplate.eventGroupStatusCode === StatusCode.PENDING_REVIEW || eventGroupTemplate.eventGroupStatusCode === StatusCode.PENDING_DEACTIVATION_REVIEW" 
+                    vds-button
+                    [isFullWidth]="false"
+                    [disabled]="disabledApproveOrReject"
+                    (click)="workflowChangeEmitter.emit(eventGroupTemplate.eventGroupStatusCode === StatusCode.PENDING_REVIEW? WorkFlowAction.APPROVE : WorkFlowAction.APPROVE_DEACTIVATION)"
+                    >Approve
+                </button>   
+                <button role="button" *ngIf="eventGroupTemplate.eventGroupStatusCode === StatusCode.PENDING_REVIEW || eventGroupTemplate.eventGroupStatusCode === StatusCode.PENDING_DEACTIVATION_REVIEW" 
+                    vds-button
+                    [isFullWidth]="false"
+                    [disabled]="disabledApproveOrReject"
+                    (click)="workflowChangeEmitter.emit(eventGroupTemplate.eventGroupStatusCode === StatusCode.PENDING_REVIEW ? WorkFlowAction.REJECT: WorkFlowAction.REJECT_DEACTIVATION)"
+                    >Reject
+                </button> 
+         
+            </div>
+            <div class="row" *ngIf="eventGroupTemplate.eventGroupStatusCode === StatusCode.PENDING_REVIEW">
+                <p [show]="eventGroupTemplate.modifiedUserId === currentUserId" vdsErrorMessage>
+                    <svg vds-icon [icon]="VisaIcon.ERROR" [tiny]="true"></svg>
+                   A different user account is required to approve or reject this event group template.
+                </p>  
+            </div>
+        </div>
+        <hr vdsDivider />
+        <div class="row">
+            <div class="col col--align-center">
+                <label vdsLabel>Event Group Information</label>
+            </div>
+
+       </div>
+        <div class="row">
+            <div class="col">
+                <form [formGroup]="form">
+                    <vds-form-field>
+                        <label vdsLabel>Event Group Name *</label>
+                        <input vdsInput
+                            [formControl]="form.controls.eventGroupName | controlConverter" 
+                            [disabled]="disabled"
+                            aria-required="true"
+                            [invalid]="!!getErrorMessage(form.controls.eventGroupName)"
+                        />
+                        <span vdsErrorMessage aria-atomic="true" aria-live="assertive">
+                            <ng-container *ngIf="!!getErrorMessage(form.controls.eventGroupName)">
+                                <svg vds-icon [icon]="VisaIcon.ERROR" [tiny]="true"></svg>
+                                Error: {{ getErrorMessage(form.controls.eventGroupName) }}
+                            </ng-container>
+                        </span>
+                    </vds-form-field>
+            
+                    <vds-form-field>
+                        <label vdsLabel>Description</label>
+                        <textarea vdsInput 
+                            [formControl]="form.controls.eventGroupDescription | controlConverter"
+                            [readonly]="disabled"
+                            [tabindex]="disabled ? -1 : 0"
+                            [invalid]="!!getErrorMessage(form.controls.eventGroupDescription)"
+                        ></textarea>
+                        <span vdsErrorMessage aria-atomic="true" aria-live="assertive">
+                            <ng-container *ngIf="!!getErrorMessage(form.controls.eventGroupDescription)">
+                                <svg vds-icon [icon]="VisaIcon.ERROR" [tiny]="true"></svg>
+                                Error: {{ getErrorMessage(form.controls.eventGroupDescription) }}
+                            </ng-container>
+                        </span>
+                    </vds-form-field>
+                    <vds-form-field>
+                        <label vdsLabel>Type *</label>
+                        <select vdsSelect 
+                            [formControl]="form.controls.eventGroupType | controlConverter" 
+                            [disabled]="disabled"
+                            [required]="true"
+                            [invalid]="form.controls.eventGroupType.invalid"
+                        >
+                            <option value="Offer">Offer</option>
+                        </select>
+                        <span vdsErrorMessage aria-atomic="true" aria-live="assertive">
+                            <ng-container *ngIf="!!getErrorMessage(form.controls.eventGroupType)">
+                                <svg vds-icon icon="error" [tiny]="true"></svg>
+                                Error: {{ getErrorMessage(form.controls.eventGroupType) }}
+                            </ng-container>
+                        </span>
+                    </vds-form-field>
+
+                    <vds-form-field>
+                        <label vdsLabel>Workflow Automation Type *</label>
+                        <select vdsSelect 
+                            [formControl]="form.controls.workflowType | controlConverter" 
+                            [disabled]="disabled"
+                            [required]="true"
+                            [invalid]="!!getErrorMessage(form.controls.workflowType)"
+                        >
+                            <option *ngFor="let type of automationTypes" [value]="type.value">{{type.label}}</option>
+                        </select>
+                        <span vdsErrorMessage aria-atomic="true" aria-live="assertive">
+                            <ng-container *ngIf="!!getErrorMessage(form.controls.workflowType)">
+                                <svg vds-icon [icon]="VisaIcon.ERROR" [tiny]="true"></svg>
+                                Error: {{ getErrorMessage(form.controls.workflowType) }}
+                            </ng-container>
+                        </span>
+                    </vds-form-field>
+                </form>
+            </div>
+        </div>
+    </section>
+</div>

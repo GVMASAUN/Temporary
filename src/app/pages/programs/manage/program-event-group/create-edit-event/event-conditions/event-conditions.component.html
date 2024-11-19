@@ -1,0 +1,136 @@
+<vds-linear-progress
+    class="loading-spinner"
+    *ngIf="isLoading"
+  ></vds-linear-progress>
+
+<ng-container *ngIf="event?.eventDetails?.length && initializeEventAttributes">
+    <div class="existing-conditions" *ngIf="existingEventConditions?.length">
+        <strong>Event Conditions</strong>
+        <div vdsCard *ngFor="let condition of existingEventConditions">
+            <ng-template 
+                [ngTemplateOutlet]="eventConditionPanel"
+                [ngTemplateOutletContext]="{condition:condition, existingConditions: existingEventConditions}"
+            ></ng-template>
+        </div>
+    
+    </div>
+    <div class="existing-conditions" *ngIf="existingSegmentationConditions?.length">
+        <strong>Segmentation Conditions</strong>
+        <div vdsCard *ngFor="let condition of existingSegmentationConditions">
+            <ng-template 
+                [ngTemplateOutlet]="eventConditionPanel"
+                [ngTemplateOutletContext]="{condition:condition, existingConditions: existingSegmentationConditions}"
+            ></ng-template>            
+        </div>
+    </div>
+</ng-container>
+
+
+<div class="add-condition" *ngIf="initializeEventAttributes && !showCreateConditionSection && !disabled && !creatingByEventGroupTemplate">
+    <button role="button" 
+        *ngIf="!!eventAttributes?.length"
+        vds-button 
+        [color]="ButtonColor.TERTIARY" 
+        (click)="handleAddCondition(AttributeCategory.EVENT)"
+        [disabled]="(disabled || (eventDialogMode === DialogMode.CREATE) || showCreateConditionSection) || !!selectedEventCondition"
+        >+ ADD Event Criteria
+    </button>
+    <button role="button" 
+        *ngIf="!!segmentAttributes?.length"
+        vds-button 
+        [color]="ButtonColor.TERTIARY" 
+        (click)="handleAddCondition(AttributeCategory.TARGETING)"
+        [disabled]="(disabled || (eventDialogMode === DialogMode.CREATE) || showCreateConditionSection) || !!selectedEventCondition"
+        >+ ADD SEGMENTATION CRITERIA
+    </button>
+</div>
+<ng-template
+    *ngIf="showCreateConditionSection"
+    [ngTemplateOutlet]="createEditEventConditionPanel"
+></ng-template>
+
+
+
+
+
+<ng-template #eventConditionPanel let-condition="condition" let-existingConditions="existingConditions">
+    <div *ngIf="condition !== selectedEventCondition" vdsCardContent>
+        <div class="vds-grid">
+
+            <div class="row">
+                <div class="col--lg-5">
+                    <strong>Attribute :</strong> 
+                </div>
+                <div class="col--lg-5">
+                    {{condition.attributeDisplayName}}
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col--lg-5 ">
+                    <strong>Comparison Operator :</strong>
+                </div>
+                <div class="col--lg-5 ">
+                    {{condition.eventRuleOperator}}
+                </div>                        
+            </div>
+            <div class="row">
+                <div class="col--lg-5">
+                    <strong>Comparison Value(s) :</strong> 
+                </div>
+                <div class="col--lg-5">
+                    {{getComparisonValues(condition)}}
+
+                </div>
+                
+                <div *ngIf="!disabled" class="col--lg-2 col--align-end">
+                    <div class="row">
+                        <button role="button" 
+                            vds-button-icon 
+                            aria-label="edit-button"
+                            [iconType]="ButtonIconType.LIGHT_TINY"
+                            (click)="selectEventConditionConfigs(condition, EventConditionAction.EDIT)"
+                            [disabled]="!!selectedEventCondition || showCreateConditionSection"
+                            >
+                            <svg vds-icon [icon]="VisaIcon.EDIT" [tiny]="true"></svg>
+                        </button>
+                        <button role="button"
+                            *ngIf="!creatingByEventGroupTemplate && showDeleteAction(condition, existingConditions)" 
+                            vds-button-icon 
+                            aria-label="delete-button"
+                            [iconType]="ButtonIconType.LIGHT_TINY"
+                            (click)="selectEventConditionConfigs(condition, EventConditionAction.DELETE)"
+                            [disabled]="!!selectedEventCondition || showCreateConditionSection"
+                            >
+                            <svg vds-icon [icon]="VisaIcon.DELETE" [tiny]="true"></svg>
+                        </button>
+                    </div>
+
+                </div>
+                    
+            </div>
+        </div>
+    </div>
+    <ng-template 
+        *ngIf="condition === selectedEventCondition"
+        [ngTemplateOutlet]="createEditEventConditionPanel"
+    ></ng-template>  
+</ng-template>
+
+
+
+<ng-template #createEditEventConditionPanel>
+    <app-create-edit-condition
+        [eventFormGroup]="form"
+        [event]="selectedEvent"
+        [eventDialogMode]="eventDialogMode"
+        [action]="eventConditionAction"
+        [eventConditionDetails]="selectedEventCondition"
+        [attributeCategory]="attributeCategory"
+        [isTemplateEvent]="isTemplateEvent"
+        [creatingByEventGroupTemplate]="creatingByEventGroupTemplate"
+        [attributeGroups]="AttributeCategory.TARGETING !==  attributeCategory? eventAttributeGroups : segmentAttributeGroups"
+        [attributes]="AttributeCategory.TARGETING !== attributeCategory ? eventAttributes : segmentAttributes"
+        (onSubmitEmitter)="handleSubmit($event)"   
+    ></app-create-edit-condition>  
+</ng-template>

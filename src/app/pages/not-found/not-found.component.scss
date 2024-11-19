@@ -1,0 +1,16 @@
+.error-wrapper {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  .error-code {
+    font-size: 10vw;
+    padding: 5vw;
+  }
+  .error-msg {
+    font-size: 4vw;
+    padding: 2vw;
+  }
+}

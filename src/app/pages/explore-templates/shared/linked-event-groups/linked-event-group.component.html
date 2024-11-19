@@ -1,0 +1,11 @@
+<app-search-table
+  #linkedEventGroupTable
+  tableId="linked-event-group-list"
+  [columns]="tableColumns"
+  [hideSelectAll]="true"
+  [searchFields]="advancedSearchFields"
+  [search]="getMessageDetails.bind(this)"
+  [isLoading]="showLoader"
+  [dataSource]="tableData"
+  notFound="No data found"
+></app-search-table>

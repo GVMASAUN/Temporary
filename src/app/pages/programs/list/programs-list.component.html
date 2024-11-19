@@ -1,0 +1,18 @@
+<app-header screenTitle="Programs"> </app-header>
+
+<app-search-table
+  tableId="program-list"
+  [tableActions]="showProgramCreate ? tableActions : []"
+  [columns]="tableColumns"
+  [searchFields]="advancedSearchFields"
+  [hideSelectAll]="true"
+  [hideSearchFieldFilters]="true"
+  [search]="getProgramList.bind(this)"
+  [tableStyle]="{
+    height: '63vh',
+    overflow: 'auto'
+    }"
+    notFound="No data exists for the provided search filter.">
+</app-search-table>
+
+<app-footer></app-footer>

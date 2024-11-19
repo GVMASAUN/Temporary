@@ -1,0 +1,656 @@
+<div class="vds-grid">
+    <div class="col">
+        <div class="event-group-detail-panel">
+            <div class="row m-b-20">
+                <div *ngIf="(!!eventGroup.eventGroupStatusCode) && (eventGroup.eventGroupStatusCode === StatusCode.ERROR) && (eventGroup.publishedStatus === StatusCode.ACTIVE)" vdsAlert [type]="AlertType.ERROR">
+                    <span vdsAlertIcon>
+                        <svg vds-icon [icon]="VisaIcon.WARNING" [low]="true"></svg>
+                    </span>
+                    <span vdsAlertLabel>
+                        <span vdsAlertLabelTitle> 
+                            This Event Group was partially published and remains Active in VOP. Please consider deactivating to prevent incomplete or invalid Event conditions being evaluated!  
+                        </span>
+                    </span>
+                </div>
+            </div>
+
+            <div class="row">
+                <img [src]="VisaImage.FOLDER" alt="Folder"/>
+                <span class="header-title">Event Group {{eventGroup.eventGroupName ? '| '+eventGroup.eventGroupName : ''}}</span>
+            </div>
+        
+            <div class="row">
+                <div class="col--lg-3">
+                    <span class="summary-field-heading">VOP Offer ID</span>
+                </div>
+                <div class="col--lg-9">
+                    <span class="summary-field-value">
+                        {{eventGroup.vopOfferId}}
+                    </span>
+                </div>
+            </div>
+        
+            <div class="row">
+                <div class="col--lg-3">
+                    <span class="summary-field-heading">Status</span>
+                </div>
+                <div class="col--lg-9">
+                    <div>
+                        <vds-badge *ngIf="!!eventGroup.eventGroupStatusCode" class="m-r-10" 
+                            [type]="(showDeactivatedEventGroupSummary ||   isPreviouslyPublished) ? BadgeType.NEUTRAL : STATUS_BADGE_TYPE[eventGroup.eventGroupStatusCode]"
+                        >{{
+                            (showDeactivatedEventGroupSummary || isPreviouslyPublished)
+                                ? 'Previously Published' 
+                                : STATUS_DESC[eventGroup.eventGroupStatusCode]
+                        }}</vds-badge>
+                        <a tabindex="0" role="link" *ngIf="showEventGroupDetailsButton" (keyup.enter)="openEventGroupDialog()"  (click)="openEventGroupDialog()">
+                            View Details
+                            <img [src]="VisaImage.NEW_WINDOW" alt="New Window"/>
+                        </a>
+                        <a *ngIf="eventGroup.eventGroupStatusCode === StatusCode.ERROR" tabindex="0" role="link" (click)="showErrors()" (keyup.enter)="showErrors()" >
+                            View Errors
+                            <img [src]="VisaImage.NEW_WINDOW" alt="New window"/>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col--lg-3">
+                    <span class="summary-field-heading">VOP Publish Status</span>
+                </div>
+                <div class="col--lg-9">
+                    <div>
+                        <vds-badge *ngIf="eventGroup.publishedStatus !== null" class="m-r-10" 
+                            [type]="STATUS_BADGE_TYPE[eventGroup.publishedStatus]">
+                            {{ STATUS_DESC[eventGroup.publishedStatus!] }}
+                        </vds-badge>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col--lg-3">
+                    <span class="summary-field-heading">Name</span>
+                </div>
+                <div class="col--lg-9">
+                    <span class="summary-field-value">
+                        {{eventGroup.eventGroupName}}
+                    </span>
+                </div>
+            </div>
+    
+            <div class="row">
+                <div class="col--lg-3">
+                    <span class="summary-field-heading">Start</span>
+                </div>
+                <div class="col">
+                    <div class="row">
+                        <span class="summary-field-value m-r-10">
+                            {{DateUtils.formatDateTime(eventGroup.eventGroupStartDate, DateTimeFormat.MM_DD_YYYY_HH_MM_SS_A)}}
+                        </span>
+                        <vds-badge>{{DateUtils.getTimeZone()}}</vds-badge>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col--lg-3">
+                    <span class="summary-field-heading">End</span>
+                </div>
+                <div class="col">
+                    <div class="row">
+                        <span class="summary-field-value m-r-10">
+                            {{DateUtils.formatDateTime(eventGroup.eventGroupEndDate, DateTimeFormat.MM_DD_YYYY_HH_MM_SS_A)}}                        </span>
+                        <vds-badge>{{DateUtils.getTimeZone()}}</vds-badge>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col--lg-3">
+                    <span class="summary-field-heading">Description</span>
+                </div>
+                <div class="col--lg-9">
+                    <span class="summary-field-value">
+                        {{eventGroup.eventGroupDescription}}
+                    </span>
+                </div>
+            </div>
+    
+            <div *ngIf="(mode === DialogMode.EDIT || mode === DialogMode.SUMMARY) &&
+                    !isPreviouslyPublished &&
+                    ((eventGroup.eventGroupStatusCode === StatusCode.PENDING_REVIEW) ||
+                    (eventGroup.eventGroupStatusCode === StatusCode.PENDING_DEACTIVATION_REVIEW))" 
+                    class="row m-t-20">
+                <button 
+                    vds-button
+                    [isFullWidth]="false"
+                    [disabled]="disabledApproveOrReject"
+                    (click)="workflowChangeEmitter.emit(
+                        eventGroup.eventGroupStatusCode === StatusCode.PENDING_DEACTIVATION_REVIEW 
+                        ? WorkFlowAction.APPROVE_DEACTIVATION
+                        : WorkFlowAction.APPROVE)
+                        "
+                >Approve</button>
+
+                <button
+                    vds-button
+                    [isFullWidth]="false"
+                    [disabled]="disabledApproveOrReject"
+                    (click)="workflowChangeEmitter.emit(
+                        eventGroup.eventGroupStatusCode === StatusCode.PENDING_DEACTIVATION_REVIEW
+                        ? WorkFlowAction.REJECT_DEACTIVATION
+                        : WorkFlowAction.REJECT)"
+                >Reject</button>
+            </div>
+    
+            <div *ngIf="(userRole !== UserRole.CLIENT_READ_ONLY) &&(mode === DialogMode.EDIT || mode === DialogMode.SUMMARY) && !isPreviouslyPublished &&
+                    (
+                        (eventGroup.eventGroupStatusCode === StatusCode.ACTIVE) ||
+                        (eventGroup.eventGroupStatusCode === StatusCode.DEACTIVATION_REJECTED) ||
+                        ((eventGroup.eventGroupStatusCode === StatusCode.ERROR) && 
+                        (eventGroup.publishedStatus === StatusCode.ACTIVE))
+                    )"
+                >
+                <button 
+                    vds-button
+                    [isFullWidth]="false"
+                    (click)="
+                        userRole === UserRole.VISA_GLOBAL_ADMIN
+                        ? workflowChangeEmitter.emit(WorkFlowAction.DEACTIVATE)
+                        : workflowChangeEmitter.emit(WorkFlowAction.SUBMIT_FOR_DEACTIVATE)
+                    "
+                >{{ userRole === UserRole.VISA_GLOBAL_ADMIN ? 'Deactivate' : 'Request To Deactivate' }}</button>
+            </div>
+
+            <div class="row" *ngIf="((eventGroup.eventGroupStatusCode === StatusCode.PENDING_REVIEW) ||
+                (eventGroup.eventGroupStatusCode === StatusCode.PENDING_DEACTIVATION_REVIEW)) && !isPreviouslyPublished && disabledApproveOrReject"
+            >
+                <p [show]="true" vdsErrorMessage>
+                    <svg vds-icon [icon]="VisaIcon.ERROR" [tiny]="true"></svg>
+                    A different user account is required to approve or reject this event group.
+                </p>
+            </div>
+
+            <div class="row divider">
+            </div>
+
+            <div class="row">
+                <div class="col--lg-9">
+                    <img [src]="VisaImage.SCHEDULE" width="15px" height="15px" alt="calender"/>
+                    <span class="header-title">Events</span>
+                </div>
+                <div *ngIf="eventGroup?.eventStageList?.length" class="col--align-end">
+                    <a tabindex="0" vdsLink (keyup.enter)="expandAccordionItems(false)" (click)="expandAccordionItems(false)">Collapse All</a>
+                </div>
+                <div *ngIf="eventGroup?.eventStageList?.length" class="col">
+                    <a tabindex="0" vdsLink (keyup.enter)="expandAccordionItems()" (click)="expandAccordionItems()">Expand All</a>
+                </div>
+            </div>
+            
+            <div class="accordion-panel">
+                <vds-accordion>
+                    <vds-accordion-item [id]="getEventAccordionViewId(event)"
+                        *ngFor="let event of getEventsToDisplay(); let index = index">
+                        <vds-accordion-heading>
+                            <vds-accordion-title >Event - {{event.eventName}}</vds-accordion-title>
+                        </vds-accordion-heading>
+                        <vds-accordion-body>
+                            <div class="left-line" >
+                                <div class="col--valign-center" *ngIf="mode === DialogMode.EDIT && userRole !== UserRole.CLIENT_READ_ONLY">
+                                    <a role="link" tabindex="0" vdsLink (keyup.enter)="showComments(event)" (click)="showComments(event)">
+                                      View Comments
+                                      <svg vds-icon [icon]="VisaIcon.ARROW_NEXT" [tiny]="true"></svg>
+                                    </a>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col--lg-3">
+                                        <span class="summary-field-heading">VOP Event ID</span>
+                                    </div>
+                                    <div class="col--lg-9">
+                                        <span class="summary-field-value">
+                                            {{event.eventId}}
+                                        </span>
+                                    </div>
+                                </div>
+    
+                                <div class="row">
+                                    <div class="col--lg-3">
+                                        <span class="summary-field-heading">Status</span>
+                                    </div>
+                                    <div class="col--lg-9">
+                                        <div>
+                                            <vds-badge
+                                                *ngIf="!!event.eventStatus"
+                                                 class="m-r-10" 
+                                                [type]="(showDeactivatedEventGroupSummary || isPreviouslyPublished) ? BadgeType.NEUTRAL : STATUS_BADGE_TYPE[event.eventStatus]"
+                                            >
+                                                {{
+                                                    (showDeactivatedEventGroupSummary || isPreviouslyPublished)
+                                                        ? 'Previously Published' 
+                                                        : STATUS_DESC[event.eventStatus]
+                                                }}
+                                            </vds-badge>
+                                            <a *ngIf="showEventDetailsButton && editable" tabindex="0" role="link" (click)="openEventDialog(event)" (keyup.enter)="openEventDialog(event)" >
+                                                View Details
+                                                <img [src]="VisaImage.NEW_WINDOW" alt="New window"/>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+            
+                                <div class="row">
+                                    <div class="col--lg-3">
+                                        <span class="summary-field-heading">Description</span>
+                                    </div>
+                                    <div class="col--lg-9">
+                                        <span class="summary-field-value">
+                                            {{event.eventDescription}}
+                                        </span>                                
+                                    </div>
+                                </div>    
+
+                                <div class="row">
+                                    <div class="col--lg-3">
+                                        <span class="summary-field-heading">Start</span>
+                                    </div>
+
+                                    <div class="col">
+                                        <div class="row">
+                                            <span class="summary-field-value m-r-10">
+                                                {{DateUtils.formatDateTime(event.eventStartDate, DateTimeFormat.MM_DD_YYYY_HH_MM_SS_A)}}                                            </span>
+                                            <vds-badge>{{DateUtils.getTimeZone()}}</vds-badge>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col--lg-3">
+                                        <span class="summary-field-heading">End</span>
+                                    </div>
+                        
+                                    <div class="col">
+                                        <div class="row">
+                                            <span class="summary-field-value m-r-10">
+                                                {{DateUtils.formatDateTime(event.eventEndDate, DateTimeFormat.MM_DD_YYYY_HH_MM_SS_A)}}
+                                            </span>
+                                            <vds-badge>{{DateUtils.getTimeZone()}}</vds-badge>
+                                        </div>
+                    
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col--lg-3">
+                                        <span class="summary-field-heading">Event Type</span>
+                                    </div>
+                                    <div class="col--lg-9">
+                                        <span class="summary-field-value">
+                                            {{event.eventType}}
+                                        </span>
+                                    </div>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col--lg-3">
+                                        <span class="summary-field-heading">Recurrence Limit</span>
+                                    </div>
+                                    <div class="col--lg-9">
+                                        <span class="summary-field-value">
+                                            {{event.recurrenceLimit! >= RecurrenceLimit.UpTo ?  RECURRENCE_LIMIT_DESC[RecurrenceLimit.UpTo] : RECURRENCE_LIMIT_DESC[event.recurrenceLimit!]}}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <ng-container *ngIf="event.eventTypeId === EventType.Statement_Credit_Response">
+                                    <div class="row">
+                                        <div class="col--lg-3">
+                                            <span class="summary-field-heading">Statement Credit ID</span>
+                                        </div>
+                                        <div class="col--lg-9">
+                                            <span class="summary-field-value">
+                                                {{event.statementCreditEventId}}
+                                            </span>
+                                        </div>
+                                    </div>
+    
+                                    <div class="row">
+                                        <div class="col--lg-3">
+                                            <span class="summary-field-heading">Statement Credit Status</span>
+                                        </div>
+                                        <div class="col--lg-9">
+                                            <span class="summary-field-value">
+                                                {{event.statementCreditStatus}}
+                                            </span>
+                                        </div>
+                                    </div>                               
+                                </ng-container>
+
+
+                                <div *ngIf="
+                                    !isTemplateEventGroup &&
+                                    !isPreviouslyPublished &&
+                                    mode === DialogMode.EDIT && 
+                                    !showEventDetailsButton &&
+                                    ( eventGroup.eventGroupStatusCode === StatusCode.ACTIVE || 
+                                    eventGroup.eventGroupStatusCode === StatusCode.DEACTIVATION_REJECTED )
+                                    "
+                                >
+                                    <button role="button"
+                                        *ngIf="
+                                        userRole !== UserRole.CLIENT_READ_ONLY &&
+                                        ( event.eventStatus === StatusCode.ACTIVE ||
+                                        event.eventStatus === StatusCode.DEACTIVATION_REJECTED )
+                                        "
+                                        vds-button
+                                        [isFullWidth]="false"
+                                        (click)="
+                                            userRole === UserRole.VISA_GLOBAL_ADMIN
+                                            ? eventWorkflowChangeEmitter.emit({ event: event, action: WorkFlowAction.DEACTIVATE })
+                                            : eventWorkflowChangeEmitter.emit({ event: event, action: WorkFlowAction.SUBMIT_FOR_DEACTIVATE })
+                                        "
+                                    >{{ userRole === UserRole.VISA_GLOBAL_ADMIN ? 'Deactivate' : 'Request To Deactivate' }}</button>
+                                    
+                                    <button role="button" 
+                                        *ngIf="event.eventStatus === StatusCode.PENDING_DEACTIVATION_REVIEW"
+                                        vds-button
+                                        [isFullWidth]="false"
+                                        [disabled]="disableApproveOrRejectDeactivation"
+                                        (click)="eventWorkflowChangeEmitter.emit({ event: event, action: WorkFlowAction.APPROVE_DEACTIVATION })"
+                                    >Approve</button>
+
+                                    <button role="button"
+                                        *ngIf="event.eventStatus === StatusCode.PENDING_DEACTIVATION_REVIEW"
+                                        vds-button
+                                        [isFullWidth]="false"
+                                        [disabled]="disableApproveOrRejectDeactivation"
+                                        (click)="eventWorkflowChangeEmitter.emit({ event: event, action: WorkFlowAction.REJECT_DEACTIVATION })"
+                                    >Reject</button>
+                                </div>
+
+                                <div class="row" 
+                                    *ngIf="
+                                        !isTemplateEventGroup &&
+                                        !isPreviouslyPublished &&
+                                        mode === DialogMode.EDIT && 
+                                        disableApproveOrRejectDeactivation &&
+                                        ( eventGroup.eventGroupStatusCode === StatusCode.ACTIVE || 
+                                        eventGroup.eventGroupStatusCode === StatusCode.DEACTIVATION_REJECTED ) &&
+                                        event.eventStatus === StatusCode.PENDING_DEACTIVATION_REVIEW
+                                    ">
+                                    <p [show]="eventGroup.modifiedUserId === currentUserId" vdsErrorMessage>
+                                        <svg vds-icon [icon]="VisaIcon.ERROR" [tiny]="true"></svg>
+                                        A different user account is required to approve or reject this event.
+                                    </p>
+                                </div>
+
+                                <div class="row divider"></div>
+
+                                <div class="row">
+                                    <span class="sub-header-title">Event Conditions</span>
+                                </div>  
+
+                                <div class="accordion-panel">
+                                    <vds-accordion>
+                                        <vds-accordion-item *ngFor="let eventDetail of event?.eventDetails">
+                                            <vds-accordion-heading>
+                                                <vds-accordion-title >Attribute - {{eventDetail.attributeDisplayName}}</vds-accordion-title>
+                                            </vds-accordion-heading>
+                                            <vds-accordion-body>
+                                                <div class="left-line">
+                                                    <div class="row">
+                                                        <div class="col--lg-3">
+                                                            <span class="summary-field-heading">Operator</span>
+                                                        </div>
+                                                        <div class="col--lg-9">
+                                                            <span class="summary-field-value">
+                                                                {{eventDetail.eventRuleOperator}}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                            
+                                                    <div class="row">
+                                                        <div class="col--lg-3">
+                                                            <span class="summary-field-heading">Comparison Value(s)</span>
+                                                        </div>
+                                                        <div class="col--lg-9">
+                                                            <span class="summary-field-value">
+                                                                {{getComparisonValues(eventDetail)}}
+                                                            </span>
+                                                        </div>
+                                                    </div>                        
+                                                </div>
+                                            </vds-accordion-body>
+                                        </vds-accordion-item>
+                                    </vds-accordion>
+                                </div>
+                
+                                <div class="row divider m-t-20"></div>
+                
+                                <div class="row">
+                                    <img [src]="VisaImage.CONNECT" width="15px" height="15px"alt=connect-icon/>
+                                    <span class="sub-header-title">Actions</span>
+                                </div>
+                
+                                <div class="accordion-panel">
+                                    <vds-accordion [id]="'event-group-summary-event-action-accordion'">
+                                        <vds-accordion-item [id]="getEventActionAccordionViewId(action)" 
+                                            *ngFor="let action of event?.eventActions">
+                                            <vds-accordion-heading>
+                                                <vds-accordion-title >Event Action - {{action.eventActionName}}</vds-accordion-title>
+                                            </vds-accordion-heading>
+                                            <vds-accordion-body>
+                                                <div class="left-line">
+                                                    <!-- action name -->
+                                                    <div class="row">
+                                                        <div class="col--lg-3">
+                                                            <span class="summary-field-heading">Action Name</span>
+                                                        </div>
+                                                        <div class="col--lg-9">
+                                                            <span class="summary-field-value">
+                                                                {{action?.eventActionName}}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+        
+                                                    <!-- action type -->
+                                                    <div class="row">
+                                                        <div class="col--lg-3">
+                                                            <span class="summary-field-heading">Action Type</span>
+                                                        </div>
+                                                        <div class="col--lg-9">
+                                                            <span class="summary-field-value">
+                                                                {{action?.eventActionType}}
+                                                            </span>
+                                                        </div>
+                                                    </div> 
+                                                    
+                                                    <ng-container *ngIf="EventActionType.Endpoint === action.eventActionType || EventActionType.EndpointAggregate === action.eventActionType">
+        
+        
+                                                        <!-- EPM template name -->
+                                                        <div class="row">
+                                                            <div class="col--lg-3">
+                                                                <span class="summary-field-heading">EPM Template Name</span>
+                                                            </div>
+                                                            <div class="col--lg-9">
+                                                                <span class="summary-field-value">
+                                                                    {{action?.endpointMessageName}}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+        
+                                                        <!-- EPM Template Id -->
+                                                        <div class="row" >
+                                                            <div class="col--lg-3">
+                                                                <span class="summary-field-heading">EPM Template Id</span>
+                                                            </div>
+                                                            <div class="col--lg-9">
+                                                                <span class="summary-field-value">
+                                                                    {{action?.endpointMessageId}}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+        
+                                                        <!-- Endpoint URL -->
+                                                        <div class="row" >
+                                                            <div class="col--lg-3">
+                                                                <span class="summary-field-heading">Endpoint URL</span>
+                                                            </div>
+                                                            <div class="col--lg-9">
+                                                                <span class="summary-field-value">
+                                                                    {{action?.endpointUrlName}}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+        
+        
+                                                        <!-- Notification Delay Settings for Days, Hours and Minute -->
+                                                        <div class="row" >
+                                                            <div class="col--lg-3">
+                                                                <span class="summary-field-heading">Notification Delay Settings for Days, Hours and Minutes</span>
+                                                            </div>
+                                                            <div class="col--lg-9">
+                                                                <span class="summary-field-value">
+                                                                    Days: {{action?.notificationDelayValue?.days}},
+                                                                    Hours: {{action?.notificationDelayValue?.hours}},
+                                                                    Minutes: {{action?.notificationDelayValue?.minutes}}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+        
+                                                        <!-- EPM Template Required Message Fields -->
+                                                        <div class="row" >
+                                                            <div class="col--lg-3">
+                                                                <span class="summary-field-heading">EPM Template Required Message Fields</span>
+                                                            </div>
+                                                            <div class="col--lg-9">
+                                                                <span class="summary-field-value">
+                                                                    {{action?.epmSystemDefinedFields}}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+        
+                                                        <!-- Custom Fields / values -->
+                                                        <div class="row" >
+                                                            <div class="col--lg-3">
+                                                                <span class="summary-field-heading">Custom Fields</span>
+                                                            </div>
+                                                            <div class="col--lg-9">
+                                                                <span class="summary-field-value">
+                                                                    {{getCustomFields(action)}}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </ng-container>
+                                                    <ng-container *ngIf="EventActionType.StatementCredit === action?.eventActionType">
+                                                        <!-- Reward Type -->
+                                                        <div class="row">
+                                                            <div class="col--lg-3">
+                                                                <span class="summary-field-heading">Reward Type</span>
+                                                            </div>
+                                                            <div class="col--lg-9">
+                                                                <span class="summary-field-value">
+                                                                    {{rewardType(action)}}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+        
+                                                        <!-- Reward Type-Fixed -->
+                                                        <ng-container *ngIf="action?.fulfillmentMonetaryType === EventActionFulfillmentMonetaryType.Fixed">
+                                                            <!--    Amount (USD) -->
+                                                            <div class="row" >
+                                                                <div class="col--lg-3">
+                                                                    <span class="summary-field-heading">Amount (USD)</span>
+                                                                </div>
+                                                                <div class="col--lg-9">
+                                                                    <span class="summary-field-value">
+                                                                        {{action?.fulfillmentMonetaryValue | currency:'USD'}}
+                                                                    </span>
+                                                                </div>
+                                                            </div>                                    
+                                                        </ng-container>
+        
+                                                        <!-- Reward Type-Percentage -->
+                                                        <ng-container *ngIf="action?.fulfillmentMonetaryType === EventActionFulfillmentMonetaryType.Pct">
+                                                            <!--    Percentage -->
+                                                            <div class="row" >
+                                                                <div class="col--lg-3">
+                                                                    <span class="summary-field-heading">Percentage</span>
+                                                                </div>
+                                                                <div class="col--lg-9">
+                                                                    <span class="summary-field-value">
+                                                                        {{(action?.fulfillmentMonetaryValue ? (action?.fulfillmentMonetaryValue/100.0) : action?.fulfillmentMonetaryValue)  | percent:'1.2-2'}}
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+        
+        
+                                                            <!-- Transaction Attribute -->
+                                                            <div class="row" >
+                                                                <div class="col--lg-3">
+                                                                    <span class="summary-field-heading">Transaction Attribute</span>
+                                                                </div>
+                                                                <div class="col--lg-9">
+                                                                    <span class="summary-field-value">
+                                                                        {{action?.amountType}}
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+        
+                                                            <!-- Max Amount Permitted (USD) -->
+                                                            <div class="row" >
+                                                                <div class="col--lg-3">
+                                                                    <span class="summary-field-heading">Max Amount Permitted (USD)</span>
+                                                                </div>
+                                                                <div class="col--lg-9">
+                                                                    <span *ngIf="Utils.isNumber(action?.fulfillmentConstraint)" class="summary-field-value">
+                                                                        {{action?.fulfillmentConstraint | currency:'USD'}}
+                                                                    </span>
+                                                                </div>
+                                                            </div>                                                
+        
+                                                                                                            
+                                                        </ng-container>
+                                                        <!-- Merchant Descriptor Name -->
+                                                        <div class="row" >
+                                                            <div class="col--lg-3">
+                                                                <span class="summary-field-heading">Merchant Descriptor Name</span>
+                                                            </div>
+                                                            <div class="col--lg-9">
+                                                                <span class="summary-field-value">
+                                                                    {{action?.merchantDescriptor}}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+        
+                                                        <!-- Merchant Descriptor City -->
+                                                        <div class="row" >
+                                                            <div class="col--lg-3">
+                                                                <span class="summary-field-heading">Merchant Descriptor City</span>
+                                                            </div>
+                                                            <div class="col--lg-9">
+                                                                <span class="summary-field-value">
+                                                                    {{action?.merchantCity}}
+                                                                </span>
+                                                            </div>
+                                                        </div> 
+                                                    </ng-container>
+                                                     
+                                                </div>
+                                            </vds-accordion-body>
+                                        </vds-accordion-item>
+                                    </vds-accordion>
+                                </div>
+                                
+                            </div>
+          
+                        </vds-accordion-body>
+                    </vds-accordion-item>
+                </vds-accordion>
+            </div>
+        </div>        
+    </div>
+</div>

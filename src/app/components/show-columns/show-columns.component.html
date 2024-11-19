@@ -1,0 +1,52 @@
+<div class="filter-container">
+  <div class="filter-header">
+    Show columns
+    <div
+      vdsChip
+      (click)="menuOpen = !menuOpen"
+      class="chip"
+      #toggle
+      [disabled]="isDisabled"
+    >
+      <span vdsChipText *ngIf="selectedItems.length; else elseBlock">
+        {{ selectedItems[0] }}
+      </span>
+      <span vdsChipText *ngIf="selectedItems.length - 1 > 0">
+        {{ " (+" + (selectedItems.length - 1) + ")" }}
+      </span>
+      <ng-template vdsChipText #elseBlock>
+        <span>No Columns Selected</span>
+      </ng-template>
+      <button role="button"
+        vds-button-icon
+        aria-label="open dropdown"
+        [iconType]="ButtonIconType.LIGHT_TINY"
+        [attr.aria-expanded]="menuOpen"
+      >
+        <svg vds-icon [icon]="!menuOpen ? 'arrow-expand' : 'arrow-collapse'" [tiny]="true"></svg>
+      </button>
+    </div>
+  </div>
+  <div class="filter-dropdown" #menu>
+    <vds-listbox-container *ngIf="menuOpen">
+      <ul
+        vds-listbox
+        [multiselect]="true"
+        (change)="changeMultiSelectPreSelected($event)"
+        id="show-column-listbox"
+      >
+        <li
+          [value]="item.value"
+          vds-listbox-item
+          [selected]="!!item.checked"
+          *ngFor="let item of columns; let i = index"
+          [disabled]="i == 0"
+        >
+          <label vdsCheckboxLabel>
+            {{ item.label }}
+          </label>
+        </li>
+      </ul>
+    </vds-listbox-container>
+  </div>
+</div>

@@ -1,0 +1,165 @@
+.page-content {
+  .page-wrapper {
+    .filter-bar {
+      background: #dfebff;
+      display: flex;
+      align-items: baseline;
+      padding: 0 10px;
+      gap: 10px;
+
+      form {
+        display: flex;
+        gap: 10px;
+        flex: 1;
+
+        vds-form-field {
+          // flex: 1;
+
+          & ::ng-deep {
+            .vds-input-bar,
+            input,
+            select {
+              border-radius: 20px;
+              text-align: center;
+              width: fit-content;
+            }
+          }
+        }
+      }
+      .clear-section {
+        display: flex;
+        align-items: center;
+
+        span {
+          color: #0042b3;
+        }
+      }
+    }
+    .action-bar {
+      margin: 10px 0 30px;
+      display: flex;
+      justify-content: space-between;
+
+      app-show-columns {
+        margin-right: 25px;
+      }
+    }
+    .setup-section {
+      border: 1px solid #cacaca;
+      background: #fafafa;
+      padding: 24px;
+      max-width: 728px;
+      box-sizing: border-box;
+
+      .setup-title {
+        margin-bottom: 24px;
+      }
+
+      .setup-list-section {
+        display: flex;
+        flex-direction: column;
+        gap: 32px;
+
+        .setup-item {
+          display: flex;
+          gap: 15px;
+
+          .icon-section {
+            margin-top: 3px;
+          }
+          .info-section {
+            display: flex;
+            flex-direction: column;
+            gap: 9px;
+
+            .info-header {
+              font-size: 14px;
+              font-weight: 600;
+              margin-bottom: 3px;
+            }
+            .info-description {
+              font-size: 12px;
+            }
+          }
+        }
+      }
+    }
+
+    .table-wrapper {
+      position: relative;
+
+      .table-container {
+        overflow: auto;
+        margin-left: 272px;
+
+        table {
+          .sort-btn {
+            display: flex;
+            align-items: center;
+          }
+          tr {
+            // position: relative;
+
+            &.selected-row td {
+              background: #e1e1e1 !important;
+            }
+            .options-menu {
+              top: 0;
+              right: 0;
+              padding: unset;
+
+              ::ng-deep .vds-menu {
+                margin: unset;
+              }
+            }
+          }
+
+          td:not(:first-child):not(:last-child),
+          th:not(:first-child):not(:last-child) {
+            white-space: nowrap;
+            max-width: 200px;
+            box-sizing: border-box;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+          tr:nth-child(even) td {
+            background: #f5f5f5;
+          }
+
+          .fix {
+            position: absolute;
+            display: flex;
+            align-items: center;
+            background-color: white;
+
+            &.fix-left {
+              left: 0;
+            }
+            &.fix-left-1 {
+              left: 72px;
+              width: 200px;
+
+              a {
+                overflow: hidden;
+                text-overflow: ellipsis;
+              }
+            }
+            &.fix-right {
+              right: 0;
+              width: 80px;
+              box-sizing: border-box;
+            }
+          }
+        }
+      }
+    }
+  }
+  .link {
+    cursor: pointer;
+  }
+  .footer-link {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+}

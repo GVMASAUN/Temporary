@@ -1,0 +1,35 @@
+.hidden-label {
+  opacity: 0;
+  font-size: 0;
+}
+
+table {
+  vds-checkbox, vds-date-selector {
+    ::ng-deep label {
+      font-size: 0 !important;
+    }
+  }
+  
+  .selected-row {
+    background: #e1e1e1;
+  }
+  .sort-btn {
+    display: flex;
+    align-items: center;
+  }
+
+  .vmid-date-selector {
+    display: flex;
+    align-items: center;
+
+    vds-date-selector {
+      flex: 1;
+
+      ::ng-deep .vds-input {
+        display: flex;
+        width: fit-content;
+        min-width: unset;
+      }
+    }
+  }
+}

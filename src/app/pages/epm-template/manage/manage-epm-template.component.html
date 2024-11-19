@@ -1,0 +1,60 @@
+<app-header 
+    [screenTitle]="'Manage EPM Template - ' + (epmTemplate?.[EpmTemplateField.TEMPLATE_MESSAGE_NAME] || '')"
+></app-header>
+
+<div class="tabs-section">
+    <ul
+        vds-tab-list
+        [orientation]="TabsOrientation.HORIZONTAL"
+        >
+        <li vds-tab-item *ngFor="let tab of tabs; let tabIndex = index">
+            <button role="button" 
+                vdsTab
+                [selected]="selectedTabIndex === tabIndex"
+                (focus)="selectedTabIndex = tabIndex"
+            >
+                {{ tab }}
+            </button>
+        </li>
+    </ul>
+</div>
+<ng-container *ngIf="initialized">
+    <app-epm-template-details
+        [hidden]="hideTab(EpmTemplateStep.DETAILS)"
+        [id]="getTabId(viewName,selectedTabIndex,EpmTemplateStep.DETAILS)"
+        [attr.aria-labelledby]="getTabLabelledById(viewName,selectedTabIndex,EpmTemplateStep.DETAILS)"
+        [form]="epmTemplateForm"
+        [mode]="MODE.Manage"
+    ></app-epm-template-details>
+
+    <app-linked-event-group
+        *ngIf="selectedTabIndex === tabs.indexOf(EpmTemplateStep.LINKED_EVENT_GROUPS)"
+        [epmTemplateForm]="epmTemplateForm"
+        [id]="getTabId(viewName,selectedTabIndex,EpmTemplateStep.LINKED_EVENT_GROUPS)"
+        [attr.aria-labelledby]="getTabLabelledById(viewName,selectedTabIndex,EpmTemplateStep.LINKED_EVENT_GROUPS)"
+    ></app-linked-event-group>
+
+    <app-epm-template-history
+        *ngIf="selectedTabIndex === tabs.indexOf(EpmTemplateStep.HISTORY)"
+        [epmTemplateForm]="epmTemplateForm"
+        [id]="getTabId(viewName,selectedTabIndex,EpmTemplateStep.HISTORY)"
+        [attr.aria-labelledby]="getTabLabelledById(viewName,selectedTabIndex,EpmTemplateStep.HISTORY)"
+    ></app-epm-template-history>
+</ng-container>
+
+
+<app-footer>
+    <vds-button-group [hidden]="hideTab(EpmTemplateStep.DETAILS)">
+        <button role="button" vds-button [color]="ButtonColor.PRIMARY" (click)="update()">
+            Save
+        </button>
+        <button role="button" vds-button [color]="ButtonColor.SECONDARY" (click)="update(true)">
+        Save & Exit
+        </button>
+    </vds-button-group>
+    <vds-button-group>
+        <button role="button" vds-button [color]="ButtonColor.TERTIARY" (click)="close()">
+            {{ showCloseButton ? 'CLOSE' : 'CANCEL' }}
+        </button>
+    </vds-button-group>
+</app-footer>

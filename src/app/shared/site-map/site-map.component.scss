@@ -1,0 +1,40 @@
+.graph {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.node-rectangle {
+    pointer-events: all;
+    cursor: pointer;
+}
+
+.node-rectangle:focus-visible {
+    content: "";
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    left: 4px;
+    bottom: 4px;
+    display: block;
+    outline: 1px dashed #132482;
+}
+
+.nt-svg:focus:focus-within {
+
+    .node-rectangle,
+    .main-img {
+        outline: dotted 1px #000000;
+        outline-offset: 1px;
+    }
+}
+
+
+.node-font {
+    font-size: "14px";
+
+}
+
+.new-node-icon {
+    cursor: pointer;
+}

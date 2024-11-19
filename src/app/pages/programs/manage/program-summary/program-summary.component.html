@@ -1,0 +1,113 @@
+<div class="vds-grid program-summary" *ngIf="!!programSummary">
+    <div class="col">
+        <div class="row">
+            <span>Summary</span>
+        </div>
+    
+        <div class="row">
+            <h2>
+                {{ programSummary.programName }}
+            </h2>
+        </div>
+    
+        <hr class="m-t-20" vdsDivider/>
+    
+        <div class="program-summary-panel m-t-20">
+            <div class="row">
+                <span class="header-title">Basics</span>
+            </div>
+            
+            <div class="row">
+                <div class="col--lg-3">
+                    <span class="summary-field-heading">
+                        Description
+                    </span>
+                </div>
+                <div class="col">
+                    <span class="summary-field-value">
+                        {{programSummary.programDescription}}
+                    </span>
+                </div>
+            </div>
+    
+            <div class="row">
+                <div class="col--lg-3">
+                    <span class="summary-field-heading">
+                        Program Type
+                    </span>
+                </div>
+        
+                <div class="col">
+                    <span class="summary-field-value">
+                        {{programSummary.programTypeName}}
+                    </span>
+                </div>
+        
+                <hr vdsDivider />
+            </div>
+    
+            <div class="row divider"></div>
+        </div>
+
+        <div class="event-group-detail-panel">
+            <div class="row">
+                <div class="col--lg-9">
+                    <div class="row">
+                        <div class="col--lg-2 col--valign-center">
+                            <img [src]="VisaImage.SCHEDULE" alt="schedule-icon" width="20px" height="18px"/>
+                            <span class="sub-header-title">Event Groups</span>
+                        </div>
+
+                        <vds-radio
+                            class="col--valign-center"
+                            name="eventGroupType"
+                            [label]="EventGroupType.PUBLISHED"
+                            [radioValue]="EventGroupType.PUBLISHED"
+                            [checked]="selectedEventGroupType === EventGroupType.PUBLISHED"
+                            (change)="handleEventGroupChange($event)"
+                        >
+                        </vds-radio>
+                        
+                        <vds-radio
+                            class="col--valign-center"
+                            name="eventGroupType"
+                            [label]="EventGroupType.UNPUBLISHED"
+                            [radioValue]="EventGroupType.UNPUBLISHED"
+                            [checked]="selectedEventGroupType === EventGroupType.UNPUBLISHED"
+                            (change)="handleEventGroupChange($event)"
+                        >
+                        </vds-radio>
+                    </div>
+                </div>
+
+                <div *ngIf="programSummary?.eventGroupList?.length" class="col--valign-center col--align-end">
+                    <a tabindex="0" role="link" (keyup.enter)="expandAccordionItems(false)" vdsLink (click)="expandAccordionItems(false)">Collapse All</a>
+                </div>
+                <div *ngIf="programSummary?.eventGroupList?.length" class="col col--valign-center">
+                    <a tabindex="0" role="link" vdsLink (keyup.enter)="expandAccordionItems()" (click)="expandAccordionItems()">Expand All</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-panel m-t-20">
+            <vds-accordion *ngIf="programSummary?.eventGroupList?.length">
+                <vds-accordion-item *ngFor="let eventGroup of getSortedEventGroups()">
+                    <vds-accordion-heading>
+                        <vds-accordion-title >Event Group - {{eventGroup.eventGroupName}}</vds-accordion-title>
+                    </vds-accordion-heading>
+                    <vds-accordion-body>
+                        <app-event-group-summary
+                            [form]="getEventGroupForm(eventGroup)" 
+                            [userRole]="userRole"
+                            [isProgramSummaryView]="true"
+                            [showEventGroupDetailsButton]="this.editable && isEditableEventGroup(eventGroup)" 
+                            [showEventDetailsButton]="editable"
+                            [isPublishedEventGroup]="selectedEventGroupType === EventGroupType.PUBLISHED"
+                        ></app-event-group-summary>
+                    </vds-accordion-body>
+                </vds-accordion-item>
+            </vds-accordion>
+        </div>
+    </div>   
+</div>
+<app-footer></app-footer>

@@ -1,0 +1,21 @@
+.box {
+    margin-top: 24px;
+    padding: 20px;
+    background: #fafafa;
+
+    ::ng-deep .body-wrapper {
+        width: unset;
+    }
+}
+
+.editDialog {
+    padding: 0px 40px 0px 40px;
+}
+
+.timeZone {
+    margin-top: 36px;
+}
+
+.readonly-field-container {
+    background: #fafafa;
+}

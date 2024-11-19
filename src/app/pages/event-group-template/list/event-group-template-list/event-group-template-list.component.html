@@ -1,0 +1,19 @@
+<app-header 
+    screenTitle="Event Group Templates"
+></app-header>
+
+<app-search-table
+    tableId="event-group-template-list"
+    notFound="No data exists for the provided search filter."
+    [tableActions]="tableActions"
+    [columns]="tableColumns"
+    [searchFields]="advancedSearchFields"
+    [hideSelectAll]="true"
+    [hideSearchFieldFilters]="true"
+    [search]="advancedSearch.bind(this)"
+    [tableStyle]="{
+        height: '63vh',
+        overflow: 'auto'
+        }"
+></app-search-table>
+<app-footer></app-footer>

@@ -1,0 +1,80 @@
+<div class="vds-grid">
+    <div class="row dialog-header-bar">
+      <div class="col--align-end">
+        <button role="button"
+          vds-button-icon
+          aria-label="Close"
+          [iconType]="ButtonIconType.LIGHT_TINY"
+          (click)="close()"
+        >
+            <svg
+                vds-icon
+                [icon]="VisaIcon.CLOSE"
+                [tiny]="true"
+            ></svg>
+        </button>
+      </div>
+    </div>
+</div>
+
+<div vds-dialog-card-head>
+    <div class="vds-grid">
+        <div class="row m-b-20">
+            <h2 vds-dialog-card-head-title>
+                {{ 'History Message for ' + dialogConfig.dialogTitle || "Untitled" }}
+            </h2>
+        </div>
+
+        <div
+            *ngFor="let view of dialogConfig.viewConfigs"
+            class="row"
+        >
+            <div class="row">
+                <div class="col--lg-3 col--no-gutter">
+                    <span>
+                        <strong>{{ view.label + ':' }}</strong>
+                    </span>
+                </div>
+                <div class="col--lg-6 col--no-gutter">
+                    <span>
+                        {{ view.mapValue && view.mapValue(dialogConfig.data[view.key]) || dialogConfig.data[view.key] }}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div
+    vds-dialog-card-body
+    class="detail-panel"
+>
+    <div
+        class="row"
+        tabindex="0"
+    >
+        <app-search-table
+            tableId="view-more-history-list"
+            [columns]="dialogConfig.columns"
+            [hideSelectAll]="true"
+            [moreColumns]="false"
+            [dataSource]="dialogConfig.dataSource"
+        ></app-search-table>
+    </div>
+</div>
+
+<div
+    vds-dialog-card-footer
+    class="dialog-footer"
+>
+    <vds-button-group>
+        <button
+            vds-button
+            role="button"
+            [color]="ButtonColor.TERTIARY"
+            (click)="close()"
+        >
+            CLOSE
+        </button>
+    </vds-button-group>
+</div>

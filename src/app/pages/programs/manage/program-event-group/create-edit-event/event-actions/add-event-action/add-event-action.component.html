@@ -1,0 +1,443 @@
+<div class="dialog-center">
+  <div class="dialog-container">
+    <div class="vds-grid">
+      <div class="row dialog-header-bar">
+        <div class="col--align-end">
+          <button role="button" aria-label="close-button" vds-button-icon [iconType]="buttonIconType.LIGHT_TINY" (click)="close(false)">
+            <svg vds-icon icon="visa_close" [tiny]="true" ></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- <vds-linear-progress *ngIf="showLoader"></vds-linear-progress> -->
+
+    <div vds-dialog-card-head>
+      <div class="vds-grid">
+        <div class="row">
+          <span>
+            Action Details -
+            {{ dialogMode == DialogMode.CREATE ? "Creating" : "Editing" }}
+          </span>
+        </div>
+
+        <div class="row name">
+          <div class="col">
+            <h2 vds-dialog-card-head-title>{{ 
+              actionForm.value.eventActionName || "Untitled Action"
+            }}</h2>
+          </div>
+          <div class="col--align-end">
+            *required field
+          </div>
+        </div>
+      </div>
+      <hr vdsDivider />
+    </div>
+    <div 
+      id="create-edit-action-dailog"
+      vds-dialog-card-body class="detail-panel">
+      <form [formGroup]="actionForm" class="vds-grid">
+
+        <h3 class="row f-s-1">General</h3>
+
+        <vds-form-field class="row">
+          <label vdsLabel>Action Name*</label>
+          <input vdsInput formControlName="eventActionName" 
+            [readonly]="disabled"
+            [tabindex]="disabled ? -1 : 0"
+            aria-required="true"
+            [invalid]="!!getErrorMessage(actionForm, 'eventActionName')"
+          />
+          <span vdsErrorMessage aria-atomic="true" aria-live="assertive">
+            <ng-container *ngIf="!!getErrorMessage(actionForm, 'eventActionName')">
+                <svg vds-icon [icon]="VisaIcon.ERROR" [tiny]="true"></svg>
+                Error: {{ getErrorMessage(actionForm, 'eventActionName') }}
+            </ng-container>
+        </span>
+        </vds-form-field>
+
+        <vds-form-field class="row">
+          <label vdsLabel>Action Type*</label>
+          <select
+            vdsSelect
+            [required]="true"
+            formControlName="type"
+            [disabled]="disabled"
+            (change)="typeChanged($event, 'actionType')"
+            [invalid]="!!getErrorMessage(actionForm, 'type')"
+          >
+            <option value="" disabled hidden>Select Option</option>
+            <option [value]="op.referenceId" *ngFor="let op of actionTypeList">
+              {{ op.referenceDescription }}
+            </option>
+          </select>
+          <span vdsErrorMessage aria-atomic="true" aria-live="assertive">
+            <ng-container *ngIf="!!getErrorMessage(actionForm, 'type')">
+                <svg vds-icon [icon]="VisaIcon.ERROR" [tiny]="true"></svg>
+                Error: {{ getErrorMessage(actionForm, 'type') }}
+            </ng-container>
+          </span>
+        </vds-form-field>
+      </form>
+      <hr vdsDivider/>
+
+      <div *ngIf="actionType.includes('Endpoint')">
+
+        <h4>Details</h4>
+
+        <div [formGroup]="actionForm" class="vds-grid">
+          <vds-form-field  *ngIf="!isOpenedFromEventTemplate" class="row">
+            <label vdsLabel>Endpoint*</label>
+            <select
+              vdsSelect
+              [required]="true"
+              [disabled]="disabled"
+              formControlName="endpointUrl"
+              (change)="typeChanged($event, 'endpointUrl')"
+              [invalid]="!!getErrorMessage(actionForm, 'endpointUrl')"
+            >
+              <option value="" disabled hidden>Select Option</option>
+              <option
+                [value]="op.name"
+                *ngFor="let op of endPointList"
+                [selected]="op.name == selectedEndpoint"
+              >
+                {{ op.name }}
+              </option>
+            </select>
+          </vds-form-field>
+          <vds-error vdsErrorMessage [show]="!!getErrorMessage(actionForm, 'endpointUrl')">{{ getErrorMessage(actionForm, 'endpointUrl') }}</vds-error>
+
+          <div class="row">
+            <div class="col--lg-10 col--valign-center col--no-gutter">
+              <label vdsLabel>Select Endpoint Message*</label>
+            </div>
+            <div *ngIf="isOpenedFromEventTemplate" class="col--valign-center col--align-end col--no-gutter">
+              <vds-checkbox
+                [(ngModel)]="endpointMessageNameLocked"
+                [required]="true"
+                label="Locked"
+                [checked]="endpointMessageNameLocked"
+                [disabled]="disabled"
+                ></vds-checkbox>
+            </div>
+
+          </div>
+
+          <div class="row combobox-container">
+
+            <div vds-combobox [type]="comboboxType.AUTO">
+
+              <vds-form-field>
+                <label vdsLabel></label>
+                <input vdsInput           
+                  aria-required="true"
+                  formControlName="selectedEndPointMsgId"
+                  [readonly]="disabled"
+                  [tabindex]="disabled ? -1 : 0"
+                  placeholder="Search in Message"
+                  [invalid]="!!getErrorMessage(actionForm, 'selectedEndPointMsgId')"
+                  />
+                <button role="button"
+                  vdsSuffix
+                  vds-button-icon
+                  [disabled]="disabled"
+                  [iconType]="buttonIconType.LIGHT_TINY"
+                >
+                  <svg vds-icon icon="visa_arrow-expand" [tiny]="true"></svg>
+                </button>
+              </vds-form-field>
+
+              <vds-menu>
+                <ul 
+                  vds-listbox 
+                  id="add-action-endpoint-message-listbox"
+                  (change)="selectMessage($event)">
+                  <li
+                    *ngFor="let card of endPointMessageList"
+                    vds-listbox-item
+                    [value]="card.messageId"
+                    [disabled]="disabled"
+                    [selected]="card.messageId == selectedEndPointMsgId"
+                  >
+                    {{ card.messageName }}
+                  </li>
+                </ul>
+              </vds-menu>
+            </div>
+
+          </div>
+          <vds-error vdsErrorMessage [show]="!!getErrorMessage(actionForm, 'selectedEndPointMsgId')">{{ getErrorMessage(actionForm, 'selectedEndPointMsgId') }}</vds-error>
+
+          <div class="row" *ngIf="selectedEndPointMsgId">
+            <div class="block">
+              <!-- <form [formGroup]="notificationDelayValue">
+                <div class="title">
+                  <h5>Notification Delay</h5>
+                </div>
+                <div class="notification-delay-section">
+                  <vds-form-field>
+                    <label vdsLabel>Days</label>
+                    <input
+                      vdsInput
+                      type="number"
+                      formControlName="days"
+                      (input)="notificationDelay($event, 'days')"
+                    />
+                  </vds-form-field>
+                  <vds-form-field>
+                    <label vdsLabel>Hrs</label>
+                    <input
+                      vdsInput
+                      type="number"
+                      formControlName="hours"
+                      (input)="notificationDelay($event, 'hours')"
+                    />
+                  </vds-form-field>
+                  <vds-form-field>
+                    <label vdsLabel>Min</label>
+                    <input
+                      vdsInput
+                      type="number"
+                      formControlName="minutes"
+                      (input)="notificationDelay($event, 'minutes')"
+                    />
+                  </vds-form-field>
+                </div>
+              </form>
+
+              <hr vdsDivider /> -->
+
+              <div class="title">
+                <div class="row">
+                  <h5>Custom Fields</h5>
+                  <div *ngIf="isOpenedFromEventTemplate" class="col--valign-center col--align-end col--no-gutter">
+                    <vds-checkbox
+                      [(ngModel)]="customFieldValuesLocked"
+                      label="Locked"
+                      [checked]="customFieldValuesLocked"
+                      [disabled]="disabled"
+                    ></vds-checkbox>
+                  </div>
+                </div>
+
+                <span>
+                  Enter value(s) for custom Field(s):
+                </span>
+              </div>
+              <div class="field-section">
+                <div class="user-field-section">
+                  <vds-form-field
+                    *ngFor="let field of userFieldsList; let i = index"
+                  >
+                    <label vdsLabel>{{ field.key }}</label>
+                    <input
+                      vdsInput
+                      [value]="field.value"
+                      (input)="addCustomField($event, i)"
+                      [readonly]="disabled"
+                      [tabindex]="disabled ? -1 : 0"
+                    />
+                  </vds-form-field>
+                </div>
+
+                <hr vdsDivider />
+
+                <div class="system-field-section">
+                  <h5>Included Message Fields</h5>
+                  <table vdsDataTable>
+                    <caption vdsScreenReader>
+                      System Defined Fields
+                    </caption>
+                    <tbody vdsTbody>
+                      <tr vdsTr *ngFor="let row of systemFieldsList">
+                        <td vdsTd>
+                          {{ row }}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="actionType == 'Statement Credit'">
+        <form [formGroup]="statementCreditForm" class="vds-grid">
+           <vds-radio-group role="radiogroup"
+            formControlName="reward"
+            (changed)="selectReward($event)"
+            [disabled]="disabled"
+            [required]="true"
+          >
+            <legend vdsLegend>Reward Type*</legend>
+            <vds-radio
+              label="Fixed Amount"
+              [radioValue]="EventActionFulfillmentMonetaryType.Fixed"
+              name="radioValue"
+              [disabled]="disabled"
+              [checked]="statementCredit?.reward === EventActionFulfillmentMonetaryType.Fixed"
+              [invalid]="!!getErrorMessage(statementCreditForm, 'reward')"
+            >
+            </vds-radio>
+            <vds-radio
+              label="Percentage of Transaction"
+              [radioValue]="EventActionFulfillmentMonetaryType.Pct"
+              name="radioValue"
+              [disabled]="disabled"
+              [checked]="statementCredit?.reward === EventActionFulfillmentMonetaryType.Pct"
+              [invalid]="!!getErrorMessage(statementCreditForm, 'reward')"
+            >
+            </vds-radio>
+            <span vdsErrorMessage aria-atomic="true" aria-live="assertive">
+              <ng-container *ngIf="!!getErrorMessage(statementCreditForm, 'reward')">
+                  <svg vds-icon [icon]="VisaIcon.ERROR" [tiny]="true"></svg>
+                  Error: {{ getErrorMessage(statementCreditForm, 'reward') }}
+              </ng-container>
+            </span>
+          </vds-radio-group>
+          <div *ngIf="!isOpenedFromEventTemplate" class="row">
+            <div class="block">
+              <div *ngIf="statementCredit?.reward === EventActionFulfillmentMonetaryType.Pct; else fixedBlock">
+                <vds-form-field>
+                  <label vdsLabel>Percentage (%)*</label>
+                  <input 
+                    vdsInput 
+                    aria-required="true"
+                    formControlName="fulfillmentMonetaryValue"
+                    [readonly]="disabled"
+                    [tabindex]="disabled ? -1 : 0"
+                    [invalid]="!!getErrorMessage(statementCreditForm, 'fulfillmentMonetaryValue')"
+                  />
+                  <span vdsErrorMessage aria-atomic="true" aria-live="assertive">
+                    <ng-container *ngIf="!!getErrorMessage(statementCreditForm, 'fulfillmentMonetaryValue')">
+                        <svg vds-icon [icon]="VisaIcon.ERROR" [tiny]="true"></svg>
+                        Error: {{ getErrorMessage(statementCreditForm, 'fulfillmentMonetaryValue') }}
+                    </ng-container>
+                  </span>
+                </vds-form-field>
+                <vds-form-field
+                *ngIf="initTransactionAttributes"
+                >
+                  <label vdsLabel>Transaction Attribute*</label>
+                  <select 
+                    vdsSelect 
+                    [required]="true"
+                    formControlName="amountType"
+                    [disabled]="disabled"
+                    [invalid]="!!getErrorMessage(statementCreditForm, 'amountType')"
+                  >
+                    <option value="" disabled hidden>Select Option</option>
+                    <option [value]="op.id" *ngFor="let op of amountTypeList">
+                      {{ op.name }}
+                    </option>
+                  </select>
+                  <span vdsErrorMessage aria-atomic="true" aria-live="assertive">
+                    <ng-container *ngIf="!!getErrorMessage(statementCreditForm, 'amountType')">
+                        <svg vds-icon [icon]="VisaIcon.ERROR" [tiny]="true"></svg>
+                        Error: {{ getErrorMessage(statementCreditForm, 'amountType') }}
+                    </ng-container>
+                  </span>
+                </vds-form-field>
+                <vds-form-field>
+                  <label vdsLabel>Max Amount Permitted (USD) *</label>
+                  <input 
+                    vdsInput 
+                    aria-required="true"
+                    formControlName="fulfillmentConstraint"
+                    [readonly]="disabled"
+                    [tabindex]="disabled ? -1 : 0"
+                    [invalid]="!!getErrorMessage(statementCreditForm, 'fulfillmentConstraint')"
+                  />
+                  <span vdsErrorMessage aria-atomic="true" aria-live="assertive">
+                    <ng-container *ngIf="!!getErrorMessage(statementCreditForm, 'fulfillmentConstraint')">
+                        <svg vds-icon [icon]="VisaIcon.ERROR" [tiny]="true"></svg>
+                        Error: {{ getErrorMessage(statementCreditForm, 'fulfillmentConstraint') }}
+                    </ng-container>
+                  </span>
+                </vds-form-field>
+              </div>
+              <ng-template #fixedBlock>
+                <div *ngIf="!isOpenedFromEventTemplate">
+                  <vds-form-field>
+                    <label vdsLabel>Amount (USD)*</label>
+                    <input 
+                      vdsInput 
+                      aria-required="true"
+                      formControlName="fulfillmentMonetaryValue" 
+                      [readonly]="disabled"
+                      [tabindex]="disabled ? -1 : 0"
+                      [invalid]="!!getErrorMessage(statementCreditForm, 'fulfillmentMonetaryValue')"
+                    />
+                    <span vdsErrorMessage aria-atomic="true" aria-live="assertive">
+                      <ng-container *ngIf="!!getErrorMessage(statementCreditForm, 'fulfillmentMonetaryValue')">
+                          <svg vds-icon [icon]="VisaIcon.ERROR" [tiny]="true"></svg>
+                          Error: {{ getErrorMessage(statementCreditForm, 'fulfillmentMonetaryValue') }}
+                      </ng-container>
+                    </span>
+                  </vds-form-field>
+                </div>
+              </ng-template>
+              <vds-form-field *ngIf="!isOpenedFromEventTemplate">
+                <label vdsLabel>Merchant Descriptor Name*</label>
+                <input 
+                  vdsInput
+                    formControlName="merchantDescriptor"
+                    [readonly]="disabled"
+                    [tabindex]="disabled ? -1 : 0"
+                    aria-required="true"
+                    [invalid]="!!getErrorMessage(statementCreditForm, 'merchantDescriptor')"
+                   />
+                <span vdsErrorMessage aria-atomic="true" aria-live="assertive">
+                  <ng-container *ngIf="!!getErrorMessage(statementCreditForm, 'merchantDescriptor')">
+                      <svg vds-icon [icon]="VisaIcon.ERROR" [tiny]="true"></svg>
+                      Error: {{ getErrorMessage(statementCreditForm, 'merchantDescriptor') }}
+                  </ng-container>
+                </span>
+              </vds-form-field>
+              <vds-form-field *ngIf="!isOpenedFromEventTemplate">
+                <label vdsLabel>Merchant Descriptor City</label>
+                <input 
+                  vdsInput 
+                  formControlName="merchantCity"
+                  [readonly]="disabled"
+                  [tabindex]="disabled ? -1 : 0"
+                  [invalid]="!!getErrorMessage(statementCreditForm, 'merchantCity')"
+                />
+                <span vdsErrorMessage aria-atomic="true" aria-live="assertive">
+                  <ng-container *ngIf="!!getErrorMessage(statementCreditForm, 'merchantCity')">
+                      <svg vds-icon [icon]="VisaIcon.ERROR" [tiny]="true"></svg>
+                      Error: {{ getErrorMessage(statementCreditForm, 'merchantCity') }}
+                  </ng-container>
+                </span>
+              </vds-form-field>
+            </div>
+          </div>
+        </form>
+      </div>
+
+    </div>
+    
+    <div vds-dialog-card-footer class="dialog-footer">
+      <vds-button-group>
+        <button role="button" *ngIf="!disabled" vds-button [color]="buttonColor.PRIMARY" (click)="save()">
+          SAVE
+        </button>
+
+        <button role="button" *ngIf="!disabled" vds-button [color]="buttonColor.SECONDARY" (click)="saveAndExit()">
+          SAVE & EXIT
+        </button>
+
+        <button role="button"
+          vds-button
+          [color]="buttonColor.TERTIARY"
+          (click)="close(false)"
+        >
+          CANCEL
+        </button>
+      </vds-button-group>
+    </div>
+  </div>
+</div>

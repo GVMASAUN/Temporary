@@ -1,0 +1,31 @@
+<div class="requirements-dialog-wrapper">
+  <div vds-dialog-card-close>
+    <vds-button-group direction="right">
+      <button role="button"
+        vds-button-icon
+        aria-label="Close"
+        [iconType]="ButtonIconType.LIGHT_TINY"
+        (click)="this.dialogRef.close()"
+      >
+        <svg vds-icon icon="visa_close" [tiny]="true"></svg>
+      </button>
+    </vds-button-group>
+  </div>
+  <div vds-dialog-card-head>
+    <h2 vds-dialog-card-head-title>
+      Find merchants requirements
+    </h2>
+    <h3 class="f-s-1">List of required fields based on information entered</h3>
+  </div>
+  <div vds-dialog-card-body>
+    <ul vdsList>
+      <li vdsListItem>Merchant Name + Country Code + Address</li>
+      <li vdsListItem>Acquiring Identifier + Card Acceptor ID</li>
+      <li vdsListItem>Card Acceptor ID</li>
+      <li vdsListItem>Acquirer MID and Business ID</li>
+      <li vdsListItem>Acquirer MID</li>
+      <li vdsListItem>Business Registration ID</li>
+    </ul>
+  </div>
+  <div vds-dialog-card-footer></div>
+</div>

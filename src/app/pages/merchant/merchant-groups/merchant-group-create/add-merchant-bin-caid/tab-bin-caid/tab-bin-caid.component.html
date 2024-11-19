@@ -1,0 +1,174 @@
+<div class="vds-grid">
+  <div class="row">
+    <div class="col">
+      <div class="form-header">
+        <svg vds-icon icon="document-add" [low]="true"></svg>
+        Add via BIN-CAID
+        <svg vds-icon icon="info" [tiny]="true"></svg>
+      </div>
+      <p>
+        Enter Acquirer Bank Identification Number (BIN) and Card Acceptor ID
+        (CAID). Optionally, External ID can be defined to group merchant(s).
+        Specific start and end date for mercahnts can also be defined which can
+        define the action duration for the merchant in the merchant group.
+      </p>
+    </div>
+    <div class="col col--md-2">
+      <div></div>
+    </div>
+  </div>
+  <div class="row" *ngIf="binCaid.length">
+    <div class="col">
+      <table vdsDataTable>
+        <caption vdsScreenReader>
+          {{ tableId + 'column1 BIN' + 'column2 CAID' + 'column3 External ID' + 'column4 Start Date' + 'column4 End Date' + 'column5 Action' }}
+        </caption>
+        <thead vdsThead>
+          <tr vdsTr>
+            <th vdsTh scope="col" [width]="'18%'">BIN</th>
+            <th vdsTh scope="col" [width]="'18%'">CAID</th>
+            <th vdsTh scope="col" [width]="'18%'">External ID</th>
+            <th vdsTh scope="col" [width]="'18%'">
+              Start Date <vds-badge class="m-l-10">
+                {{ getTimeZone() }}
+              </vds-badge>
+            </th>
+            <th vdsTh scope="col" [width]="'18%'">
+              End Date<vds-badge class="m-l-10">
+                {{ getTimeZone() }}
+              </vds-badge>
+           </th>
+            <th vdsTh scope="col" [width]="'10%'">Action</th>
+          </tr>
+        </thead>
+        <tbody vdsTbody>
+          <tr vdsTr *ngFor="let row of binCaid; let i = index">
+            <td vdsTd>
+              <vds-form-field>
+                <input
+                  vdsInput
+                  placeholder="BIN"
+                  (changed)="inputChange($event, i, 'acquirerBin')"
+                  [value]="binCaid[i].acquirerBin"
+                />
+              </vds-form-field>
+            </td>
+            <td vdsTd>
+              <vds-form-field>
+                <input
+                  vdsInput
+                  placeholder="CAID"
+                  (changed)="inputChange($event, i, 'cardAcceptorId')"
+                  [value]="binCaid[i].cardAcceptorId"
+                />
+              </vds-form-field>
+            </td>
+            <td vdsTd>
+              <vds-form-field>
+                <input
+                  vdsInput
+                  placeholder="External ID"
+                  (changed)="inputChange($event, i, 'externalId')"
+                  [value]="binCaid[i].externalId"
+                />
+              </vds-form-field>
+            </td>
+            <td vdsTd>
+              <vds-date-selector
+                [hint]="DateTimeFormat.YYYY_MM_DD_HH_MM_SS_Server"
+                (formattedDateChange)="selectDate($event, i, 'start')"
+                [formatInputValue]="DateTimeFormat.YYYY_MM_DD_HH_MM_SS_Server"
+                [valid]="!this.binCaid[i]['startDateError']"
+                label="Select"
+              >
+              <vds-error   
+                vdsErrorMessage 
+                [show]="!!this.binCaid[i]['startDateError']">
+                {{
+                  this.binCaid[i]['startDateError'] 
+                }}
+              </vds-error>
+            </vds-date-selector>
+
+            </td>
+            <td vdsTd>
+              <vds-date-selector
+                [hint]="row.endDateInMerchantGroup? EMPTY : DateTimeFormat.YYYY_MM_DD_HH_MM_SS_Server"
+                (formattedDateChange)="selectDate($event, i, 'end')"
+                [formatInputValue]="DateTimeFormat.YYYY_MM_DD_HH_MM_SS_Server"
+                [valid]="!this.binCaid[i]['endDateError']"
+                label="Select"
+              >
+              <vds-error 
+                vdsErrorMessage 
+                [show]="!!this.binCaid[i]['endDateError']">
+                {{
+                  this.binCaid[i]['endDateError'] 
+                }}
+              </vds-error>
+            </vds-date-selector>
+
+            </td>
+            <td vdsTd>
+              <button role="button"
+                vds-button-icon
+                [iconType]="ButtonIconType.LIGHT_TINY"
+                aria-label="delete"
+                (click)="removeBinCaid(i)"
+              >
+                <svg vds-icon icon="delete" [tiny]="true"></svg>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col col--md-2 add-bin-btn">
+      <button role="button" vds-button [color]="ButtonColor.SECONDARY" (click)="newBinCaid()">
+        + Add BIN/CAID
+      </button>
+    </div>
+  </div>
+  <!-- <hr />
+  <div class="row">
+    <div class="col">
+      <h4>Comment</h4>
+      <div class="form-field">
+        <vds-form-field>
+          <label vdsLabel>Comment</label>
+          <textarea
+            vdsInput
+            [autoGrow]="true"
+            [value]="comment"
+            (changed)="setComment($event)"
+          ></textarea>
+        </vds-form-field>
+      </div>
+    </div>
+  </div> -->
+</div>
+
+<app-footer [overlay]="true">
+  <vds-button-group>
+    <button role="button"
+      vds-button
+      [color]="ButtonColor.PRIMARY"
+      [disabled]="addBtnDisabled"
+      (click)="confirmAdd()"
+    >
+      ADD
+    </button>
+    <button role="button"
+      vds-button
+      [color]="ButtonColor.SECONDARY"
+      [routerLink]="['..']"
+      [queryParams]="{ type: 'AcquirerInfo' }"
+      queryParamsHandling="merge"
+    >
+      CANCEL
+    </button>
+  </vds-button-group>
+</app-footer>

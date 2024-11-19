@@ -1,0 +1,33 @@
+<app-header 
+    screenTitle="PAN Eligibility"
+></app-header>
+
+<app-search-table
+    *ngIf="showSearchTable"
+    tableId="pwp-pwp-pan-eligibility-list"
+    [hideSelectAll]="true"
+    [resetSort]="true"
+    [hideSearchFieldFilters]="true"
+    [initSearch]="false"
+    [showClearFilterButton]="false"
+    [columns]="tableColumns"
+    [searchFields]="advancedSearchFields"
+    [search]="getPans.bind(this)"
+    [tableStyle]="{
+        height: '63vh',
+        overflow: 'auto'
+    }"
+>
+
+</app-search-table>
+
+<app-footer></app-footer>
+<app-progress-spinner *ngIf="!showSearchTable"></app-progress-spinner>
+
+<ng-template #eligibilityColRef let-column="column" let-row="row">
+    <ng-container>
+      <td vdsTd [style]="column.cellStyle && column.cellStyle(row, this)">
+        <vds-badge [type]="PAN_ELIGIBILITY_STATUS_BADGE_TYPE[getEligibilityStatus(row)]">{{PAN_ELIGIBILITY_STATUS_DESC[getEligibilityStatus(row)]}}</vds-badge>
+      </td>
+    </ng-container>
+</ng-template>

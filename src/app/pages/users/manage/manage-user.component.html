@@ -1,0 +1,44 @@
+<app-header 
+    screenTitle="Manage User - {{ tabs[selectedTabIndex] }}"
+></app-header>
+
+<div class="tabs-section">
+    <ul
+        vds-tab-list
+        [orientation]="TabsOrientation.HORIZONTAL"
+        >
+        <li vds-tab-item *ngFor="let tab of tabs; let tabIndex = index">
+            <button role="button" 
+                vdsTab
+                [selected]="selectedTabIndex === tabIndex"
+                (focus)="selectedTabIndex = tabIndex"
+            >
+            {{ tab }}
+        </button>
+        </li>
+    </ul>
+</div>
+
+<app-details
+    *ngIf="selectedTabIndex === 0"
+    [id]="getTabId(viewName,selectedTabIndex,UserStep.DETAILS)"
+    [attr.aria-labelledby]="getTabLabelledById(viewName,selectedTabIndex,UserStep.DETAILS)"
+></app-details>
+
+<app-history
+    *ngIf="selectedTabIndex === 1"
+    [id]="getTabId(viewName,selectedTabIndex,UserStep.HISTORY)"
+    [attr.aria-labelledby]="getTabLabelledById(viewName,selectedTabIndex,UserStep.HISTORY)"
+></app-history>
+
+<app-footer>
+    <vds-button-group>
+        <!-- <button role="button" vds-button [color]="ButtonColor.PRIMARY" [disabled]="true" (click)="save()">
+            SAVE
+        </button> -->
+
+        <button role="button" vds-button [color]="ButtonColor.SECONDARY" (click)="close()">
+            CLOSE
+        </button>
+    </vds-button-group>
+</app-footer>

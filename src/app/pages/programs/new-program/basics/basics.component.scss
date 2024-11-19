@@ -1,0 +1,22 @@
+.page-container {
+  .header-container {
+    .group-name-container {
+      .vds-text--body--alt {
+        font-size: 16px;
+      }
+
+      display: flex;
+      justify-content: space-between;
+    }
+  }
+
+  .form-header {
+    font-size: 16px;
+  }
+
+  .form-container {
+    .vds-grid {
+      max-width: unset;
+    }
+  }
+}

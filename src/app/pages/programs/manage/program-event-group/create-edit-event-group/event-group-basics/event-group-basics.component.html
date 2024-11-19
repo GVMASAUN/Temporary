@@ -1,0 +1,238 @@
+<div class="vds-grid ">
+    <section class="form-container">
+        <div class="row status-container">
+            <div class="row">
+                <strong>Status</strong>
+            </div>
+            <div class="row">
+                <div class="col--lg-2">
+                    <span> Status Details</span>
+                </div>
+                <div class="col">
+                    <vds-badge
+                    [type]="STATUS_BADGE_TYPE[eventGroup.eventGroupStatusCode || StatusCode.DRAFT]"
+                    >{{STATUS_DESC[eventGroup.eventGroupStatusCode || StatusCode.DRAFT]}}
+                    </vds-badge>
+                </div>
+            </div>
+    
+            <div class="row">
+                <button role="button" *ngIf="eventGroup.eventGroupStatusCode === StatusCode.DRAFT || eventGroup.eventGroupStatusCode === StatusCode.REJECTED" 
+                    vds-button
+                    [isFullWidth]="false"
+                    [disabled]="(mode === DialogMode.CREATE) || userRole === UserRole.CLIENT_READ_ONLY ||disabled"
+                    (click)="workflowChangeEmitter.emit(WorkFlowAction.SUBMIT_FOR_APPROVAL)"
+                    >Submit For Approval
+                </button>
+               
+                <button role="button" *ngIf="eventGroup.eventGroupStatusCode === StatusCode.APPROVED" 
+                    vds-button
+                    [isFullWidth]="false"
+                    [disabled]="disabledPublish"
+                    (click)="workflowChangeEmitter.emit(WorkFlowAction.PUBLISH)"
+                    >Publish
+                </button>
+               
+                <button role="button" *ngIf="eventGroup.eventGroupStatusCode === StatusCode.PENDING_REVIEW" 
+                    vds-button
+                    [isFullWidth]="false"
+                    [disabled]="disabledApproveOrReject"
+                    (click)="workflowChangeEmitter.emit(WorkFlowAction.APPROVE)"
+                    >Approve
+                </button>   
+                <button role="button" *ngIf="eventGroup.eventGroupStatusCode === StatusCode.PENDING_REVIEW" 
+                    vds-button
+                    [isFullWidth]="false"
+                    [disabled]="disabledApproveOrReject"
+                    (click)="workflowChangeEmitter.emit(WorkFlowAction.REJECT)"
+                    >Reject
+                </button> 
+                <button role="button" *ngIf="(eventGroup.workflowVersionNumber === 1) && !isPublishedVersion && (userRole !== UserRole.CLIENT_READ_ONLY)" 
+                    vds-button
+                    [isFullWidth]="false"
+                    (click)="workflowChangeEmitter.emit(WorkFlowAction.DELETE)"
+                    >Delete
+                </button>
+                <button role="button" *ngIf="(eventGroup.workflowVersionNumber! > 1) && !isPublishedVersion && (userRole !== UserRole.CLIENT_READ_ONLY)" 
+                    vds-button
+                    [isFullWidth]="false"
+                    (click)="workflowChangeEmitter.emit(WorkFlowAction.DISCARD)"
+                    [disabled]="disabled"
+                    >Discard
+                </button>
+         
+            </div>
+            <div class="row" *ngIf="!disabledApproveOrReject && eventGroup.eventGroupStatusCode === StatusCode.PENDING_REVIEW">
+                <p [show]="eventGroup.modifiedUserId === currentUserId" vdsErrorMessage>
+                    <svg vds-icon [icon]="VisaIcon.ERROR" [tiny]="true"></svg>
+                   A different user account is required to approve or reject this event group.
+                </p>  
+            </div>
+        </div>
+        <hr vdsDivider />
+        <div class="row">
+            <div class="col col--align-center">
+                <label vdsLabel>Event Group Information</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <form [formGroup]="form">
+                    <vds-form-field
+                        >
+                        <label vdsLabel>Event Group Name *</label>
+                        <input vdsInput 
+                            formControlName="eventGroupName" 
+                            [readonly]="disabled"
+                            [tabindex]="disabled ? -1 : 0"
+                            aria-required="true"
+                            [invalid]="!!getErrorMessage(form, 'eventGroupName')"
+                        />
+                        <span vdsErrorMessage aria-atomic="true" aria-live="assertive">
+                            <ng-container *ngIf="!!getErrorMessage(form, 'eventGroupName')">
+                                <svg vds-icon icon="error" [tiny]="true"></svg>
+                                Error: {{ getErrorMessage(form, 'eventGroupName') }}
+                            </ng-container>
+                        </span>
+                    </vds-form-field>
+            
+                    <vds-form-field>
+                        <label vdsLabel>Description</label>
+                        <textarea vdsInput 
+                            formControlName="eventGroupDescription"
+                            [readonly]="disabled"
+                            [tabindex]="disabled ? -1 : 0"
+                            [invalid]="!!getErrorMessage(form, 'eventGroupDescription')"
+                        ></textarea>
+                        <span vdsErrorMessage aria-atomic="true" aria-live="assertive">
+                            <ng-container *ngIf="!!getErrorMessage(form, 'eventGroupDescription')">
+                                <svg vds-icon icon="error" [tiny]="true"></svg>
+                                Error: {{ getErrorMessage(form, 'eventGroupDescription') }}
+                            </ng-container>
+                        </span>
+                    </vds-form-field>
+            
+                    <vds-form-field>
+                        <label vdsLabel>Type *</label>
+                        <select vdsSelect 
+                            formControlName="eventGroupType" 
+                            [required]="true"
+                            [disabled]="disabled"
+                            [invalid]="!!getErrorMessage(form, 'eventGroupType')"
+                        >
+                            <option value="Offer">Offer</option>
+                        </select>
+                        <span vdsErrorMessage aria-atomic="true" aria-live="assertive">
+                            <ng-container *ngIf="!!getErrorMessage(form, 'eventGroupType')">
+                                <svg vds-icon icon="error" [tiny]="true"></svg>
+                                Error: {{ getErrorMessage(form, 'eventGroupType') }}
+                            </ng-container>
+                        </span>
+                    </vds-form-field>
+                    
+                    <div class="row">
+                        <div class="col--lg-6" [class.date-selector-wrapper]="!!disabledStartDateTimeMessage">
+                            <vds-date-selector
+                                name="eventGroupStartDate"
+                                label="Start Date (MM/DD/YYYY) *"
+                                [required]="true"
+                                formControlName="eventGroupStartDate"
+                                [placement]="CALENDAR_PLACEMENT.TOP"
+                                [formatInputValue]="DateFormat.MM_DD_YYYY"
+                                [disabled]="disabled || !!disabledStartDateTimeMessage"
+                                [valid]="!getErrorMessage(form, 'eventGroupStartDate')"
+                            ></vds-date-selector>
+                            <span vdsErrorMessage aria-atomic="true" aria-live="assertive" class="flex-container">
+                                <ng-container *ngIf="!!getErrorMessage(form, 'eventGroupStartDate')">
+                                    <svg vds-icon icon="error" [tiny]="true"></svg>
+                                    Error: {{ getErrorMessage(form, 'eventGroupStartDate') }}
+                                </ng-container>
+                            </span>
+
+                            <span *ngIf="!!disabledStartDateTimeMessage" class="info-icon" [matTooltip]="disabledStartDateTimeMessage" matTooltipPosition="above">
+                                <svg vds-icon [icon]="VisaIcon.INFO" [tiny]="true"></svg>
+                            </span>
+                        </div>
+            
+                        <div class="col--lg-3">
+                            <app-time-picker
+                                formControlName="startTime"
+                                [isRequired]="true"
+                                [disabled]="disabled || !!disabledStartDateTimeMessage"
+                                [invalid]="!!getErrorMessage(form, 'startTime')"
+                            >
+                            </app-time-picker>
+                            <span vdsErrorMessage aria-atomic="true" aria-live="assertive" class="flex-container">
+                                <ng-container *ngIf="!!getErrorMessage(form, 'startTime')">
+                                    <svg vds-icon icon="error" [tiny]="true"></svg>
+                                    Error: {{ getErrorMessage(form, 'startTime') }}
+                                </ng-container>
+                            </span>
+                        </div>   
+            
+                        <div class="col--lg-3 col--valign-center">
+                            <vds-badge>
+                            {{ timeZone }}
+                          </vds-badge>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col--lg-6" [class.date-selector-wrapper]="!!disabledEndDateTimeMessage">
+                            <vds-date-selector
+                                name="eventGroupEndDate"
+                                label="End Date (MM/DD/YYYY) *"
+                                [required]="true"
+                                formControlName="eventGroupEndDate"
+                                [formatInputValue]="DateFormat.MM_DD_YYYY"
+                                [placement]="CALENDAR_PLACEMENT.TOP"
+                                [disabled]="disabled || !!disabledEndDateTimeMessage"
+                                [valid]="!getErrorMessage(form, 'eventGroupEndDate')"
+                            ></vds-date-selector>
+                            <span vdsErrorMessage aria-atomic="true" aria-live="assertive" class="flex-container">
+                                <ng-container *ngIf="!!getErrorMessage(form, 'eventGroupEndDate')">
+                                    <svg vds-icon icon="error" [tiny]="true"></svg>
+                                    Error: {{ getErrorMessage(form, 'eventGroupEndDate') }}
+                                </ng-container>
+                            </span>
+
+                            <span *ngIf="!!disabledEndDateTimeMessage" class="info-icon" [matTooltip]="disabledEndDateTimeMessage" matTooltipPosition="above">
+                                <svg vds-icon [icon]="VisaIcon.INFO" [tiny]="true"></svg>
+                            </span>
+                        </div>
+            
+                        <div class="col--lg-3">
+                            <app-time-picker
+                                formControlName="endTime"
+                                [isRequired]="true"
+                                [disabled]="disabled || !!disabledEndDateTimeMessage"
+                                [invalid]="!!getErrorMessage(form, 'endTime')"
+                            >
+                            </app-time-picker>
+                            <span vdsErrorMessage aria-atomic="true" aria-live="assertive" class="flex-container">
+                                <ng-container *ngIf="!!getErrorMessage(form, 'endTime')">
+                                    <svg vds-icon icon="error" [tiny]="true"></svg>
+                                    Error: {{ getErrorMessage(form, 'endTime') }}
+                                </ng-container>
+                            </span>
+                        </div>  
+            
+                        <div class="col--lg-3 col--valign-center">
+                            <vds-badge>
+                            {{ timeZone }}
+                          </vds-badge>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <vds-checkbox
+                            id="event-group-reusable-checekbox"
+                            name="isReusable"
+                            formControlName="isReusable"
+                            label="Save Event Group as Reusable"
+                            [disabled]="disabled"
+                        ></vds-checkbox>
+                    </div>            
+                </form>
+            </div>
+        </div>
+    </section>
+</div>

@@ -1,0 +1,50 @@
+<form [formGroup]="vmidMerchantData" (ngSubmit)="findMerchant()">
+  <!-- *ngIf="!tableData.length; else table" -->
+  <div class="vmid-search-form-field">
+    <vds-form-field>
+      <label vdsLabel>Merchant Name</label>
+      <input vdsInput formControlName="merchantName" />
+    </vds-form-field>
+    <vds-form-field>
+      <label vdsLabel>Country Code</label>
+      <select vdsSelect formControlName="countryCode">
+        <option
+          *ngFor="let country of countries"
+          [value]="country['country-code']"
+        >
+          {{ country.name }}
+        </option>
+      </select>
+    </vds-form-field>
+  </div>
+
+  <div class="merchant-search-action  panel-footer">
+    <vds-button-group>
+      <button role="button"
+        vds-button
+        [color]="ButtonColor.PRIMARY"
+        [disabled]="vmidMerchantData.invalid"
+        [type]="ButtonType.SUBMIT"
+      >
+        <span *ngIf="!loading">
+          find merchant
+        </span>
+        <vds-spinner-progress
+          class="loading-spinner"
+          *ngIf="loading"
+        ></vds-spinner-progress>
+      </button>
+      <button role="button"
+        vds-button
+        [color]="ButtonColor.SECONDARY"
+        [type]="ButtonType.RESET"
+      >
+        reset
+      </button>
+      <vds-error vdsErrorMessage [show]="!!errMsg"> {{ errMsg }} </vds-error>
+    </vds-button-group>
+  </div>
+</form>
+<!-- <ng-template #table>
+  <app-vmid-data-table [tableData]="tableData"></app-vmid-data-table>
+</ng-template> -->

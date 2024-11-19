@@ -1,0 +1,151 @@
+<form [formGroup]="vsidMerchantForm" (ngSubmit)="findMerchant()">
+  <vds-form-field>
+    <label vdsLabel>Search Type*</label>
+    <select vdsSelect [value]="defaultSearchType" (changed)="searchTypeChange($event.value)">
+      <option
+        *ngFor="let type of searchTypes"
+        [value]="type.id"
+      >
+        {{type.typeName }}
+      </option>
+    </select>
+  </vds-form-field>
+
+  <div class="vsid-search-form-field">
+    <ng-container [ngSwitch]="searchTypeId">
+      <ng-container *ngSwitchCase="SearchTypeEnum.VISA_MERCHANT_NAME">
+        <vds-form-field>
+          <label vdsLabel>Merchant Name*</label>
+          <input vdsInput aria-required="true" formControlName="merchantName" />
+        </vds-form-field>
+        <vds-form-field>
+          <label vdsLabel>Country Code*</label>
+          <select vdsSelect aria-required="true" formControlName="countryCode">
+            <option
+              *ngFor="let country of countries"
+              [value]="country['country-code']"
+            >
+              {{ country.name }}
+            </option>
+          </select>
+        </vds-form-field>        
+      </ng-container>
+      <ng-container *ngSwitchCase="SearchTypeEnum.MERCHANT_ADDRESS">
+        <vds-form-field>
+          <label vdsLabel>Merchant Name*</label>
+          <input vdsInput aria-required="true" formControlName="merchantName" />
+        </vds-form-field>
+        <vds-form-field>
+          <label vdsLabel>Country Code*</label>
+          <select vdsSelect aria-required="true" formControlName="countryCode">
+            <option
+              *ngFor="let country of countries"
+              [value]="country['country-code']"
+            >
+              {{ country.name }}
+            </option>
+          </select>
+        </vds-form-field>
+        <vds-form-field>
+          <label vdsLabel>Address</label>
+          <input vdsInput formControlName="address" />
+        </vds-form-field>
+        <vds-form-field>
+          <label vdsLabel>City*</label>
+          <input vdsInput aria-required="true" formControlName="city" />
+        </vds-form-field>
+        <vds-form-field>
+          <label vdsLabel>State</label>
+          <input vdsInput formControlName="state" />
+        </vds-form-field>
+        <vds-form-field>
+          <label vdsLabel>Zip Code</label>
+          <input vdsInput formControlName="zipCode" type="number" />
+        </vds-form-field>        
+      </ng-container>
+      <ng-container *ngSwitchCase="SearchTypeEnum.ACQ_BIN_AND_CARD_ACCEPTOR_ID">
+        <vds-form-field>
+          <label vdsLabel>Acquiring BIN*</label>
+          <input vdsInput aria-required="true" formControlName="acquirerBin" />
+        </vds-form-field>
+        <vds-form-field>
+          <label vdsLabel>Card Acceptor ID*</label>
+          <input vdsInput aria-required="true" formControlName="cardAcceptorId" />
+        </vds-form-field>
+      </ng-container>
+
+      <ng-container *ngSwitchCase="SearchTypeEnum.ACQ_BID_AND_ACQ_MID_ID">
+        <vds-form-field>
+          <label vdsLabel>Acquiring BID*</label>
+          <input vdsInput aria-required="true" formControlName="acquirerBid" />
+        </vds-form-field>
+        
+        <vds-form-field>
+          <label vdsLabel>Acquirer Merchant ID*</label>
+          <input vdsInput aria-required="true" formControlName="acquirerMid" />
+        </vds-form-field>
+
+      </ng-container>
+      <ng-container *ngSwitchCase="SearchTypeEnum.CARD_ACCEPTOR_ID_OR_ACQ_MERCHANT_ID">
+        <vds-form-field>
+          <label vdsLabel>Card Acceptor ID{{!!vsidMerchant.acquirerMid ? '' :'*'}}</label>
+          <input vdsInput aria-required="true" formControlName="cardAcceptorId" />
+        </vds-form-field>
+        
+        <vds-form-field>
+          <label vdsLabel>Acquirer Merchant ID{{!!vsidMerchant.cardAcceptorId ? '' :'*'}}</label>
+          <input vdsInput aria-required="true" formControlName="acquirerMid" />
+        </vds-form-field>
+
+      </ng-container>
+    </ng-container>
+
+    <ng-container>
+
+    </ng-container>
+    <div *ngIf="searchTypeId === SearchTypeEnum.MERCHANT_ADDRESS">
+      <legend vdsLegend>Match</legend>
+       <vds-radio-group role="radiogroup" formControlName="merchantSearchType" ngModel="Exact">
+        <vds-radio
+          label="Exact"
+          radioValue="Exact"
+          name="search"
+          [checked]="vsidMerchantForm.get('merchantSearchType')?.value === 'Exact'"
+        ></vds-radio>
+        <vds-radio
+          label="Relative"
+          radioValue="Relative"
+          name="search"
+          [checked]="vsidMerchantForm.get('merchantSearchType')?.value === 'Relative'"
+        ></vds-radio>
+      </vds-radio-group>
+    </div>
+  </div>
+
+  <div class="merchant-search-action  panel-footer">
+    <vds-button-group>
+      <button role="button"
+        vds-button
+        [color]="ButtonColor.PRIMARY"
+        [disabled]="disableFindMerchant()"
+        [type]="ButtonType.SUBMIT"
+      >
+        <span *ngIf="!loading">
+          find merchant
+        </span>
+        <vds-spinner-progress
+          class="loading-spinner"
+          *ngIf="loading"
+        ></vds-spinner-progress>
+      </button>
+      <button role="button"
+        vds-button
+        [color]="ButtonColor.SECONDARY"
+        [type]="ButtonType.RESET"
+        (click)="reset()"
+      >
+        reset
+      </button>
+    </vds-button-group>
+  </div>
+</form>

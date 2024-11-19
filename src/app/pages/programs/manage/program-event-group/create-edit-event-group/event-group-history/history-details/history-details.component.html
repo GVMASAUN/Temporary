@@ -1,0 +1,45 @@
+<div class="dialog-center">
+  <div class="dialog-container">
+    <div class="vds-grid">
+      <div class="row dialog-header-bar">
+        <div class="col--align-end">
+          <button role="button" vds-button-icon [iconType]="buttonIconType.LIGHT_TINY">
+            <svg vds-icon icon="visa_close" [tiny]="true"></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- <vds-linear-progress *ngIf="showLoader"></vds-linear-progress> -->
+
+    <div vds-dialog-card-head class="header-section">
+      <span class="history-detail-header">
+        Audit History Details - Event | {{ "Auth MCC" }}
+      </span>
+      <hr vdsDivider />
+      <div class="history-detail-description">
+        <div>
+          <span class="label">Action Type</span>
+          <span>Delete</span>
+        </div>
+        <div class="vertical-divider"></div>
+        <div>
+          <span class="label">Responsible User</span>
+          <span>Doe, John</span>
+        </div>
+        <div class="vertical-divider"></div>
+        <div>
+          <span class="label">version</span>
+          <span>3</span>
+        </div>
+      </div>
+    </div>
+    <div vds-dialog-card-body class="body-section"></div>
+    <div vds-dialog-card-footer class="dialog-footer">
+      <vds-button-group>
+        <button role="button" vds-button [color]="buttonColor.PRIMARY" (click)="close()">
+          DONE
+        </button>
+      </vds-button-group>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,24 @@
+.import-event-modal {
+  .detail-panel {
+    position: relative;
+  }
+  form {
+    .start-date-section,
+    .end-date-section {
+      display: flex;
+      align-items: baseline;
+      gap: 14px;
+
+      vds-form-field {
+        flex: 1;
+      }
+
+      .start-time-section,
+      .end-time-section {
+        ::ng-deep .vds-input {
+          min-width: 90px;
+        }
+      }
+    }
+  }
+}

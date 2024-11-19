@@ -1,0 +1,171 @@
+<div class="vds-grid">
+  <div class="row dialog-header-bar">
+    <div class="col--align-end">
+      <button role="button"
+        aria-label="close-button"
+        vds-button-icon
+        [iconType]="ButtonIconType.LIGHT_TINY"
+        (click)="closeDialog()"
+      >
+        <svg vds-icon icon="visa_close" [tiny]="true"></svg>
+      </button>
+    </div>
+  </div>
+</div>
+<vds-linear-progress *ngIf="showLoader"></vds-linear-progress>
+
+<div vds-dialog-card-head>
+  <div class="vds-grid">
+    <div class="row">
+      <span>
+        {{ title }}
+      </span>
+    </div>
+
+    <div class="row name">
+      <h3>
+        {{ event?.eventName || "Untitled Event" }}
+      </h3>
+    </div>
+
+    <div
+      class="row comment-link"
+      *ngIf="mode === DialogMode.EDIT && userRole !== UserRole.CLIENT_READ_ONLY"
+    >
+      <a tabindex="0" role="link" vdsLink (keyup.enter)="showComments()" (click)="showComments()">
+        View Comments
+        <svg vds-icon [icon]="VisaIcon.ARROW_NEXT" [tiny]="true" [low]="true"></svg>
+      </a>
+    </div>
+
+    <div class="row">
+      <div class="col col--valign-center">
+
+        <ul
+          *ngIf="initTab"
+          vds-tab-list
+          [orientation]="TabsOrientation.HORIZONTAL"
+          (selectedIndexChange)="onTabChange($event)"
+        >
+          <li vds-tab-item *ngFor="let tab of tabs; let tabIndex = index">
+            <button role="button" 
+              vdsTab
+              vdsTab
+              [selected]="selectedTabIndex === tabIndex"
+              (focus)="selectedTabIndex = tabIndex"
+            >
+              {{ tab }}
+            </button>
+          </li>
+        </ul>
+        <hr vdsDivider />
+      </div>
+    </div>
+  </div>
+</div>
+<div 
+  vds-dialog-card-body 
+  class="detail-panel"
+  id="create-edit-evet-dailog"
+>
+  <app-event-details
+    *ngIf="initializeForm"
+    [id]="getTabId(viewName,selectedTabIndex,EventStep.EVENT_DETAILS)"
+    [attr.aria-labelledby]="getTabLabelledById(viewName,selectedTabIndex,EventStep.EVENT_DETAILS)"
+    [form]="eventForm"
+    [eventGroupDetails]="eventGroup"
+    [disabled]="disabled"
+    [disabledStartDateTimeMessage]="getDisabledStartDateTimeMessage()"
+    [disabledEndDateTimeMessage]="getDisabledEndDateTimeMessage()"
+    [dialogMode]="mode"
+    [hidden]="hideTab(EventStep.EVENT_DETAILS)"
+  ></app-event-details>
+
+  <app-event-conditions
+    *ngIf="initializeForm"
+    [id]="getTabId(viewName,selectedTabIndex,EventStep.EVENT_CONDITIONS)"
+    [attr.aria-labelledby]="getTabLabelledById(viewName,selectedTabIndex,EventStep.EVENT_CONDITIONS)"
+    [disabled]="disabled"
+    [hidden]="hideTab(EventStep.EVENT_CONDITIONS)"
+    [form]="eventForm"
+    [eventDialogMode]="mode"
+    (submitEmitter)="handleEventConditionSubmitRequest($event)"
+  ></app-event-conditions>
+
+  <app-event-relationships
+    *ngIf="mode === DialogMode.EDIT"
+    [id]="getTabId(viewName,selectedTabIndex,EventStep.EVENT_RELATIONSHIPS)"
+    [attr.aria-labelledby]="getTabLabelledById(viewName,selectedTabIndex,EventStep.EVENT_RELATIONSHIPS)"
+    [eventStageId]="eventDetails?.eventStageId"
+    [eventGroupId]="eventDetails?.eventGroupId"
+    [hidden]="hideTab(EventStep.EVENT_RELATIONSHIPS)"
+  ></app-event-relationships>
+
+  <app-event-actions
+    *ngIf="initializeForm"
+    [id]="getTabId(viewName,selectedTabIndex,EventStep.EVENT_ACTION)"
+    [attr.aria-labelledby]="getTabLabelledById(viewName,selectedTabIndex,EventStep.EVENT_ACTION)"
+    [hidden]="hideTab(EventStep.EVENT_ACTION)"
+    [dialogMode]="mode"
+    [parent]="{
+      mode: this.mode,
+      eventGroupDialogMode: this.mode,
+      eventGroup: this.eventGroup,
+      program: this.program,
+      eventDetails: this.eventDetails
+    }"
+    
+    [actions]="this.eventForm.get('eventActions')?.value || []"
+    [disabled]="disabled"
+  ></app-event-actions>
+</div>
+<div vds-dialog-card-footer class="dialog-footer">
+    <vds-button-group>
+      <button role="button"
+        *ngIf="
+          !disabled &&
+          [
+            tabs.indexOf(EventStep.EVENT_DETAILS),
+            tabs.indexOf(EventStep.EVENT_RELATIONSHIPS)
+          ].includes(selectedTabIndex)
+        "
+        vds-button
+        [color]="ButtonColor.PRIMARY"
+        (click)="
+          mode === DialogMode.EDIT &&
+          selectedTabIndex === tabs.indexOf(EventStep.EVENT_RELATIONSHIPS)
+            ? eventRelationships?.setEventDependency()
+            : save()
+        "
+      >
+        SAVE
+      </button>
+      <button role="button"
+        *ngIf="
+          !disabled &&
+          [
+            tabs.indexOf(EventStep.EVENT_DETAILS),
+            tabs.indexOf(EventStep.EVENT_RELATIONSHIPS)
+          ].includes(selectedTabIndex)
+        "
+        vds-button
+        [color]="ButtonColor.SECONDARY"
+        (click)="
+          mode === DialogMode.EDIT &&
+          selectedTabIndex === tabs.indexOf(EventStep.EVENT_RELATIONSHIPS)
+            ? eventRelationships?.setEventDependency(handleAfterExit.bind(this))
+            : saveAndExit()
+        "
+      >
+        SAVE & EXIT
+      </button>
+
+      <button role="button"
+        vds-button
+        [color]="ButtonColor.TERTIARY"
+        (click)="closeDialog()"
+      >
+        {{ showCloseButton ? 'CLOSE' : 'CANCEL' }}
+      </button>
+    </vds-button-group>
+</div>

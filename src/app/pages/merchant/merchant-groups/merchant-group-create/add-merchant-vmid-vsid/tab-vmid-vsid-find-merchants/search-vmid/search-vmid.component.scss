@@ -1,0 +1,29 @@
+form {
+  display: block !important;
+
+  .vmid-search-form-field {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 25px;
+  }
+
+  .merchant-search-action {
+    .loading-spinner ::ng-deep .vds-progress--spinner {
+      &,
+      svg {
+        height: 40px;
+        width: 113px;
+      }
+    }
+
+    vds-error {
+      margin-left: 10px;
+    }
+  }
+  @media (max-width: 768px) {
+    .vmid-search-form-field {
+      grid-template-columns: 1fr;
+      column-gap: unset;
+    }
+  }
+}

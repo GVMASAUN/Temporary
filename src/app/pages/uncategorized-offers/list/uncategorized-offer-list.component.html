@@ -1,0 +1,20 @@
+<app-header 
+  screenTitle="Uncategorized Offers"
+></app-header>
+
+<app-search-table
+  #uncategorizedOfferTable
+  tableId="uncategorized-offers-list"
+  [columns]="tableColumns"
+  [searchFields]="advancedSearchFields"
+  [hideSelectAll]="true"
+  [hideSearchFieldFilters]="true"
+  [search]="getUncategorizedOffersList.bind(this)"
+  [tableStyle]="{
+    height: '63vh',
+    overflow: 'auto'
+    }"
+  notFound="No data exists for the provided search filter.">
+</app-search-table>
+
+<app-footer [panelOpen]="isPanelOpen"></app-footer>

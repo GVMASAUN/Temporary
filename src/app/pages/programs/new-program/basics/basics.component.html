@@ -1,0 +1,104 @@
+<div class="page-container">
+  <div class="header-container">
+    <p class="vds-text--body">Basics</p>
+    <div class="group-name-container">
+      <p class="vds-text--body--alt">
+        {{ formData.get("programName")?.value }}
+      </p>
+      <p class="vds-text--body">*required field</p>
+    </div>
+  </div>
+
+  <div class="form-header vds-text--body">
+    Program Information
+  </div>
+
+  <form [formGroup]="formData" class="form-container">
+    <div class="vds-grid">
+      <div class="row">
+        <vds-form-field class="col">
+          <label vdsLabel>Program Name*</label>
+          <input vdsInput formControlName="programName" />
+        </vds-form-field>
+      </div>
+      <div class="row">
+        <vds-form-field class="col">
+          <label vdsLabel>Description</label>
+          <textarea
+            vdsInput
+            [autoGrow]="true"
+            formControlName="programDescription"
+          ></textarea>
+        </vds-form-field>
+      </div>
+      <!-- <div class="row">
+        <vds-form-field class="col">
+          <label vdsLabel>Program Type*</label>
+          <select vdsSelect formControlName="programTypeName">
+            <option value="">Select Value</option>
+            <option value="Realtime">Real Time</option>
+            <option value="Batch">Batch</option>
+          </select>
+        </vds-form-field>
+      </div> -->
+      <!-- <div class="row">
+        <vds-form-field class="col">
+          <label vdsLabel>General Eligible Accounts</label>
+          <select vdsSelect formControlName="generalEligibleAccountsId">
+            <option value="">Any</option>
+          </select>
+        </vds-form-field>
+      </div> -->
+      <div class="row">
+        <vds-form-field class="col">
+          <label vdsLabel>Base Structure</label>
+          <select vdsSelect formControlName="baseStucture">
+            <option value="">Any</option>
+          </select>
+        </vds-form-field>
+      </div>
+      <div class="row">
+        <vds-form-field class="col">
+          <label vdsLabel>Program Budget(USD)</label>
+          <input vdsInput formControlName="programBudget" />
+        </vds-form-field>
+      </div>
+      <div class="row">
+        <vds-checkbox-set class="col">
+          <legend vdsLegend>
+            EPM Response Flow
+          </legend>
+          <ul vdsCheckboxList class="server-checkbox">
+            <li vdsCheckboxListItem>
+              <vds-checkbox
+                label="Enable"
+                formControlName="epmResponseFlowEnabled"
+              ></vds-checkbox>
+            </li>
+          </ul>
+        </vds-checkbox-set>
+      </div>
+    </div>
+  </form>
+</div>
+
+<app-footer [overlay]="true">
+  <vds-button-group>
+    <button vds-button [color]="buttonColor.PRIMARY">
+      Next
+    </button>
+    <button vds-button [color]="buttonColor.SECONDARY" (click)="updateData()">
+      save & exit
+    </button>
+  </vds-button-group>
+  <vds-button-group>
+    <button
+      vds-button
+      [color]="buttonColor.TERTIARY"
+      routerLink="../../"
+      queryParamsHandling="merge"
+    >
+      cancel
+    </button>
+  </vds-button-group>
+</app-footer>

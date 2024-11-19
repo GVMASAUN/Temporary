@@ -1,0 +1,38 @@
+<div class="dialog-center">
+  <div>
+    <vds-linear-progress *ngIf="isLoading"></vds-linear-progress>
+    <div vds-dialog-card-head>
+      <h2 vds-dialog-card-head-title>
+        Archive Group
+      </h2>
+    </div>
+
+    <div vds-dialog-card-body>
+      <p>
+        You are about to archive this Merchant Group. There is currently no way
+        to un-archive the group. Are you sure you want to continue with this
+        action?
+      </p>
+
+      <!-- <vds-error vdsErrorMessage [show]="!!errorMsg">
+        {{ errorMsg }}
+      </vds-error> -->
+    </div>
+
+    <div vds-dialog-card-footer>
+      <vds-button-group direction="reverse">
+        <button role="button"
+          id="close-button"
+          vds-button
+          [color]="ButtonColor.SECONDARY"
+          (click)="this.dialogRef.close({ action: 'close' })"
+        >
+          Close
+        </button>
+        <button role="button" vds-button (click)="handleSubmit()">
+          Confirm
+        </button>
+      </vds-button-group>
+    </div>
+  </div>
+</div>

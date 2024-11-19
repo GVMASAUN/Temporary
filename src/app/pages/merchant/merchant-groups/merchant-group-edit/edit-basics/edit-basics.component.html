@@ -1,0 +1,74 @@
+<div class="vds-grid">
+  <div class="row">
+    <div class="col">
+      <div class="info-header">
+        Merchant Information
+      </div>
+      <form [formGroup]="merchantGroup">
+        <div class="form-field">
+          <vds-form-field>
+            <label vdsLabel>Merchant Group Name</label>
+            <input
+              vdsInput
+              placeholder="Merchant Group Name"
+              formControlName="name"
+              name="name"
+            />
+          </vds-form-field>
+        </div>
+
+        <div class="form-field">
+          <label class="form-label">
+            Merchant Group Type
+          </label>
+           <vds-radio-group role="radiogroup"
+            #radioGroupOne
+            (changed)="selectMerchantGroupType($event)"
+          >
+            <vds-radio
+              label="VMID/VSID"
+              name="type"
+              radioValue="MerchantInfo"
+              [checked]="'MerchantInfo' === merchantGroup.value.type"
+            ></vds-radio>
+            <vds-radio
+              label="BIN/CAID"
+              name="type"
+              radioValue="AcquirerInfo"
+              [checked]="'AcquirerInfo' === merchantGroup.value.type"
+            >
+            </vds-radio>
+          </vds-radio-group>
+        </div>
+
+        <div class="form-field">
+          <vds-form-field>
+            <label vdsLabel>Description</label>
+            <textarea
+              vdsInput
+              placeholder="Enter description"
+              [autoGrow]="true"
+              [rows]="3"
+              formControlName="description"
+            ></textarea>
+          </vds-form-field>
+        </div>
+
+        <div class="form-field">
+          <vds-form-field>
+            <label vdsLabel>Optional comment</label>
+            <textarea
+              vdsInput
+              placeholder="Merchant Group Name"
+              [autoGrow]="true"
+              formControlName="optionalComment"
+            ></textarea>
+          </vds-form-field>
+        </div>
+      </form>
+    </div>
+    <div class="col col--md-2">
+      <div></div>
+    </div>
+  </div>
+</div>

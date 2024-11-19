@@ -1,0 +1,77 @@
+<form [formGroup]="MerchantData" (ngSubmit)="findMerchant()">
+  <!-- *ngIf="!tableData.length; else table" -->
+  <div class="trans-details-search-form-field">
+    <div>
+       <vds-radio-group role="radiogroup" formControlName="type" (changed)="valueChanged($event)">
+        <legend vdsLegend>Search Type</legend>
+        <vds-radio
+          label="VMID"
+          radioValue="visaMerchantId"
+          name="search"
+          [checked]="MerchantData.get('type')?.value == 'visaMerchantId'"
+        ></vds-radio>
+        <vds-radio
+          label="VSID"
+          radioValue="visaStoreId"
+          name="search"
+          [checked]="MerchantData.get('type')?.value == 'visaStoreId'"
+        ></vds-radio>
+      </vds-radio-group>
+    </div>
+    <div></div>
+    <vds-form-field>
+      <label vdsLabel>
+        {{
+          MerchantData.get("type")?.value == "visaMerchantId"
+            ? "Visa Merchant Id"
+            : "Visa Store Id"
+        }}
+      </label>
+      <input vdsInput formControlName="num" type="number" />
+    </vds-form-field>
+
+    <vds-form-field>
+      <label vdsLabel>Country Code</label>
+      <select vdsSelect formControlName="countryCode">
+        <option
+          *ngFor="let country of countries"
+          [value]="country['country-code']"
+        >
+          {{ country.name }}
+        </option>
+      </select>
+    </vds-form-field>
+  </div>
+
+  <div class="merchant-search-action panel-footer">
+    <vds-button-group>
+      <button role="button"
+        vds-button
+        [color]="ButtonColor.PRIMARY"
+        [disabled]="MerchantData.invalid"
+        [type]="ButtonType.SUBMIT"
+      >
+        <span *ngIf="!loading">
+          find merchant
+        </span>
+        <vds-spinner-progress
+          class="loading-spinner"
+          *ngIf="loading"
+        ></vds-spinner-progress>
+      </button>
+      <button role="button"
+        vds-button
+        [color]="ButtonColor.SECONDARY"
+        [type]="ButtonType.RESET"
+        (click)="reset()"
+      >
+        reset
+      </button>
+      <vds-error vdsErrorMessage [show]="!!errMsg">{{ errMsg }}</vds-error>
+    </vds-button-group>
+  </div>
+</form>
+
+<!-- <ng-template #table>
+  <app-td-data-table [tableData]="tableData"></app-td-data-table>
+</ng-template> -->

@@ -1,0 +1,93 @@
+.page-content {
+  .filter-bar {
+    background: #dfebff;
+    display: flex;
+    align-items: baseline;
+    padding: 0 10px;
+    gap: 10px;
+
+    form {
+      display: flex;
+      gap: 10px;
+      flex: 1;
+
+      vds-form-field {
+        // flex: 1;
+
+        & ::ng-deep {
+          .vds-input-bar,
+          input,
+          select {
+            border-radius: 20px;
+            text-align: center;
+            width: fit-content;
+          }
+        }
+      }
+    }
+    .clear-section {
+      display: flex;
+      align-items: center;
+
+      span {
+        color: #0042b3;
+      }
+    }
+  }
+
+  .action-bar {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1rem;
+  }
+
+  .table-wrapper {
+    width: calc(100vw - 100px - 65px);
+
+    &.navOpen {
+      width: calc(100vw - 100px - 250px);
+    }
+
+    .table-container {
+      position: relative;
+
+      .model-table-container {
+        margin-left: 350px;
+        overflow: auto;
+
+        table {
+          white-space: nowrap;
+          margin-top: 16px;
+
+          .fix {
+            position: absolute;
+            display: flex;
+            align-items: center;
+            left: 0;
+            width: 350px;
+            box-sizing: border-box;
+          }
+          tbody {
+            tr {
+              &:nth-child(even) {
+                td.fix {
+                  background-color: #f5f5f5;
+                }
+              }
+              &:nth-child(odd) {
+                td.fix {
+                  background-color: #ffffff;
+                }
+              }
+            }
+          }
+
+          .sort-btn {
+            display: flex;
+            align-items: center;
+          }
+        }
+      }
+    }
+  }
+}

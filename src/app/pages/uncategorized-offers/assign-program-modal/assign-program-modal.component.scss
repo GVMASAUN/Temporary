@@ -1,0 +1,11 @@
+.assign-program-card {
+  width: MIN(50%, 728px);
+
+  display: flex !important;
+  flex-direction: column;
+  height: 75%;
+
+  .assign-program-body {
+    flex: 1;
+  }
+}

@@ -1,0 +1,198 @@
+<!-- <div class="header-section m-b-10">
+      Plan Assignment:
+      <a
+        vdsLink
+        aria-label="plan-assignment-link"
+        role="link"
+        tabindex="0"
+        (click)="onPlanAssignmentClick()"
+        (keyup.enter)="onPlanAssignmentClick()"
+      >
+      {{mode === Mode.Manage ? '2023 PwP - Southwest Airlines' : EMPTY}}
+      <svg
+        *ngIf="mode === Mode.Manage"
+        vds-icon
+        [icon]="VisaIcon.ARROW_NEXT"
+        [tiny]="true"
+      ></svg>
+    </a>
+</div>
+<hr /> -->
+<div class="m-t-20">
+  <span >Basics</span>
+</div>
+
+<div 
+  *ngIf="mode === Mode.Manage" 
+  class="vds-grid readonly-field-container m-b-20 m-t-20" >
+  <div *ngIf="disabled" class="row col--no-gutter">
+    <div class="col--lg-3">
+        <span class="summary-field-heading">Enrollment Collection Name</span>
+    </div>
+    <div class="col--lg-9">
+        <span class="summary-field-value">
+            {{enrollmentCollection.enrollmentCollectionName}}
+        </span>
+    </div>
+  </div>  
+  <div class="row col--no-gutter">
+    <div class="col--lg-3">
+        <span class="summary-field-heading">Tenant</span>
+    </div>
+    <div class="col--lg-9">
+        <span class="summary-field-value">
+            {{getTenant(enrollmentCollection.tenantEnrollmentId!)?.tenantName || ''}}
+        </span>
+    </div>
+  </div>
+  <div class="row col--no-gutter">
+    <div class="col--lg-3">
+        <span class="summary-field-heading">Sub-Tenant</span>
+    </div>
+    <div class="col--lg-9">
+        <span class="summary-field-value">
+            {{getTenant(enrollmentCollection.tenantEnrollmentId!)?.subtenantName || ''}}
+        </span>
+    </div>
+  </div>
+  <div class="row col--no-gutter">
+    <div class="col--lg-3">
+        <span class="summary-field-heading">Entity Id</span>
+    </div>
+    <div class="col--lg-9">
+        <span class="summary-field-value">
+            {{enrollmentCollection.tenantEnrollmentId || ''}}
+        </span>
+    </div>
+  </div>  
+  <div class="row col--no-gutter">
+    <div class="col--lg-3">
+        <span class="summary-field-heading">Status</span>
+    </div>
+    <div class="col--lg-9">
+        <vds-badge 
+          [type]="STATUS_BADGE_TYPE[ enrollmentCollection.activeEnrollmentCollection ? StatusCode.ACTIVE : StatusCode.INACTIVE]"
+        >
+          {{enrollmentCollection.activeEnrollmentCollection ? StatusDesc.ACTIVE :StatusDesc.INACTIVE }}
+        </vds-badge>
+    </div>
+  </div>    
+</div>
+
+<app-dynamic-form
+  #basicsForm
+  *ngIf="!disabled"
+  [formFields]="basicsFormFields"
+></app-dynamic-form>
+
+
+<span >Eligible Type</span>
+
+<div class="box">
+  <app-dynamic-form
+    #eligibilityForm
+    [formFields]="eligibilityFormFields"
+    [errorMessages]="errorMessages"
+  ></app-dynamic-form>
+
+  <button
+    *ngIf="!disabled"
+    vds-button
+    role="button"
+    [color]="ButtonColor.TERTIARY"
+    [disabled]="false"
+    (click)="preparePayloadAndValidateAccountRanges()"
+  >ADD RANGES</button>
+
+  <hr *ngIf="!!accountRangeList.length" vdsDivider class="m-t-30 m-b-10" [isSection]="true"/>
+
+  <div
+    *ngIf="!!accountRangeList.length"
+    class="vds-grid"
+  >
+    <div class="col">
+
+      <div class="row">
+        <div class="col--lg-3">
+          <span class="summary-field-heading">Validation Status</span>
+        </div>
+        <div class="col--lg-9">
+            <span class="summary-field-value">
+              <vds-badge
+                [type]="(invalidAccountRanges === 0) ? BadgeType.STABLE : BadgeType.CRITICAL"
+                [matTooltip]="(invalidAccountRanges === 0) ? '' : 'Account Range(s) are Invalid. Click &quot;Show all Account Ranges&quot; for details.'"
+              >
+              <svg
+                vds-icon
+                [icon]="(invalidAccountRanges === 0) ? VisaIcon.SUCCESS : VisaIcon.ERROR"
+                [tiny]="true"
+              ></svg>
+                {{ (invalidAccountRanges === 0) ? 'Valid' : 'Invalid ('.concat(invalidAccountRanges.toString()).concat(')') }}
+              </vds-badge>
+            </span>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col--lg-3">
+          <span class="summary-field-heading">Total Ranges</span>
+        </div>
+        <div class="col--lg-9">
+            <span class="summary-field-value">
+              {{  accountRangeList.length.toString().concat(' Account Ranges') }}
+            </span>
+        </div>
+      </div>
+
+      <div class="row">
+        <a
+          vdsLink
+          role="link"
+          tabindex="0"
+          (click)="showAccountRangeList = !showAccountRangeList"
+          (keyup.enter)="showAccountRangeList = !showAccountRangeList"
+        >
+          {{ (showAccountRangeList ? 'Hide ' : 'Show ').concat('all Account Ranges (').concat(accountRangeList.length.toString()).concat(')') }}
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <app-search-table
+    *ngIf="showAccountRangeList"
+    tableId="account-range-list"
+    [sorting]="SortType.STATIC"
+    [columns]="accountRangeTableColumns"
+    [moreColumns]="false"
+    [tableActions]="disabled ? [] : accountRangeTableActions"
+    [rowActions]="disabled ? [] :  accountRangeRowActions"
+    [dataSource]="accountRangeList"
+    [hideSelectAll]="disabled"
+  ></app-search-table>
+</div>
+
+<ng-template
+  #timeZone
+  let-dynamicForm="dynamicForm"
+  let-field="field"
+>
+  <ng-container [formGroup]="dynamicForm">
+    <div class="timeZone">
+      <vds-badge>
+        {{ getTimeZone() }}
+      </vds-badge>
+    </div>
+  </ng-container>
+</ng-template>
+
+<ng-template
+  #editAccountRange
+>
+  <div class="editDialog">
+    <app-dynamic-form
+      #editRangeForm
+      [formFields]="editAccountRangeFormFields"
+      [errorMessages]="accountRateEditFromErrorMessages"
+    ></app-dynamic-form>
+  </div>
+</ng-template>

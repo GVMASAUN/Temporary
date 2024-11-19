@@ -1,0 +1,52 @@
+<!-- <div class="dialog-center">
+    <div class="dialog-container"> -->
+      <div class="vds-grid">
+        <div class="row dialog-header-bar">
+          <div class="col--align-end">
+            <button role="button"
+              vds-button-icon
+              aria-label="Close"
+              [iconType]="ButtonIconType.LIGHT_TINY"
+              (click)="close()"
+            >
+              <svg vds-icon icon="visa_close" [tiny]="true"></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+      <vds-linear-progress *ngIf="showLoader"></vds-linear-progress>
+  
+      <div vds-dialog-card-head>
+        <h2 vds-dialog-card-head-title>Select Event Group Template</h2>
+      </div>
+      <div vds-dialog-card-body id="event-group-template-selector-dialog" class="detail-panel">
+        <app-search-table
+          tableId="event-group-template-selection-list"
+          [hideSelectAll]="true"
+          [moreColumns]="false"
+          [canSelectMultipleRow]="false"
+          [columns]="tableColumns"
+          [search]="getEventGroupTemplates.bind(this)"
+          notFound="No data exists for the provided search filter."
+        ></app-search-table>
+      </div>
+      <div vds-dialog-card-footer class="dialog-footer">
+        <vds-button-group>
+          <button role="button"
+            vds-button
+            [color]="ButtonColor.PRIMARY"
+            (click)="performSelection()"
+            [disabled]="!selectedAnyTemplate"
+          >
+            Select Template
+          </button>
+  
+          <button role="button" vds-button [color]="ButtonColor.TERTIARY" (click)="close()">
+            CLOSE
+          </button>
+
+        </vds-button-group>
+      </div>
+    <!-- </div>
+  </div> -->
+  

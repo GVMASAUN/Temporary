@@ -1,0 +1,34 @@
+.tabs-section {
+    border-bottom: 1px solid #e1e1e1;
+    margin-bottom: 30px;
+}
+
+@media (max-width: 768px) {
+
+    .vds-grid [class^=col--][class*="-1"],
+    .vds-grid [class^=col--][class*="-2"],
+    .vds-grid [class^=col--][class*="-3"],
+    .vds-grid [class^=col--][class*="-4"],
+    .vds-grid [class^=col--][class*="-5"],
+    .vds-grid [class^=col--][class*="-6"],
+    .vds-grid [class^=col--][class*="-7"],
+    .vds-grid [class^=col--][class*="-8"],
+    .vds-grid [class^=col--][class*="-9"] {
+        width: 100% !important;
+    }
+}
+
+@media (max-width: 960px) {
+
+    .vds-grid [class^=col--][class*="-1"],
+    .vds-grid [class^=col--][class*="-2"],
+    .vds-grid [class^=col--][class*="-3"],
+    .vds-grid [class^=col--][class*="-4"],
+    .vds-grid [class^=col--][class*="-5"],
+    .vds-grid [class^=col--][class*="-6"],
+    .vds-grid [class^=col--][class*="-7"],
+    .vds-grid [class^=col--][class*="-8"],
+    .vds-grid [class^=col--][class*="-9"] {
+        width: 100% !important;
+    }
+}

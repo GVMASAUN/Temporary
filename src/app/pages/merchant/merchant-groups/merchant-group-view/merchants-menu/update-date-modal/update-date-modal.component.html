@@ -1,0 +1,103 @@
+<div class="dialog-center">
+  <div class="update-dialog-container">
+    <vds-linear-progress *ngIf="loading"></vds-linear-progress>
+    <div vds-dialog-card-head>
+      <h2 vds-dialog-card-head-title id="dialog-title">
+        Apply a new date range for {{isAllUpdateRequest ? 'all' :'the selected'}} active merchants in this group
+      </h2>
+    </div>
+    <div vds-dialog-card-body id="dialog-description" class="detail-panel">
+      <form class="vds-grid" [formGroup]="formGroup">
+        <div class="row">
+          <div class="col">
+            <vds-date-selector
+              [required]="true"
+              label="Start Date (MM/DD/YYYY)*"
+              [selectsStart]="true"
+              formControlName="startDate"
+              [placement]="CALENDAR_PLACEMENT.BOTTOM"
+              [startDate]="getFormData('startDate').value"
+              [endDate]="getFormData('endDate').value"
+              [formatInputValue]="DateFormat.MM_DD_YYYY"
+              [valid]="!error.startDate"
+              (change)="
+                getFormData('startDate').touched &&
+                  checkDate($event, 'startDate')
+              "
+            ></vds-date-selector>
+            <vds-error vdsErrorMessage [show]="!!error.startDate">
+              {{ error.startDate }}
+            </vds-error>
+          </div>
+          <vds-form-field class="col">
+            <label vdsLabel>Time (hh:mm)</label>
+            <input
+              vdsInput
+              type="time"
+              [value]="startTime"
+              (change)="setTime($event, 'sTime')"
+            />
+          </vds-form-field>
+          <vds-badge class=" col timezone">
+            {{ timeZone }}
+          </vds-badge>
+        </div>
+        <div class="row">
+          <div class="col">
+            <vds-date-selector
+              [required]="true"
+              label="End Date (MM/DD/YYYY)*"
+              [selectsEnd]="true"
+              formControlName="endDate"
+              [startDate]="getFormData('startDate').value"
+              [placement]="CALENDAR_PLACEMENT.BOTTOM"
+              [endDate]="getFormData('endDate').value"
+              [minDate]="getFormData('startDate').value"
+              [formatInputValue]="DateFormat.MM_DD_YYYY"
+              [valid]="!error.endDate"
+              (change)="
+                getFormData('endDate').touched && checkDate($event, 'endDate')
+              "
+            ></vds-date-selector>
+            <vds-error vdsErrorMessage [show]="!!error.endDate">
+              {{ error.endDate }}
+            </vds-error>
+          </div>
+          <vds-form-field class="col">
+            <label vdsLabel>Time (hh:mm)</label>
+            <input
+              vdsInput
+              type="time"
+              [value]="endTime"
+              (change)="setTime($event, 'eTime')"
+            />
+          </vds-form-field>
+          <vds-badge class=" col timezone">
+            {{ timeZone }}
+          </vds-badge>
+        </div>
+      </form>
+    </div>
+    <div vds-dialog-card-footer>
+      <vds-button-group direction="right">
+        <button role="button"
+          role="button"
+          vds-button
+          [color]="buttonColor.PRIMARY"
+          [disabled]="(!formValue.startDate || !formValue.endDate) || formGroup.invalid || loading"
+          (click)="save()"
+        >
+          Save
+        </button>
+        <button role="button"
+          role="button"
+          vds-button
+          [color]="buttonColor.SECONDARY"
+          (click)="close()"
+        >
+          Cancel
+        </button>
+      </vds-button-group>
+    </div>
+  </div>
+</div>

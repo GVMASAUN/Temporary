@@ -1,0 +1,70 @@
+<div class="offer-summary-panel">
+    <div *ngIf="offer.hasUnsupportedFeatures" vdsAlert [type]="alertType">
+        <span vdsAlertIcon>
+            <svg vds-icon [icon]="VisaIcon.ERROR" [low]="true"></svg>
+        </span>
+        <span vdsAlertLabel>
+            <span vdsAlertLabelTitle> Incompatible Data </span>
+        </span>
+
+    </div>
+    <div *ngIf="!offer.hasUnsupportedFeatures" class="row">
+        <button role="button"
+            vds-button
+            [color]="ButtonColor.PRIMARY"
+            (click)="openImportPanel()"
+        >
+            Import
+        </button>
+    </div>
+
+    <div>
+        <div>
+            <app-search-table
+                *ngIf="offer.hasUnsupportedFeatures"
+                tableId="unsupported-feature-list"
+                [dataSource]="offer!.unsupportedFeatureList || []"
+                [columns]="columns"
+                [hideSelectAll]="true"
+                [hidePagination]="true"
+                [tableStyle]="{
+                    height: '415px',
+                    overflow: 'auto'
+                    }"
+                [moreColumns]="false"
+                [sorting]="SortType.STATIC"
+            ></app-search-table>
+        </div>
+
+        <div class="m-t-20"></div>
+        
+        <hr vdsDivider>
+        
+        <div class="m-t-20"></div>
+        
+        <app-event-group-summary
+          [form]="form"
+          [showEventDetailsButton]="false"
+        ></app-event-group-summary>
+    </div>
+
+</div>
+
+<app-panel
+  #panel
+  *ngIf="isImportPanelOpen"
+  [panelTabs]="[{label:'Programs'}]"
+  [panelActions]="importPanelActions"
+>
+  <div search> 
+    <app-search-table
+      #importPanelTable
+      tableId="import-panel-list"
+      [hideSelectAll]="true"
+      [moreColumns]="false"
+      [canSelectMultipleRow]="false"
+      [columns]="importPanelColumns"
+      [search]="getProgramList.bind(this)"
+    ></app-search-table>
+  </div>
+</app-panel>

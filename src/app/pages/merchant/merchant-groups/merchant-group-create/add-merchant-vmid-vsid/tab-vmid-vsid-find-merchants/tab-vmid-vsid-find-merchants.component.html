@@ -1,0 +1,149 @@
+<div class="page-content" [ngClass]="{ 'panel-open': isPanelOpen }">
+  <div class="vds-grid">
+    <div class="row">
+      <div class="col">
+        <div class="form-header">
+          <svg vds-icon icon="document-add" [low]="true"></svg>
+          Add via Merchant Search
+        </div>
+        <vds-action-bar
+          [active]="true"
+          [class.inactive]="!selectedIndex.length"
+        >
+          <div class="wrapper-action-bar">
+            <div class="col col--xs-3 col--no-gutter">
+              <vds-button-group>
+                <button role="button"
+                  vds-button
+                  aria-label="Open panel"
+                  [color]="ButtonColor.SECONDARY"
+                  (click)="openPanel(0)"
+                >
+                  <svg vds-icon icon="search" [low]="true"></svg>
+                </button>
+              </vds-button-group>
+            </div>
+          </div>
+        </vds-action-bar>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <div [ngSwitch]="showTable" *ngIf="tableData.length; else elseBlock">
+          <app-td-data-table
+            [tableData]="tableData"
+            *ngSwitchCase="1"
+          ></app-td-data-table>
+          <app-vmid-data-table
+            [tableData]="tableData"
+            *ngSwitchCase="2"
+          ></app-vmid-data-table>
+          <app-vsid-data-table
+            [tableData]="tableData"
+            *ngSwitchCase="3"
+          ></app-vsid-data-table>
+          <app-tid-data-table
+            [tableData]="tableData"
+            *ngSwitchCase="4"
+          ></app-tid-data-table>
+          <div *ngSwitchDefault></div>
+        </div>
+        <ng-template #elseBlock>
+          <div>
+            <vds-badge [type]="badgeType.NEUTRAL">
+              <vds-badge-dot></vds-badge-dot>
+              Search Merchant first in order to get data
+            </vds-badge>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+  <app-footer
+    [overlay]="true"
+    [rowSelected]="merchantData.length ? true : false"
+  >
+    <vds-button-group>
+      <button role="button"
+        vds-button
+        [color]="ButtonColor.PRIMARY"
+        [disabled]="!addBtnEnable"
+        (click)="addConfirmation()"
+      >
+        ADD
+      </button>
+      <button role="button"
+        vds-button
+        [color]="ButtonColor.SECONDARY"
+        [routerLink]="['..']"
+        queryParamsHandling="merge"
+      >
+        CANCEL
+      </button>
+    </vds-button-group>
+  </app-footer>
+</div>
+
+<div class="panel-content" *ngIf="isPanelOpen">
+  <app-panel
+    [selectedTab]="panelSection"
+    (activeSection)="panelSection = $event"
+  >
+    <div class="find-merchant-search-container" search>
+      <div class="search-bar-container">
+        <div class="search-catagory">
+           <vds-radio-group role="radiogroup" (changed)="selectSearchMethod($event)">
+            <legend vdsLegend>Search By</legend>
+            <vds-radio
+              label="VMID / VSID"
+              radioValue="vmid"
+              name="search"
+              [checked]="selectedSearch == 'vmid'"
+            >
+            </vds-radio>
+            <vds-radio
+              label="Merchant Details"
+              radioValue="merchant"
+              name="search"
+              [checked]="selectedSearch == 'merchant'"
+            >
+            </vds-radio>
+            <!-- <vds-radio
+              label="Merchant Details"
+              radioValue="store"
+              name="search"
+              [checked]="selectedSearch == 'store'"
+            >
+            </vds-radio> -->
+            <vds-radio
+              label="Transaction ID"
+              radioValue="trans-id"
+              name="search"
+              [checked]="selectedSearch == 'trans-id'"
+            >
+            </vds-radio>
+          </vds-radio-group>
+        </div>
+      </div>
+      <hr vdsDivider class="merchant-search-divider" />
+      <div>
+        <div *ngIf="selectedSearch == 'vmid'">
+          <app-search-transaction-details
+            (data)="setTable($event)"
+          ></app-search-transaction-details>
+        </div>
+        <!-- <div *ngIf="selectedSearch == 'merchant'">
+          <app-search-vmid (data)="setTable($event)"></app-search-vmid>
+        </div> -->
+        <div *ngIf="selectedSearch == 'merchant'">
+          <app-search-vsid (data)="setTable($event)"></app-search-vsid>
+        </div>
+        <div *ngIf="selectedSearch == 'trans-id'">
+          <app-search-transaction-id
+            (data)="setTable($event)"
+          ></app-search-transaction-id>
+        </div>
+      </div>
+    </div>
+  </app-panel>
+</div>

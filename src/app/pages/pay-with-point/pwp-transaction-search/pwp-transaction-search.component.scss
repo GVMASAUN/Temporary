@@ -1,0 +1,15 @@
+.radio-group-row {
+    ::ng-deep .vds-radio-group {
+        display: flex;
+    }
+}
+
+.customSearchByFilter {
+    display: flex;
+
+    .legend-box {
+        position: relative;
+        top: 9px;
+        font-size: .75rem;
+    }
+}

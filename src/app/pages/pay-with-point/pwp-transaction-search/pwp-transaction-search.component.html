@@ -1,0 +1,91 @@
+<app-header 
+    screenTitle="Transaction Search"
+></app-header>
+
+<app-search-table
+    *ngIf="showSearchTable"
+    tableId="pwp-transaction-search"
+    [hideSelectAll]="true"
+    [resetSort]="true"
+    [hideSearchFieldFilters]="true"
+    [showClearFilterButton]="false"
+    [initSearch]="initSearch"
+    [columns]="tableColumns"
+    [searchFields]="advancedSearchFields"
+    [search]="getTransactions.bind(this)"
+    [tableStyle]="{
+        height: '61vh',
+        overflow: 'auto'
+        }"
+    (searchFilterResetEmitter)="handleSearchFilterReset()"
+    (validationPerformedEmitter)="handlePerformSearch()">
+</app-search-table>
+
+<ng-template #searchByFilters let-advancedSearchForm="advancedSearchForm" let-resultFilter="resultFilter">
+    <ng-container [formGroup]="advancedSearchForm">
+      <div [ngClass]="{customSearchByFilter : resultFilter}">
+          <vds-radio-group 
+            *ngIf="!resultFilter || advancedSearchForm?.value['searchBy']"
+            class="radio-group-row"
+            role="radiogroup" 
+            formControlName="searchBy"
+            (changed)="handleSearchTypeChange()"
+            >
+            <legend vdsLegend class="legend-box" >Search By</legend>
+            <vds-radio 
+              *ngFor="let option of searchByOptions"
+              [label]="option.label"
+              [checked]="option.value === advancedSearchForm?.value['searchBy']"
+              [radioValue]="option.value"
+              [name]="'pwpTrsearchByradioName'.concat(option.label)">
+            </vds-radio>
+          </vds-radio-group>
+ 
+          <vds-form-field *ngIf="searchBy === transactionSearchTypeEnum.PAN">
+            <label vdsLabel>Enter PAN(16-19 digits)</label>
+            <input
+              vdsInput
+              [formControl]="panSearchControl"
+              [invalid]="panSearchControl.invalid"
+            />
+            <vds-error *ngIf="panSearchControl.invalid" [show]="panSearchControl.invalid" vdsErrorMessage>
+              {{getError(panSearchControl)}}
+            </vds-error>
+          </vds-form-field>
+
+          <vds-form-field *ngIf="searchBy === transactionSearchTypeEnum.TRANSACTION_ID">
+            <label vdsLabel>List of Transaction ID(s)</label>
+            <textarea
+              *ngIf="!resultFilter"
+              vdsInput
+              [autoGrow]="false"
+              [rows]="5"
+              [formControl]="transactionIdsSearchControl"
+              [invalid]="transactionIdsSearchControl.invalid">
+            </textarea>
+            <input
+              *ngIf="resultFilter"
+              vdsInput
+              [autoGrow]="false"
+              [formControl]="transactionIdsSearchControl"
+              [invalid]="transactionIdsSearchControl.invalid"
+            />
+            <vds-error *ngIf="transactionIdsSearchControl.invalid" [show]="transactionIdsSearchControl.invalid" vdsErrorMessage>
+              {{getError(transactionIdsSearchControl)}}
+            </vds-error>
+          </vds-form-field>
+      </div>
+    </ng-container>
+</ng-template>
+
+<app-footer></app-footer>
+<app-progress-spinner *ngIf="!showSearchTable"></app-progress-spinner>
+
+<ng-template #existColRef let-column="column" let-row="row">
+  <ng-container>
+    <td vdsTd [style]="column.cellStyle && column.cellStyle(row, this)">
+      <vds-badge [type]="row.isExist ? badgeTypeEnum.STABLE : badgeTypeEnum.CRITICAL">{{row.isExist ? 'Yes':'No'}}</vds-badge>
+    </td>
+  </ng-container>
+</ng-template>
+

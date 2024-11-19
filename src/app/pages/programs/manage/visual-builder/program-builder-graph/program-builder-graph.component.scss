@@ -1,0 +1,89 @@
+.vds-grid {
+    max-width: unset;
+}
+
+.graph {
+    background: #F5F5F5;
+}
+
+.pointer-event-none {
+    pointer-events: none;
+}
+
+.node-rectangle {
+    pointer-events: all;
+    cursor: pointer;
+}
+
+.node-rectangle:focus-visible {
+    content: "";
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    left: 4px;
+    bottom: 4px;
+    display: block;
+    outline: 1px dashed #132482;
+}
+
+.nt-svg:focus:focus-within {
+
+    .node-rectangle,
+    .main-img {
+        outline: dotted 1px #000000;
+        outline-offset: 1px;
+    }
+}
+
+
+.node-font {
+    font-size: "14px";
+
+}
+
+.new-node-icon {
+    cursor: pointer;
+}
+
+.new-node-icon:focus-visible {
+    content: "";
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    left: 4px;
+    bottom: 4px;
+    display: block;
+    outline: 1px dashed #132482;
+}
+
+.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+@media (max-width: 1098px) {
+    .graph {
+        width: calc(100vw - 100px - 65px);
+
+        position: relative;
+        overflow: auto;
+    }
+}
+
+@media (max-width: 960px) {
+    .graph {
+        width: calc(100vw - 100px - 65px);
+
+        position: relative;
+        overflow: auto;
+    }
+}
+
+@media (max-width: 768px) {
+    .graph {
+        width: calc(100vw - 100px - 65px);
+
+        position: relative;
+        overflow: auto;
+    }
+}

@@ -1,0 +1,51 @@
+.sections {
+  display: flex;
+  align-items: center;
+  width: 250px;
+  justify-content: space-between;
+}
+
+.vds-grid {
+  max-width: unset;
+}
+
+.link {
+  cursor: pointer;
+}
+
+.form-header {
+  height: 84px;
+  .form-header-label {
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+    color: #797979;
+  }
+  .form-header-value {
+    display: flex;
+    justify-content: space-between;
+    .merchant-group-title {
+      font-weight: 600;
+      font-size: 16px;
+      line-height: 24px;
+      color: #1a1a1a;
+    }
+    .required-label {
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 20px;
+      color: #4a4a4a;
+    }
+  }
+}
+
+.form-field {
+  margin-bottom: 20px;
+  .form-label {
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 16px;
+
+    color: #4a4a4a;
+  }
+}

@@ -1,0 +1,10 @@
+<app-search-table
+  tableId="epm-template-history-list"
+  [columns]="tableColumns"
+  [searchFields]="advancedSearchFields"
+  [hideSelectAll]="true"
+  [hideSearchFieldFilters]="true"
+  [search]="getTemplateHistory.bind(this)"
+  notFound="No History is associated with this Template"
+>
+</app-search-table>

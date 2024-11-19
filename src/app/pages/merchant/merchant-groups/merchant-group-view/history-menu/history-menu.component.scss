@@ -1,0 +1,73 @@
+.page-content {
+  .filter-bar {
+    background: #dfebff;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    gap: 10px;
+
+    form {
+      display: flex;
+      gap: 10px;
+      flex: 1;
+      flex-wrap: wrap;
+
+      vds-form-field {
+        // flex: 1;
+
+        & ::ng-deep {
+          .vds-input-bar,
+          input,
+          select {
+            border-radius: 20px;
+            text-align: center;
+            width: fit-content;
+          }
+          & ::ng-deep {
+            .vds-input:hover,
+            .vds-input {
+              .vds-input-bar::before {
+                border-bottom: none;
+              }
+            }
+          }
+        }
+      }
+    }
+    .clear-section {
+      display: flex;
+      align-items: center;
+    }
+  }
+  table {
+    margin-top: 16px;
+
+    .selected-row {
+      background: #e1e1e1;
+    }
+    .sort-btn {
+      display: flex;
+      align-items: center;
+    }
+  }
+  .inactive {
+    &::ng-deep.vds-action-bar--active-controls {
+      background-color: unset;
+    }
+  }
+  .wrapper-action-bar {
+    min-height: 48px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+  }
+  .progress-container {
+    min-height: 100px;
+  }
+
+  @media (max-width: 768px) {
+    .progress-container {
+      display: none;
+    }
+  }
+}
