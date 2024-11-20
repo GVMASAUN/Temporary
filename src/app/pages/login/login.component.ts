@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { ButtonColor, ButtonIconType, ButtonType } from '@visa/vds-angular';
 import { ApiConfigService } from 'src/app/services/api-config.service';
 import { AuthorizationService } from 'src/app/services/authorization.service';
@@ -30,7 +31,8 @@ export class LoginComponent implements OnInit {
     private auth: AuthorizationService,
     private loginService: LoginService,
     private httpClient: HttpClient,
-    private env: ApiConfigService
+    private env: ApiConfigService,
+    private router: Router
   ) {
     this.loginForm = this.formBuilder.group({
       username: [undefined, Validators.required],
@@ -41,7 +43,7 @@ export class LoginComponent implements OnInit {
   ngOnInit(): void {
     this.auth.clearUserSession();
 
-    window.location.href=this.env.getUrls().baseUrl + "login.html?redirect=true";
+    // window.location.href=this.env.getUrls().baseUrl + "login.html?redirect=true";
 
     //this.httpClient.get(this.env.getUrls().baseUrl + "login.html",
     //  {
@@ -67,13 +69,14 @@ export class LoginComponent implements OnInit {
 
     this.loginForm.reset();
 
-    this.http.post('login', formData, undefined, true).subscribe({
+    this.http.post('loginsuccess', formData).subscribe({
       next: res => {
         this.isLoading = false;
         if (res.url?.split('/').pop() == 'loginsuccess') {
 
           this.loginService.setInterval();
           // this.loginService.getUserDetails();
+          this.router.navigate(['/dashboard']);
         } else {
           this.showErr = true;
         }

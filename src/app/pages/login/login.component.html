@@ -1,1 +1,69 @@
-<div id="login-html"></div>
+<div class="login-page-wrapper" aria-label="Login page" role="main">
+    <form [formGroup]="loginForm" (ngSubmit)="doLogin()">
+      <div class="form-title">
+        <h1 class="f-s-1-point-25">Sign In</h1>
+        <p>Please sign in using your username and password</p>
+      </div>
+      <div class="login-field">
+        <vds-form-field class="login-username-field">
+          <label vdsLabel>Username</label>
+          <input
+            vdsInput
+            aria-required="true"
+            formControlName="username"
+            placeholder="Enter Username"
+            autofocus
+          />
+        </vds-form-field>
+        <vds-form-field class="login-password-field">
+          <label vdsLabel>Password</label>
+          <input
+            vdsInput
+            [type]="isPassHide ? 'password' : 'text'"
+            aria-required="true"
+            formControlName="password"
+            placeholder="Enter Password"
+          />
+          <button role="button"
+            aria-label="show-hide-password-button"
+            vdsSuffix
+            vds-button-icon
+            [iconType]="ButtonIconType.LIGHT_TINY"
+            (click)="showPassword()"
+          >
+            <svg vds-icon [icon]="passwordSVG" [tiny]="true"></svg>
+          </button>
+        </vds-form-field>
+      </div>
+  
+      <vds-button-group>
+        <button role="button"
+          vds-button
+          class="submit-button"
+          [type]="ButtonType.SUBMIT"
+          [disabled]="loginForm.invalid || isLoading"
+        >
+          <div *ngIf="!isLoading; else loading">
+            Sign In
+          </div>
+          <ng-template #loading>
+            Signing in...
+          </ng-template>
+        </button>
+  
+        <a role="link"
+          vds-button
+          class="submit-button"
+          [type]="ButtonType.BUTTON"
+          [color]="ButtonColor.SECONDARY"
+          href="/visa-loyalty-suite-api/saml2/authenticate/vol-saml"
+        >
+          <svg vds-icon icon="key" [low]="true"></svg>
+          Sign In with SSO
+        </a>
+      </vds-button-group>
+      <vds-error vdsErrorMessage [show]="showErr">
+        Incorrect login attempt
+      </vds-error>
+    </form>
+  </div>
