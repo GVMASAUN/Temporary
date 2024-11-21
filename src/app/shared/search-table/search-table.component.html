@@ -1,31 +1,21 @@
-<div
-  class="page-content"
-  [ngClass]="{ 'panel-open': isPanelOpen }"
->
+<div class="page-content" [ngClass]="{ 'panel-open': isPanelOpen }">
   <div class="body-wrapper">
-    <div
-      *ngIf="searchActivate && isAnyFilterApplied()"
-      class="search-filter-container"
-    >
+    <div *ngIf="searchActivate && isAnyFilterApplied()" class="search-filter-container">
       <strong>Results for</strong>
       <form [formGroup]="advancedSearchForm">
 
         <div *ngFor="let field of searchFields; trackBy:searchFieldTrackBy">
-          <ng-container *ngIf="((field.type === SearchFieldType.INPUT || field.type === SearchFieldType.TEXT_AREA || !field.type) && (!hideSearchFieldFilters || !!advancedSearchForm?.get(field.key)?.value)); else searchSelect">
+          <ng-container
+            *ngIf="((field.type === SearchFieldType.INPUT || field.type === SearchFieldType.TEXT_AREA || !field.type) && (!hideSearchFieldFilters || !!advancedSearchForm?.get(field.key)?.value)); else searchSelect">
             <vds-form-field>
               <label vdsLabel>{{field.label}}</label>
-              <input
-                vdsInput
-                [formControlName]="field.key"
-                [invalid]="advancedSearchForm.controls[field.key].invalid"
-              />
+              <input vdsInput [formControlName]="field.key"
+                [invalid]="advancedSearchForm.controls[field.key].invalid" />
             </vds-form-field>
           </ng-container>
-          <vds-error 
-           *ngIf="field.type !== SearchFieldType.CUSTOM"
-            vdsErrorMessage 
+          <vds-error *ngIf="field.type !== SearchFieldType.CUSTOM" vdsErrorMessage
             [show]="advancedSearchForm.controls[field.key].invalid">{{
-              getError(field)
+            getError(field)
             }}
           </vds-error>
 
@@ -33,40 +23,21 @@
             <ng-container *ngIf="((field.type === SearchFieldType.SEARCH_SELECT) 
             && ((!hideSearchFieldFilters || !!advancedSearchForm?.get(field.key)?.value) || (!!field.searchDependencies?.length 
             && getAvailableDependencyValue(field)))); else dropdown">
-              <div
-                vds-combobox
-                [id]="tableId.concat('search-select-selection').concat(field.key)"
-                [formControlName]="field.key"
-                [type]="ComboboxType.MANUAL"
-                [invalid]="advancedSearchForm.controls[field.key].invalid"
-              >
+              <div vds-combobox [id]="tableId.concat('search-select-selection').concat(field.key)"
+                [formControlName]="field.key" [type]="ComboboxType.MANUAL"
+                [invalid]="advancedSearchForm.controls[field.key].invalid">
                 <vds-form-field>
                   <label vdsLabel>{{field.label}}</label>
-                  <input 
-                    vdsInput
-                  />
-                  <button
-                    vdsSuffix
-                    vds-button-icon
-                    role="button"
-                    [iconType]="ButtonIconType.LIGHT_TINY"
-                    [attr.aria-expanded]="searchSelectOpen"
-                  >
-                  <svg
-                    vds-icon
-                    icon="visa_arrow-expand"
-                    [tiny]="true"
-                  ></svg>
+                  <input vdsInput />
+                  <button vdsSuffix vds-button-icon role="button" [iconType]="ButtonIconType.LIGHT_TINY"
+                    [attr.aria-expanded]="searchSelectOpen">
+                    <svg vds-icon icon="visa_arrow-expand" [tiny]="true"></svg>
                   </button>
                 </vds-form-field>
                 <vds-menu [isComboboxMenu]="true">
                   <ul vds-listbox>
-                    <li
-                      vds-listbox-item
-                      *ngFor="let option of getOptionList(field)"
-                      [value]="option.value"
-                    >
-                    {{option.label}}
+                    <li vds-listbox-item *ngFor="let option of getOptionList(field)" [value]="option.value">
+                      {{option.label}}
                     </li>
                   </ul>
                 </vds-menu>
@@ -75,19 +46,13 @@
           </ng-template>
 
           <ng-template #dropdown>
-            <ng-container *ngIf="(field.type === SearchFieldType.DROPDOWN && (!hideSearchFieldFilters || !!advancedSearchForm?.get(field.key)?.value)); else date">
+            <ng-container
+              *ngIf="(field.type === SearchFieldType.DROPDOWN && (!hideSearchFieldFilters || !!advancedSearchForm?.get(field.key)?.value)); else date">
               <vds-form-field>
                 <label vdsLabel>{{field.label}}</label>
-                <select 
-                  vdsSelect 
-                  [formControlName]="field.key"
-                  [name]="'searchFiled-'+field.key"
-                  [invalid]="advancedSearchForm.controls[field.key].invalid"
-                >
-                  <option
-                    *ngFor="let option of getOptionList(field)"
-                    [value]="option.value"
-                    >
+                <select vdsSelect [formControlName]="field.key" [name]="'searchFiled-'+field.key"
+                  [invalid]="advancedSearchForm.controls[field.key].invalid">
+                  <option *ngFor="let option of getOptionList(field)" [value]="option.value">
                     {{option.label}}
                   </option>
                 </select>
@@ -96,74 +61,54 @@
           </ng-template>
 
           <ng-template #date>
-            <ng-container *ngIf="(((field.type === SearchFieldType.DATE) || (field.type === SearchFieldType.GMT_DATE)) && (!hideSearchFieldFilters || !!advancedSearchForm?.get(field.key)?.value)); else time">
-              <vds-date-selector
-                label="{{field.label}}"
-                [value]="this.advancedSearchForm.controls[field.key].value"
-                [formatInputValue]="DateFormat.MM_DD_YYYY"
-                (formattedDateChange)="onDateChange($event, field)"
+            <ng-container
+              *ngIf="(((field.type === SearchFieldType.DATE) || (field.type === SearchFieldType.GMT_DATE)) && (!hideSearchFieldFilters || !!advancedSearchForm?.get(field.key)?.value)); else time">
+              <vds-date-selector label="{{field.label}}" [value]="this.advancedSearchForm.controls[field.key].value"
+                [formatInputValue]="DateFormat.MM_DD_YYYY" (formattedDateChange)="onDateChange($event, field)"
                 [valid]="advancedSearchForm.controls[field.key].valid"
-                (formattedDateChange)="handleDateChange($event,field)"
-              ></vds-date-selector>
+                (formattedDateChange)="handleDateChange($event,field)"></vds-date-selector>
             </ng-container>
           </ng-template>
 
           <ng-template #time>
-            <ng-container *ngIf="(field.type === SearchFieldType.TIME && (!hideSearchFieldFilters || !!advancedSearchForm?.get(field.key)?.value)); else checkbox">
-              <app-time-picker
-                aria-required="true"
-                [formControlName]="field.key"
-                [placeholder]="field.label"
+            <ng-container
+              *ngIf="(field.type === SearchFieldType.TIME && (!hideSearchFieldFilters || !!advancedSearchForm?.get(field.key)?.value)); else checkbox">
+              <app-time-picker aria-required="true" [formControlName]="field.key" [placeholder]="field.label"
                 [disabled]="!advancedSearchForm.get(field.searchDependencies![0].parentField)?.value"
-                [invalid]="advancedSearchForm.controls[field.key].invalid"
-              >
+                [invalid]="advancedSearchForm.controls[field.key].invalid">
               </app-time-picker>
             </ng-container>
           </ng-template>
 
           <ng-template #checkbox>
-            <ng-container *ngIf="(field.type === SearchFieldType.CHECKBOX && (!hideSearchFieldFilters || !!advancedSearchForm?.get(field.key)?.value)); else radioGroup">
-              <vds-checkbox
-                [label]="field.label"
-                [formControlName]="field.key"
-                [nullBased]="false"
-                [invalid]="advancedSearchForm.controls[field.key].invalid"
-              ></vds-checkbox>
+            <ng-container
+              *ngIf="(field.type === SearchFieldType.CHECKBOX && (!hideSearchFieldFilters || !!advancedSearchForm?.get(field.key)?.value)); else radioGroup">
+              <vds-checkbox [label]="field.label" [formControlName]="field.key" [nullBased]="false"
+                [invalid]="advancedSearchForm.controls[field.key].invalid"></vds-checkbox>
             </ng-container>
           </ng-template>
 
           <ng-template #radioGroup>
-            <ng-container *ngIf="(field.type === SearchFieldType.RADIO && (!hideSearchFieldFilters || !!advancedSearchForm?.get(field.key)?.value)); else number">
-              <vds-radio-group 
-                role="radiogroup" 
-                [formControlName]="field.key"
-              >
-                <legend vdsLegend >{{field.label}}</legend>
-                <vds-radio 
-                    *ngFor="let option of getOptionList(field)"
-                    [label]="option.label"
-                    [checked]="option.value === advancedSearchForm.value[field.key]"
-                    [radioValue]="option.value"
-                    name="{{field.key}}radioName"
-                    [invalid]="advancedSearchForm.controls[field.key].invalid"
-                  >
+            <ng-container
+              *ngIf="(field.type === SearchFieldType.RADIO && (!hideSearchFieldFilters || !!advancedSearchForm?.get(field.key)?.value)); else number">
+              <vds-radio-group role="radiogroup" [formControlName]="field.key">
+                <legend vdsLegend>{{field.label}}</legend>
+                <vds-radio *ngFor="let option of getOptionList(field)" [label]="option.label"
+                  [checked]="option.value === advancedSearchForm.value[field.key]" [radioValue]="option.value"
+                  name="{{field.key}}radioName" [invalid]="advancedSearchForm.controls[field.key].invalid">
                 </vds-radio>
 
-            </vds-radio-group>
+              </vds-radio-group>
             </ng-container>
           </ng-template>
 
           <ng-template #number>
-            <ng-container *ngIf="(field.type === SearchFieldType.NUMBER && (!hideSearchFieldFilters || !!advancedSearchForm?.get(field.key)?.value)); else customFiled">
+            <ng-container
+              *ngIf="(field.type === SearchFieldType.NUMBER && (!hideSearchFieldFilters || !!advancedSearchForm?.get(field.key)?.value)); else customFiled">
               <vds-form-field>
                 <label vdsLabel>{{field.label}}</label>
-                <input
-                  vdsInput
-                  type="number"
-                  min="0"
-                  [formControlName]="field.key"
-                  [invalid]="advancedSearchForm.controls[field.key].invalid"
-                />
+                <input vdsInput type="number" min="0" [formControlName]="field.key"
+                  [invalid]="advancedSearchForm.controls[field.key].invalid" />
               </vds-form-field>
             </ng-container>
           </ng-template>
@@ -172,23 +117,21 @@
 
 
           <ng-template #customFiled>
-            <ng-container *ngIf="(!!field.templateRef && (field.type === SearchFieldType.CUSTOM) && (!hideSearchFieldFilters || !!advancedSearchForm?.get(field.key)?.value));else default"
+            <ng-container
+              *ngIf="(!!field.templateRef && (field.type === SearchFieldType.CUSTOM) && (!hideSearchFieldFilters || !!advancedSearchForm?.get(field.key)?.value));else default"
               [ngTemplateOutlet]="field.templateRef"
-              [ngTemplateOutletContext]="{advancedSearchForm: advancedSearchForm, resultFilter: true}"
-            >
+              [ngTemplateOutletContext]="{advancedSearchForm: advancedSearchForm, resultFilter: true}">
             </ng-container>
           </ng-template>
 
 
           <ng-template #default>
-            <ng-container *ngIf="!field.type && ((!hideSearchFieldFilters || !!advancedSearchForm?.get(field.key)?.value))">
+            <ng-container
+              *ngIf="!field.type && ((!hideSearchFieldFilters || !!advancedSearchForm?.get(field.key)?.value))">
               <vds-form-field>
                 <label vdsLabel>{{field.label}}</label>
-                <input
-                  vdsInput
-                  [formControlName]="field.key"
-                  [invalid]="advancedSearchForm.controls[field.key].invalid"
-                />
+                <input vdsInput [formControlName]="field.key"
+                  [invalid]="advancedSearchForm.controls[field.key].invalid" />
               </vds-form-field>
             </ng-container>
           </ng-template>
@@ -197,316 +140,156 @@
 
 
       </form>
-      <div
-        *ngIf="showClearFilterButton && showClearSearchButton()"
-        class="clear-section"
-      >
+      <div *ngIf="showClearFilterButton && showClearSearchButton()" class="clear-section">
         <span>
           Clear search
         </span>
-        <button
-          vds-button-icon
-          role="button"
-          aria-label="Clear"
-          [iconType]="ButtonIconType.LIGHT_TINY"
-          (click)="reset(true)"
-    
-        >
-          <svg
-            vds-icon
-            [tiny]="true"
-            [icon]="VisaIcon.CLEAR"
-          ></svg>
+        <button vds-button-icon role="button" aria-label="Clear" [iconType]="ButtonIconType.LIGHT_TINY"
+          (click)="reset(true)">
+          <svg vds-icon [tiny]="true" [icon]="VisaIcon.CLEAR"></svg>
         </button>
       </div>
     </div>
-    <div 
-      class="action-bar-container"
-      *ngIf="(!!selectedRowActions.length || !!tableActions.length) || !!searchFields?.length"
-      >
-      <vds-action-bar
-        [active]="true"
+    <div class="action-bar-container"
+      *ngIf="(!!selectedRowActions.length || !!tableActions.length) || !!searchFields?.length">
+      <vds-action-bar [active]="true"
         [class.inactive]="!selection.selected.length || !selectedRowActions.length || !tableActions.length"
-        [ariaLabel]="'action-bar-' + tableId"
-      >
-        <div
-          *ngIf="columns?.length"
-          class="wrapper-action-bar"
-        >
+        [ariaLabel]="'action-bar-' + tableId">
+        <div *ngIf="columns?.length" class="wrapper-action-bar">
           <div class="col col--xs-3 col--no-gutter">
             <vds-button-group>
-              <button
-                *ngIf="!!searchFields?.length"
-                vds-button
-                role="button"
-                [color]="ButtonColor.SECONDARY"
+              <button *ngIf="!!searchFields?.length" vds-button role="button" [color]="ButtonColor.SECONDARY"
                 [disabled]="selection.selected.length && selectedRowActions.length"
-                [attr.aria-label]="'search-' + tableId"
-                (click)="openPanel(0)"
-              >
-                <svg
-                  vds-icon
-                  [icon]="VisaIcon.SEARCH"
-                  [low]="true"
-                ></svg>
+                [attr.aria-label]="'search-' + tableId" (click)="openPanel(0)">
+                <svg vds-icon [icon]="VisaIcon.SEARCH" [low]="true"></svg>
               </button>
               <!-- Row Action Buttons -->
               <ng-container *ngIf="!!selection?.selected?.length">
-                <button
-                  *ngFor="let action of selectedRowActions"
-                  vds-button
-                  role="button"
-                  aria-label="action-button"
-                  [color]="action.buttonColor"
-                  [disabled]="action.disabled && action.disabled(this)"
-                  (click)="action.click && action.click(this)"
-              >
-                {{action.label}}
-              </button>
+                <button *ngFor="let action of selectedRowActions" vds-button role="button" aria-label="action-button"
+                  [color]="action.buttonColor" [disabled]="action.disabled && action.disabled(this)"
+                  (click)="action.click && action.click(this)">
+                  {{action.label}}
+                </button>
               </ng-container>
 
               <!-- Action Buttons -->
               <ng-container *ngIf="!selection.selected.length || !selectedRowActions.length">
-                <button
-                  *ngFor="let action of tableActions"
-                  vds-button
-                  role="button"
-                  [attr.aria-label]="action?.label+'-action-button'"
-                  [color]="action.buttonColor"
-                  [disabled]="action.disabled && action.disabled(this)"
-                  (click)="action.click && action.click(this)"
-                >
+                <button *ngFor="let action of tableActions" vds-button role="button"
+                  [attr.aria-label]="action?.label+'-action-button'" [color]="action.buttonColor"
+                  [disabled]="action.disabled && action.disabled(this)" (click)="action.click && action.click(this)">
                   {{action.label}}
                 </button>
               </ng-container>
             </vds-button-group>
           </div>
 
-          <div
-            *ngIf="moreColumns"
-            class="filter-container"
-          >
+          <div *ngIf="moreColumns" class="filter-container">
             <div class="filter-header">
               Show columns
-              <div
-                #toggle
-                vdsChip
-                class="chip"
-                (click)="menuOpen = !menuOpen"
-              >
-                <span
-                  *ngIf="shownColumns.length; else elseBlock"
-                  vdsChipText
-                >
+              <div #toggle vdsChip class="chip" (click)="menuOpen = !menuOpen">
+                <span *ngIf="shownColumns.length; else elseBlock" vdsChipText>
                   {{ shownColumns[0] }}
                 </span>
-                <span
-                  *ngIf="shownColumns.length - 1 > 0"
-                  vdsChipText
-                >
+                <span *ngIf="shownColumns.length - 1 > 0" vdsChipText>
                   {{ " (+" + (shownColumns.length - 1) + ")" }}
                 </span>
-                <ng-template
-                  #elseBlock
-                  vdsChipText
-                >
+                <ng-template #elseBlock vdsChipText>
                   <span>No Columns Selected</span>
                 </ng-template>
-                <button
-                  vds-button-icon
-                  role="button"
-                  aria-label="open dropdown"
-                  [iconType]="ButtonIconType.LIGHT_TINY"
-                  [attr.aria-expanded]="menuOpen"
-                >
-                  <svg
-                    vds-icon
-                    [icon]="!menuOpen ? VisaIcon.ARROW_EXPAND : VisaIcon.ARROW_COLLAPSE"
-                    [tiny]="true"
-                  ></svg>
+                <button vds-button-icon role="button" aria-label="open dropdown" [iconType]="ButtonIconType.LIGHT_TINY"
+                  [attr.aria-expanded]="menuOpen">
+                  <svg vds-icon [icon]="!menuOpen ? VisaIcon.ARROW_EXPAND : VisaIcon.ARROW_COLLAPSE"
+                    [tiny]="true"></svg>
                 </button>
               </div>
             </div>
-            <div
-              #menu
-              class="filter-dropdown"
-            >
-                <vds-listbox-container *ngIf="menuOpen">
-                  <ul
-                    vds-listbox
-                    aria-label="toggle-column-tooltip"
-                    id="search-table-colums-listbox"
-                    role="listbox"
-                    [multiselect]="true"
-                    (change)="changeMultiSelectPreSelected($event)"
-                  >
-                    <li
-                      *ngFor="let item of columns; let columnIndex = index; trackBy:columnTrackBy"
-                      vds-listbox-item
-                      [value]="item.key"
-                      [selected]="!item.hidden"
-                      [disabled]="!!item.fixed"
-                    >
-                      <label vdsCheckboxLabel>
-                        {{ item.label }}
-                      </label>
-                    </li>
-                  </ul>
-                </vds-listbox-container>
+            <div #menu class="filter-dropdown">
+              <vds-listbox-container *ngIf="menuOpen">
+                <ul vds-listbox aria-label="toggle-column-tooltip" id="search-table-colums-listbox" role="listbox"
+                  [multiselect]="true" (change)="changeMultiSelectPreSelected($event)">
+                  <li *ngFor="let item of columns; let columnIndex = index; trackBy:columnTrackBy" vds-listbox-item
+                    [value]="item.key" [selected]="!item.hidden" [disabled]="!!item.fixed">
+                    <label vdsCheckboxLabel>
+                      {{ item.label }}
+                    </label>
+                  </li>
+                </ul>
+              </vds-listbox-container>
             </div>
           </div>
         </div>
       </vds-action-bar>
     </div>
 
-    <div
-      class="table-container"
-      [ngStyle]="tableStyle"
-    >
-      <table
-        vdsDataTable
-        [id]="tableId"
-      >
+    <div class="table-container" [ngStyle]="tableStyle">
+      <table vdsDataTable [id]="tableId">
         <caption vdsScreenReader>
           {{ caption }}
         </caption>
 
-        <thead
-          vdsThead
-          sort
-        >
-          <tr
-            class="table-header"
-            vdsTr
-          >
-            <th 
-              *ngIf="!hideSelectAll || !canSelectMultipleRow"
-              scope="col"
-              vdsTh
-              sticky
-            >
+        <thead vdsThead sort>
+          <tr class="table-header" vdsTr>
+            <th *ngIf="!hideSelectAll || !canSelectMultipleRow" scope="col" vdsTh sticky>
 
-            <!-- Added label with 0 font-size for VGAR Requirement -->
-            <!-- Table Header shouldn't be empty -->
-              <vds-checkbox
-                *ngIf="canSelectMultipleRow"
-                label="select"
-                class="hidden-label"
-                id="header-select-all-checkbox"
-                name="header-select-all-checkbox"
-                matTooltipPosition="right"
+              <!-- Added label with 0 font-size for VGAR Requirement -->
+              <!-- Table Header shouldn't be empty -->
+              <vds-checkbox *ngIf="canSelectMultipleRow" label="select" class="hidden-label"
+                id="header-select-all-checkbox" name="header-select-all-checkbox" matTooltipPosition="right"
                 [checked]="selection.hasValue() && isAllSelected()"
                 [indeterminate]="selection.hasValue() && !isAllSelected()"
                 [matTooltip]="isAllSelected()? 'Deselect All': 'Select All'"
-                (click)="masterToggle($event)"
-              ></vds-checkbox>
+                (click)="masterToggle($event)"></vds-checkbox>
             </th>
-  
+
             <ng-container *ngFor="let column of columns; let columnIndex = index; trackBy:columnTrackBy">
-              <th vdsTh
-                *ngIf="!column.hidden"
-                sticky
-                scope="col"
-                [disableSticky]="!column.sticky"
-                [style]="column.headerStyle"
-              >
+              <th vdsTh *ngIf="!column.hidden" sticky scope="col" [disableSticky]="!column.sticky"
+                [style]="column.headerStyle">
                 <div class="sort-btn">
                   {{ column.label }}
-                  <button 
-                    *ngIf="column.sortable !== false"
-                    role="button"
-                    matTooltipPosition="after"
-                    vds-button-icon
+                  <button *ngIf="column.sortable !== false" role="button" matTooltipPosition="after" vds-button-icon
                     [iconType]="ButtonIconType.LIGHT_TINY"
                     [attr.aria-label]="column.label + getSortDirectionDesc(column.sortDirection || SortDirection.DEFAULT)"
                     [matTooltip]="getSortDirectionDesc(column.sortDirection || SortDirection.DEFAULT)"
-                    (click)="sort(column)"
-                  >
-                    <svg
-                      vds-icon
-                      [icon]="getSortDirectionIcon(column.sortDirection || SortDirection.DEFAULT)"
-                      [tiny]="true"
-                    ></svg>
+                    (click)="sort(column)">
+                    <svg vds-icon [icon]="getSortDirectionIcon(column.sortDirection || SortDirection.DEFAULT)"
+                      [tiny]="true"></svg>
                   </button>
                 </div>
               </th>
             </ng-container>
 
             <ng-container *ngIf="rowActions.length">
-              <th
-                scope="col"
-                width="5%"
-                vdsTh
-              >{{ (rowActions.length > 1) ? 'Actions' : 'Action' }}</th>
+              <th scope="col" width="5%" vdsTh>{{ (rowActions.length > 1) ? 'Actions' : 'Action' }}</th>
             </ng-container>
 
           </tr>
         </thead>
-        <tbody
-          *ngIf="!isLoading"
-          vdsTbody
-        >
-          <tr
-            *ngFor="let row of dataSource; let rowIndex = index"
-            vdsTr
-            [ngClass]="{'selected-row' : selection.isSelected(row)}"
-          >
-            <td
-              *ngIf="!hideSelectAll || !canSelectMultipleRow"
-              vdsTd
-              sticky
-            >
-              <vds-checkbox
-                #checkbox
-                *ngIf="!hideSelectAll"
-                label="select"
-                class="hidden-label"
-                [checked]="selection.isSelected(row)"
-                [name]="'row-checkbox'+rowIndex"
-                [id]="'row-checkbox'+rowIndex"
-                (click)="$event.stopPropagation()"
-                (changed)="handleRowSelection($event, row)"
-              ></vds-checkbox>
+        <tbody *ngIf="!isLoading" vdsTbody>
+          <tr *ngFor="let row of dataSource; let rowIndex = index" vdsTr
+            [ngClass]="{'selected-row' : selection.isSelected(row)}">
+            <td *ngIf="!hideSelectAll || !canSelectMultipleRow" vdsTd sticky>
+              <vds-checkbox #checkbox *ngIf="!hideSelectAll" label="select" class="hidden-label"
+                [checked]="selection.isSelected(row)" [name]="'row-checkbox'+rowIndex" [id]="'row-checkbox'+rowIndex"
+                (click)="$event.stopPropagation()" (changed)="handleRowSelection($event, row)"></vds-checkbox>
 
-              <vds-radio
-                #radioButton
-                *ngIf="!canSelectMultipleRow && hideSelectAll"
-                label="select"
-                name="radioRowSelector"
-                [radioValue]="row"
-                [checked]="!!selection.isSelected(row)"
-                [name]="'row-radio'"
-                [id]="'row-radio'+rowIndex"
-                (click)="$event.stopPropagation()"
-                (changed)="handleRowSelection($event, row)"
-              ></vds-radio>
+              <vds-radio #radioButton *ngIf="!canSelectMultipleRow && hideSelectAll" label="select"
+                name="radioRowSelector" [radioValue]="row" [checked]="!!selection.isSelected(row)" [name]="'row-radio'"
+                [id]="'row-radio'+rowIndex" (click)="$event.stopPropagation()"
+                (changed)="handleRowSelection($event, row)"></vds-radio>
             </td>
-  
-            <ng-container *ngFor="let column of columns; trackBy:columnTrackBy"
-            >
+
+            <ng-container *ngFor="let column of columns; trackBy:columnTrackBy">
               <ng-container
                 *ngIf="((column.type === SearchTableColumnType.TEMPLATE) && (!!column.columnTemplateRef) && (!column.hidden)); else link"
-                [ngTemplateOutlet]="column.columnTemplateRef"
-                [ngTemplateOutletContext]="{ row: row, column: column }"
-              >
+                [ngTemplateOutlet]="column.columnTemplateRef" [ngTemplateOutletContext]="{ row: row, column: column }">
               </ng-container>
 
               <ng-template #link>
                 <ng-container *ngIf="((column.type === SearchTableColumnType.LINK) && !column.hidden); else email">
-                  <td
-                    vdsTd
-                    sticky
-                    [disableSticky]="!column.sticky"
-                    [style]="column.cellStyle && column.cellStyle(row, this)"
-                  >
-                    <a
-                      role="link"
-                      tabindex="0"
-                      class="link"
-                      vdsLink
-                      (click)="column.click && column.click(row, this)"
-                      (keyup.enter)="column.click && column.click(row, this)"
-                    >
+                  <td vdsTd sticky [disableSticky]="!column.sticky"
+                    [style]="column.cellStyle && column.cellStyle(row, this)">
+                    <a role="link" tabindex="0" class="link" vdsLink (click)="column.click && column.click(row, this)"
+                      (keyup.enter)="column.click && column.click(row, this)">
                       {{ (column.mapValue && column.mapValue(row, this)) || row[column.key] }}
                     </a>
                   </td>
@@ -515,96 +298,64 @@
 
               <ng-template #email>
                 <ng-container *ngIf="((column.type === SearchTableColumnType.EMAIL) && !column.hidden); else date">
-                  <td
-                    vdsTd
-                    sticky
-                    [disableSticky]="!column.sticky"
-                    [style]="column.cellStyle && column.cellStyle(row, this)"
-                  >
-                    <a
-                      role="link"
-                      tabindex="0"
-                      class="link"
-                      vdsLink
+                  <td vdsTd sticky [disableSticky]="!column.sticky"
+                    [style]="column.cellStyle && column.cellStyle(row, this)">
+                    <a role="link" tabindex="0" class="link" vdsLink
                       href="mailto:{{(column.mapValue && column.mapValue(row, this)) || row[column.key] }}">
                       {{ (column.mapValue && column.mapValue(row, this)) || row[column.key] }}
                     </a>
                   </td>
                 </ng-container>
               </ng-template>
-  
+
               <ng-template #date>
-                <ng-container *ngIf="(((column.type === SearchTableColumnType.DATE) || (column.type === SearchTableColumnType.GMT_DATE)) && !column.hidden); else status">
-                    <td
-                      vdsTd
-                      sticky
-                      [disableSticky]="!column.sticky"
-                      [style]="column.cellStyle && column.cellStyle(row, this)"
-                    >
-                     <app-date-time-field-value [value]="row[column.key]" [convertToLocal]="column.type !== SearchTableColumnType.GMT_DATE"></app-date-time-field-value>
-                    </td>
+                <ng-container
+                  *ngIf="(((column.type === SearchTableColumnType.DATE) || (column.type === SearchTableColumnType.GMT_DATE)) && !column.hidden); else status">
+                  <td vdsTd sticky [disableSticky]="!column.sticky"
+                    [style]="column.cellStyle && column.cellStyle(row, this)">
+                    <app-date-time-field-value [value]="row[column.key]"
+                      [convertToLocal]="column.type !== SearchTableColumnType.GMT_DATE"></app-date-time-field-value>
+                  </td>
                 </ng-container>
               </ng-template>
 
               <ng-template #status>
                 <ng-container *ngIf="((column.type === SearchTableColumnType.STATUS) && !column.hidden); else icon">
-                    <td
-                      vdsTd
-                      sticky
-                      [disableSticky]="!column.sticky"
-                      [style]="column.cellStyle  && column.cellStyle(row, this)"
-                    >
-                      <vds-badge
-                        *ngIf="((column.mapValue && column.mapValue(row, this)) || row[column.key])"
-                        [type]="getStatusBadgeType((column.mapValue && column.mapValue(row, this)) || row[column.key])"
-                        [matTooltip]="column?.tooltip! && column?.tooltip(row)!"
-                      >
+                  <td vdsTd sticky [disableSticky]="!column.sticky"
+                    [style]="column.cellStyle  && column.cellStyle(row, this)">
+                    <vds-badge *ngIf="((column.mapValue && column.mapValue(row, this)) || row[column.key])"
+                      [type]="getStatusBadgeType((column.mapValue && column.mapValue(row, this)) || row[column.key])"
+                      [matTooltip]="column?.tooltip! && column?.tooltip(row)!">
                       <svg
                         *ngIf="!!column.showStatusIcon && !!getStatusIcon((column.mapValue && column.mapValue(row, this)) || row[column.key])"
-                        vds-icon
-                        [tiny]="true"
-                        [icon]="getStatusIcon((column.mapValue && column.mapValue(row, this)) || row[column.key])"
-                      ></svg>
-                        {{ getStatusDescription((column.mapValue && column.mapValue(row, this)) || row[column.key]) }}
-                      </vds-badge>
-                    </td>
+                        vds-icon [tiny]="true"
+                        [icon]="getStatusIcon((column.mapValue && column.mapValue(row, this)) || row[column.key])"></svg>
+                      {{ getStatusDescription((column.mapValue && column.mapValue(row, this)) || row[column.key]) }}
+                    </vds-badge>
+                  </td>
                 </ng-container>
               </ng-template>
 
               <ng-template #icon>
-                <ng-container *ngIf="((column.type === SearchTableColumnType.ICON) && !column.hidden); else serialNumber">
-                    <td
-                      vdsTd
-                      sticky
-                      [disableSticky]="!column.sticky"
-                      [style]="column.cellStyle && column.cellStyle(row, this)">
-                    <button
-                      *ngIf="!!row[column.key] && !!column.icon && column.icon(row, this)"
-                      vds-button-icon
-                      role="button"
-                      aria-label="table-button"
-                      [iconType]="ButtonIconType.LIGHT_TINY"
-                      (click)="column.click && column.click(row, this)"
-                      >
-                      <svg
-                        vds-icon
-                        [tiny]="true"
-                        [icon]="column.icon! && column.icon(row, this)!"
-                      ></svg>
+                <ng-container
+                  *ngIf="((column.type === SearchTableColumnType.ICON) && !column.hidden); else serialNumber">
+                  <td vdsTd sticky [disableSticky]="!column.sticky"
+                    [style]="column.cellStyle && column.cellStyle(row, this)">
+                    <button *ngIf="!!row[column.key] && !!column.icon && column.icon(row, this)" vds-button-icon
+                      role="button" aria-label="table-button" [iconType]="ButtonIconType.LIGHT_TINY"
+                      (click)="column.click && column.click(row, this)">
+                      <svg vds-icon [tiny]="true" [icon]="column.icon! && column.icon(row, this)!"></svg>
 
                     </button>
-                    </td>
+                  </td>
                 </ng-container>
               </ng-template>
 
               <ng-template #serialNumber>
-                <ng-container *ngIf="((column.type === SearchTableColumnType.SERIAL_NUMBER) && !column.hidden); else default">
-                  <td
-                    vdsTd
-                    sticky
-                    [disableSticky]="!column.sticky"
-                    [style]="column.cellStyle && column.cellStyle(row, this)"
-                  >
+                <ng-container
+                  *ngIf="((column.type === SearchTableColumnType.SERIAL_NUMBER) && !column.hidden); else default">
+                  <td vdsTd sticky [disableSticky]="!column.sticky"
+                    [style]="column.cellStyle && column.cellStyle(row, this)">
                     {{ (rowIndex + 1).toString().concat('.')}}
                   </td>
                 </ng-container>
@@ -612,51 +363,27 @@
 
               <ng-template #default>
                 <ng-container *ngIf="!column.hidden">
-                  <td
-                    vdsTd
-                    sticky
-                    [disableSticky]="!column.sticky"
-                    [style]="column.cellStyle && column.cellStyle(row, this)"
-                  >
+                  <td vdsTd sticky [disableSticky]="!column.sticky"
+                    [style]="column.cellStyle && column.cellStyle(row, this)">
                     {{ (column.mapValue && column.mapValue(row, this)) || row[column.key]}}
                   </td>
                 </ng-container>
               </ng-template>
             </ng-container>
 
-            <td
-              vdsTd
-              *ngIf="!!rowActions?.length"
-            >
+            <td vdsTd *ngIf="!!rowActions?.length">
               <div class="rowActions">
                 <ng-container *ngIf="((rowActions.length === 1) && rowActions[0].actionList?.length)">
-                  <button
-                    role="button"
-                    aria-label="action-button"
-                    aria-label="Menu Options"
-                    vds-button-icon
-                    [iconType]="ButtonIconType.LIGHT"
-                    (click)="openedMenu = rowIndex"
-                  >
-                    <svg
-                      vds-icon
-                      [icon]="VisaIcon.OPTIONS"
-                      [low]="true"
-                    ></svg>
+                  <button role="button" aria-label="action-button" aria-label="Menu Options" vds-button-icon
+                    [iconType]="ButtonIconType.LIGHT" (click)="openedMenu = rowIndex">
+                    <svg vds-icon [icon]="VisaIcon.OPTIONS" [low]="true"></svg>
                   </button>
 
-                  <vds-menu
-                    class="vds-menu--absolute options-menu"
-                    [class.vds-menu--show]="openedMenu == rowIndex"
-                  >
+                  <vds-menu class="vds-menu--absolute options-menu" [class.vds-menu--show]="openedMenu == rowIndex">
                     <ul vds-listbox>
                       <ng-container *ngFor="let action of rowActions[0].actionList">
-                        <li
-                          *ngIf="!action.hidden"
-                          id="search-table-row-action-listbox"
-                          vds-listbox-item
-                          [ngClass]="{disabled : action.disabled}"
-                        >
+                        <li *ngIf="!action.hidden" id="search-table-row-action-listbox" vds-listbox-item
+                          [ngClass]="{disabled : action.disabled}">
                           <label>
                             {{action.label}}
                           </label>
@@ -667,21 +394,11 @@
                 </ng-container>
 
                 <ng-container *ngFor="let rowAction of rowActions">
-                  <button
-                    vds-button-icon
-                    role="button"
-                    aria-label="action-button"
-                    matTooltipPosition="above"
-                    [iconType]="ButtonIconType.LIGHT_TINY"
-                    [disabled]="rowAction.disabled"
+                  <button vds-button-icon role="button" aria-label="action-button" matTooltipPosition="above"
+                    [iconType]="ButtonIconType.LIGHT_TINY" [disabled]="rowAction.disabled"
                     [matTooltip]="(rowAction.tooltip && rowAction.tooltip(this))!"
-                    (click)="rowAction.click && rowAction.click(row, this)"
-                  >
-                    <svg
-                      vds-icon
-                      [icon]="rowAction.icon!"
-                      [tiny]="true"
-                    ></svg>
+                    (click)="rowAction.click && rowAction.click(row, this)">
+                    <svg vds-icon [icon]="rowAction.icon!" [tiny]="true"></svg>
                   </button>
                 </ng-container>
               </div>
@@ -691,24 +408,17 @@
         </tbody>
 
       </table>
-      <div
-        *ngIf="!dataSource?.length && !isLoading && !!notFound"
-        class="not-found-container"
-      >{{notFound}}
+      <div *ngIf="!dataSource?.length && !isLoading && !!notFound" class="not-found-container">{{notFound}}
       </div>
 
       <vds-linear-progress *ngIf="isLoading"></vds-linear-progress>
 
     </div>
-    <div
-      *ngIf="!hidePagination"
-      class="vds-grid"
-    >
+    <div *ngIf="!hidePagination" class="vds-grid">
       <div class="row col--no-gutter">
         <div
           *ngIf="!hidePaginationSizeFilter  && (page.totalElements > defaultPageSize || tableData.length > defaultPageSize)"
-          class="col"
-        >
+          class="col">
           <div class="vds-grid">
             <div class="row">
               <div class="col--valign-center">
@@ -716,16 +426,9 @@
               </div>
               <div class="col--lg-2">
                 <vds-form-field>
-                  <select
-                    vdsSelect
-                    name="search-table-page-select"
-                    [value]="defaultPageSize"
-                    (change)="setPaginationSize($event)"
-                  >
-                    <option
-                      *ngFor="let option of paginationSizeOptions"
-                      [value]="option.value"
-                      >
+                  <select vdsSelect name="search-table-page-select" [value]="defaultPageSize"
+                    (change)="setPaginationSize($event)">
+                    <option *ngFor="let option of paginationSizeOptions" [value]="option.value">
                       {{option.label}}
                     </option>
                   </select>
@@ -735,15 +438,17 @@
                 <span *ngIf="sorting === 'dynamic'">
                   Showing {{ page.size*page.number + 1 }}
                   -
-                  {{ (page.size*page.number*1 + page.size*1) > page.totalElements ? page.totalElements : ((page.size*page.number*1 + page.size*1)) }}
+                  {{ (page.size*page.number*1 + page.size*1) > page.totalElements ? page.totalElements :
+                  ((page.size*page.number*1 + page.size*1)) }}
                   of
                   {{ page.totalElements }}
                 </span>
                 <span *ngIf="sorting === 'static'">
                   Showing {{ selectedPageSize*selectedPageIndex + 1 }}
                   -
-                  {{ (selectedPageSize*selectedPageIndex*1 + selectedPageSize*1) > tableData.length ? tableData.length : (selectedPageSize*selectedPageIndex*1 + selectedPageSize*1)}}
-                  of 
+                  {{ (selectedPageSize*selectedPageIndex*1 + selectedPageSize*1) > tableData.length ? tableData.length :
+                  (selectedPageSize*selectedPageIndex*1 + selectedPageSize*1)}}
+                  of
                   {{ tableData.length }}
                 </span>
               </div>
@@ -752,163 +457,99 @@
         </div>
 
         <div class="col">
-          <vds-pagination
-            [ariaLabel]="'pagination-' + tableId"
+          <vds-pagination [ariaLabel]="'pagination-' + tableId"
             [pageIndex]="(sorting === 'dynamic') ? page.number : selectedPageIndex"
             [pageSize]="(sorting === 'dynamic') ? page.size : selectedPageSize"
             [length]="(sorting === 'dynamic') ? page.totalElements : (tableData?.length! || totalElements)"
-            [ariaFirstPage]="'First Page'"
-            [ariaPreviousPage]="'Previous Page'"
-            [ariaNextPage]="'Next Page'"
-            [ariaLastPage]="'Last Page'"
-            (paginationEvent)="handlePagination($event)"
-          ></vds-pagination>
+            [ariaFirstPage]="'First Page'" [ariaPreviousPage]="'Previous Page'" [ariaNextPage]="'Next Page'"
+            [ariaLastPage]="'Last Page'" (paginationEvent)="handlePagination($event)"></vds-pagination>
         </div>
       </div>
     </div>
   </div>
 </div>
 
-<div
-  *ngIf="isPanelOpen"
-  class="panel-content"
->
-  <app-panel
-    panelId="search-panel"
-    [selectedTab]="panelSection"
-    (panelStatusEmitter)="onPanelStatusChange($event)"
-    [panelActions]="panelActions"
-    (activeSection)="panelSection = $event"
-  >
+<div *ngIf="isPanelOpen" class="panel-content">
+  <app-panel panelId="search-panel" [selectedTab]="panelSection" (panelStatusEmitter)="onPanelStatusChange($event)"
+    [panelActions]="panelActions" (activeSection)="panelSection = $event">
     <div searchFilters>
-      <form
-        *ngIf="initializeForm"
-        [formGroup]="advancedSearchForm"
-      >
+      <form *ngIf="initializeForm" [formGroup]="advancedSearchForm">
         <div class="vds-grid">
           <div class="row">
-            <div class="col" 
-              *ngFor="let field of searchFields; trackBy:searchFieldTrackBy"
-              [ngClass]="{
+            <div class="col" *ngFor="let field of searchFields; trackBy:searchFieldTrackBy" [ngClass]="{
                 'col--xs-2 col--sm-4 col--md-4 col--lg-6 col--xl-6 col--xxl-6': !field.fullWidth,
                 'col--xs-4 col--sm-8 col--md-8 col--lg-12 col--xl-12 col--xxl-12': field.fullWidth,  
               }">
               <ng-container *ngIf="field.type === SearchFieldType.DROPDOWN; else searchSelect">
                 <vds-form-field>
                   <label vdsLabel>{{field.label}}</label>
-                  <select
-                    vdsSelect
-                    [formControlName]="field.key"
-                    [name]="'search-table-filter-'+field.key"
-                  >
-                    <option
-                      *ngFor="let option of getOptionList(field)"
-                      [value]="option.value"
-                    >{{option.label}}</option>
+                  <select vdsSelect [formControlName]="field.key" [name]="'search-table-filter-'+field.key">
+                    <option *ngFor="let option of getOptionList(field)" [value]="option.value">{{option.label}}</option>
                   </select>
                 </vds-form-field>
               </ng-container>
-              <vds-error 
-                *ngIf="field.type !== SearchFieldType.CUSTOM"
-                vdsErrorMessage 
+              <vds-error *ngIf="field.type !== SearchFieldType.CUSTOM" vdsErrorMessage
                 [show]="advancedSearchForm.controls[field.key].invalid">{{
-                  getError(field)
+                getError(field)
                 }}
               </vds-error>
               <ng-template #searchSelect>
                 <ng-container *ngIf="field.type === SearchFieldType.SEARCH_SELECT; else date">
-                  <div
-                    vds-combobox
-                    [id]="tableId.concat('search-select').concat(field.key)"
-                    [formControlName]="field.key"
-                    [type]="ComboboxType.MANUAL"
-                  >
+                  <div vds-combobox [id]="tableId.concat('search-select').concat(field.key)"
+                    [formControlName]="field.key" [type]="ComboboxType.MANUAL">
                     <vds-form-field>
                       <label vdsLabel>{{field.label}}</label>
-                      <input vdsInput [invalid]="advancedSearchForm.controls[field.key].invalid"
-                      />
-                      <button
-                        vdsSuffix 
-                        role="button"
-                        vds-button-icon
-                        [iconType]="ButtonIconType.LIGHT_TINY"
-                        [attr.aria-expanded]="searchSelectOpen"
-                      >
-                      <svg
-                        vds-icon
-                        icon="visa_arrow-expand"
-                        [tiny]="true"
-                      ></svg>
+                      <input vdsInput [invalid]="advancedSearchForm.controls[field.key].invalid" />
+                      <button vdsSuffix role="button" vds-button-icon [iconType]="ButtonIconType.LIGHT_TINY"
+                        [attr.aria-expanded]="searchSelectOpen">
+                        <svg vds-icon icon="visa_arrow-expand" [tiny]="true"></svg>
                       </button>
                     </vds-form-field>
-                    <vds-menu >
-                      <ul vds-listbox >
-                        <li
-                          *ngFor="let option of getOptionList(field)"
-                          vds-listbox-item
-                          [value]="option.value"
-                        >
-                        {{option.label}}
+                    <vds-menu>
+                      <ul vds-listbox>
+                        <li *ngFor="let option of getOptionList(field)" vds-listbox-item [value]="option.value">
+                          {{option.label}}
                         </li>
                       </ul>
                     </vds-menu>
                   </div>
                 </ng-container>
               </ng-template>
-    
+
               <ng-template #date>
-                <ng-container *ngIf="((field.type === SearchFieldType.DATE) || (field.type === SearchFieldType.GMT_DATE) ); else checkbox">
-                  <vds-date-selector
-                    [label]="field.label"
-                    [formControlName]="field.key"
-                    [placement]="field.calenderPlacement!"
-                    [formatInputValue]="DateFormat.MM_DD_YYYY"
+                <ng-container
+                  *ngIf="((field.type === SearchFieldType.DATE) || (field.type === SearchFieldType.GMT_DATE) ); else checkbox">
+                  <vds-date-selector [label]="field.label" [formControlName]="field.key"
+                    [placement]="field.calenderPlacement!" [formatInputValue]="DateFormat.MM_DD_YYYY"
                     [valid]="!advancedSearchForm.controls[field.key].invalid"
-                    (formattedDateChange)="handleDateChange($event,field)"
-                  ></vds-date-selector>
+                    (formattedDateChange)="handleDateChange($event,field)"></vds-date-selector>
                 </ng-container>
               </ng-template>
-    
+
               <ng-template #checkbox>
                 <ng-container *ngIf="field.type === SearchFieldType.CHECKBOX; else time">
-                  <vds-checkbox
-                    [label]="field.label"
-                    [formControlName]="field.key"
-                    [nullBased]="false"
-                    [invalid]="advancedSearchForm.controls[field.key].invalid"
-                  ></vds-checkbox>
+                  <vds-checkbox [label]="field.label" [formControlName]="field.key" [nullBased]="false"
+                    [invalid]="advancedSearchForm.controls[field.key].invalid"></vds-checkbox>
                 </ng-container>
               </ng-template>
-              
+
               <ng-template #time>
                 <ng-container *ngIf="field.type === SearchFieldType.TIME; else radio">
-                  <app-time-picker
-                    aria-required="true"
-                    [formControlName]="field.key"
-                    [placeholder]="field.label"
+                  <app-time-picker aria-required="true" [formControlName]="field.key" [placeholder]="field.label"
                     [disabled]="!advancedSearchForm.get(field.searchDependencies![0].parentField)?.value"
-                    [invalid]="advancedSearchForm.controls[field.key].invalid"
-                  >
+                    [invalid]="advancedSearchForm.controls[field.key].invalid">
                   </app-time-picker>
                 </ng-container>
               </ng-template>
-    
+
               <ng-template #radio>
                 <ng-container *ngIf="field.type === SearchFieldType.RADIO; else textArea">
-                  <vds-radio-group 
-                    class="radio-group-row"
-                    role="radiogroup" 
-                    [formControlName]="field.key"
-                    >
-                    <legend vdsLegend >{{field.label}}</legend>
-                    <vds-radio 
-                        *ngFor="let option of getOptionList(field)"
-                        [label]="option.label"
-                        [checked]="option.value === advancedSearchForm.value[field.key]"
-                        [radioValue]="option.value"
-                        [invalid]="advancedSearchForm.controls[field.key].invalid"
-                        name="{{field.key}}radioName">
-                      </vds-radio>
+                  <vds-radio-group class="radio-group-row" role="radiogroup" [formControlName]="field.key">
+                    <legend vdsLegend>{{field.label}}</legend>
+                    <vds-radio *ngFor="let option of getOptionList(field)" [label]="option.label"
+                      [checked]="option.value === advancedSearchForm.value[field.key]" [radioValue]="option.value"
+                      [invalid]="advancedSearchForm.controls[field.key].invalid" name="{{field.key}}radioName">
+                    </vds-radio>
                   </vds-radio-group>
                 </ng-container>
               </ng-template>
@@ -917,11 +558,7 @@
                 <ng-container *ngIf="field.type === SearchFieldType.TEXT_AREA; else number">
                   <vds-form-field>
                     <label vdsLabel>{{field.label}}</label>
-                    <textarea
-                      vdsInput
-                      [autoGrow]="false"
-                      [rows]="5"
-                      [formControlName]="field.key"
+                    <textarea vdsInput [autoGrow]="false" [rows]="5" [formControlName]="field.key"
                       [invalid]="advancedSearchForm.controls[field.key].invalid">
                     </textarea>
                   </vds-form-field>
@@ -932,35 +569,26 @@
                 <ng-container *ngIf="field.type === SearchFieldType.NUMBER; else customFiled">
                   <vds-form-field>
                     <label vdsLabel>{{field.label}}</label>
-                    <input
-                      vdsInput
-                      type="number"
-                      min="0"
-                      [formControlName]="field.key"
-                      [invalid]="advancedSearchForm.controls[field.key].invalid"
-                    />
+                    <input vdsInput type="number" min="0" [formControlName]="field.key"
+                      [invalid]="advancedSearchForm.controls[field.key].invalid" />
                   </vds-form-field>
                 </ng-container>
               </ng-template>
-    
+
               <ng-template #customFiled>
-                <ng-container *ngIf="((field.type === SearchFieldType.CUSTOM) && !!field.templateRef); else default" 
+                <ng-container *ngIf="((field.type === SearchFieldType.CUSTOM) && !!field.templateRef); else default"
                   [ngTemplateOutlet]="field.templateRef"
-                  [ngTemplateOutletContext]="{advancedSearchForm:advancedSearchForm}"
-                  >
+                  [ngTemplateOutletContext]="{advancedSearchForm:advancedSearchForm}">
                 </ng-container>
               </ng-template>
-              
-              
+
+
               <ng-template #default>
                 <ng-container>
                   <vds-form-field>
                     <label vdsLabel>{{field.label}}</label>
-                    <input
-                      vdsInput
-                      [formControlName]="field.key"
-                      [invalid]="advancedSearchForm.controls[field.key].invalid"
-                    />
+                    <input vdsInput [formControlName]="field.key"
+                      [invalid]="advancedSearchForm.controls[field.key].invalid" />
                   </vds-form-field>
 
                 </ng-container>

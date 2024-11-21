@@ -719,7 +719,12 @@ export class SearchTableComponent implements OnInit, OnChanges, AfterViewInit, O
     if (this.sorting === SortType.DYNAMIC) {
       this.performSearch(this.page.number);
     } else {
-      this.dataSource = this.sortTableData(this.tableData, column);
+      if(!this.tableData.length){
+        this.dataSource = this.sortTableData(this.dataSource, column);
+      } else{
+        this.tableData = this.sortTableData(this.tableData, column);
+        this.performStaticPagination();
+      }
     }
   }
 
@@ -879,10 +884,8 @@ export class SearchTableComponent implements OnInit, OnChanges, AfterViewInit, O
               this.alertService.showResponseErrors(res.errors);
               this.dataSource = [];
             } else {
-              if (this.sorting === SortType.DYNAMIC) {
-                this.dataSource = tableData;
-              } else {
-                this.dataSource = tableData;
+              this.dataSource = tableData;
+              if (this.sorting !== SortType.DYNAMIC) {
                 this.handleOnDataSourceChange();
               }
 
