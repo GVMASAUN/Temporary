@@ -88,6 +88,10 @@ export class UncategorizedOfferSummaryComponent implements AfterViewInit, OnInit
     }
   ];
 
+  get tableHeight(): string{
+    let numberOfRows = this.offer.unsupportedFeatureList.length;
+    return (numberOfRows * 72) + 48 > 408 ? '408px' : `${numberOfRows * 72 + 48}px`;
+  }
 
   get offer(): UncategorizedOffer {
     return this.form.getRawValue() as UncategorizedOffer;
