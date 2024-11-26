@@ -809,7 +809,13 @@ export class SearchTableComponent implements OnInit, OnChanges, AfterViewInit, O
   }
 
   protected getSortDirectionDesc(sortDirection: SortDirection): string {
-    return SORT_DIRECTION_DESC[sortDirection];
+    let currentSortDirection = (sortDirection === SortDirection.DESC)
+    ? SortDirection.ASC
+    : (sortDirection === SortDirection.ASC)
+    ? SortDirection.DESC
+    : SortDirection.DEFAULT;
+    
+    return SORT_DIRECTION_DESC[currentSortDirection];
   }
 
   protected columnTrackBy(index: number, item: SearchTableColumn): string {
