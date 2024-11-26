@@ -53,19 +53,21 @@ export class Utils {
     value: Array<any>,
     sortField: string,
     direction: SortDirection = SortDirection.ASC,
-    mapValue?: (row: any, table: SearchTableComponent) => any
+    column: SearchTableColumn | null = null,
+    searchTableComponent: SearchTableComponent | null = null
   ): Array<any> {
     return value.sort((a, b) => {
       let order = 0;
 
       const isFormGroupInstance: boolean = ((a instanceof FormGroup) && (b instanceof FormGroup));
 
-      const aSort = isFormGroupInstance ? a.value[sortField] : a[sortField];
-      const bSort = isFormGroupInstance ? b.value[sortField] : b[sortField];
+      let aSort = isFormGroupInstance ? a.value[sortField] : a[sortField];
+      let bSort = isFormGroupInstance ? b.value[sortField] : b[sortField];
 
-      // if(mapValue !== null){
-      //   aSort = mapValue(value,)
-      // }
+      if(column?.mapValue){
+        aSort = column.mapValue(a,searchTableComponent!);
+        bSort = column.mapValue(b,searchTableComponent!)
+      }
 
       if ((typeof aSort === 'string') && (typeof bSort === 'string')) {
         order = aSort.trim().localeCompare(bSort.trim());

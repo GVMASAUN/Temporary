@@ -461,7 +461,8 @@ export class SearchTableComponent implements OnInit, OnChanges, AfterViewInit, O
       data,
       column.sortKey || column.key,
       column.sortDirection,
-      column.mapValue!
+      column,
+      this
     );
   }
 

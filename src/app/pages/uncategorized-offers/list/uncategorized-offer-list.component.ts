@@ -93,10 +93,7 @@ export class UncategorizedOfferListComponent implements OnInit, OnDestroy {
       label: 'Badge',
       type: SearchTableColumnType.BADGE,
       mapValue: (row:any, component: SearchTableComponent) => {
-        if(row.badge === "AEAH" || row.badge === "YEAH") {
-          return "VALUE1";
-        }
-        return "VALUE2";
+        return (row.badge === "AEAH" || row.badge === "YEAH") ? "VALUE1" : "VALUE2";
       }
     }
   ];
