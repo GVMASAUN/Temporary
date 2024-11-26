@@ -530,7 +530,7 @@
               </ng-template>
   
               <ng-template #date>
-                <ng-container *ngIf="(((column.type === SearchTableColumnType.DATE) || (column.type === SearchTableColumnType.GMT_DATE)) && !column.hidden); else status">
+                <ng-container *ngIf="(((column.type === SearchTableColumnType.DATE) || (column.type === SearchTableColumnType.GMT_DATE)) && !column.hidden); else badge">
                     <td
                       vdsTd
                       sticky
@@ -539,6 +539,24 @@
                     >
                      <app-date-time-field-value [value]="row[column.key]" [convertToLocal]="column.type !== SearchTableColumnType.GMT_DATE"></app-date-time-field-value>
                     </td>
+                </ng-container>
+              </ng-template>
+
+              <ng-template #badge>
+                <ng-container *ngIf="(column.type === SearchTableColumnType.BADGE) && !column.hidden; else status">
+                  <td
+                    vdsTd
+                    sticky
+                    [disableSticky]="!column.sticky"
+                    [style]="column.cellStyle && column.cellStyle(row,this)"
+                  >
+                    <vds-badge
+                      *ngIf="(column.mapValue && column.mapValue(row,this)) || row[column.key]"
+                      [matTooltip]="column?.tooltip! && column?.tooltip(row)!"
+                      >
+                      {{(column.mapValue && column.mapValue(row,this)) || row[column.key]}}
+                    </vds-badge>
+                  </td>
                 </ng-container>
               </ng-template>
 

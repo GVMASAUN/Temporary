@@ -13,6 +13,7 @@ export enum SearchTableColumnType {
     GMT_DATE,
     STATUS,
     ICON,
+    BADGE,
     SERIAL_NUMBER,
     EMAIL,
     DEFAULT
