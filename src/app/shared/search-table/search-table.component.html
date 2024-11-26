@@ -197,10 +197,14 @@
         *ngIf="showClearFilterButton && showClearSearchButton()"
         class="clear-section"
       >
-        <span>
+        <!-- <span>
           Clear search
-        </span>
+        </span> -->
+        <label for="clearButton" class="clear-search-label">
+          Clear search
+        </label>
         <button
+          id="clearButton"
           vds-button-icon
           role="button"
           aria-label="Clear"
