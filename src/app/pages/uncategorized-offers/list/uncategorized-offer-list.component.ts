@@ -87,6 +87,17 @@ export class UncategorizedOfferListComponent implements OnInit, OnDestroy {
       key: 'modifiedDate',
       label: 'Last Update',
       type: SearchTableColumnType.DATE
+    },
+    {
+      key: 'badge',
+      label: 'Badge',
+      type: SearchTableColumnType.BADGE,
+      mapValue: (row:any, component: SearchTableComponent) => {
+        if(row.badge === "AEAH" || row.badge === "YEAH") {
+          return "VALUE1";
+        }
+        return "VALUE2";
+      }
     }
   ];
 

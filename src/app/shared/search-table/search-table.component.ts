@@ -43,7 +43,7 @@ export class SearchTableComponent implements OnInit, OnChanges, AfterViewInit, O
   menu!: ElementRef;
 
   @Input()
-  sorting: SortType = SortType.DYNAMIC;
+  sorting: SortType = SortType.STATIC;
 
   @Input()
   sortActive: string = EMPTY;
@@ -460,7 +460,8 @@ export class SearchTableComponent implements OnInit, OnChanges, AfterViewInit, O
     return Utils.sortArray(
       data,
       column.sortKey || column.key,
-      column.sortDirection
+      column.sortDirection,
+      column.mapValue!
     );
   }
 
@@ -794,7 +795,7 @@ export class SearchTableComponent implements OnInit, OnChanges, AfterViewInit, O
     return STATUS_ICON[value];
   }
 
-  protected getStatusBadgeType(statusCode: StatusCode): BadgeType {
+  protected getStatusBadgeType(statusCode: StatusCode): BadgeType {    
     return STATUS_BADGE_TYPE[statusCode];
   }
 

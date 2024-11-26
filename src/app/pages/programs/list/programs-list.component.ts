@@ -53,6 +53,11 @@ export class ProgramsListComponent implements OnInit, OnDestroy {
       key: 'endDate',
       label: 'End Date',
       type: SearchTableColumnType.DATE
+    },
+    {
+      key:'badge',
+      label: 'Badge',
+      type: SearchTableColumnType.BADGE
     }
   ];
 

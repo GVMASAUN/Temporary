@@ -1,5 +1,6 @@
 import { ANY, EMPTY, LABEL, SPACE } from '../core/constants';
-import { SortDirection } from '../shared/search-table/search-table.model';
+import { SearchTableComponent } from '../shared/search-table/search-table.component';
+import { SearchTableColumn, SortDirection } from '../shared/search-table/search-table.model';
 import { FormGroup } from '@angular/forms';
 import { Option } from "src/app/core/models/option.model";
 
@@ -51,7 +52,8 @@ export class Utils {
   public static sortArray(
     value: Array<any>,
     sortField: string,
-    direction: SortDirection = SortDirection.ASC
+    direction: SortDirection = SortDirection.ASC,
+    mapValue?: (row: any, table: SearchTableComponent) => any
   ): Array<any> {
     return value.sort((a, b) => {
       let order = 0;
@@ -60,6 +62,10 @@ export class Utils {
 
       const aSort = isFormGroupInstance ? a.value[sortField] : a[sortField];
       const bSort = isFormGroupInstance ? b.value[sortField] : b[sortField];
+
+      // if(mapValue !== null){
+      //   aSort = mapValue(value,)
+      // }
 
       if ((typeof aSort === 'string') && (typeof bSort === 'string')) {
         order = aSort.trim().localeCompare(bSort.trim());
