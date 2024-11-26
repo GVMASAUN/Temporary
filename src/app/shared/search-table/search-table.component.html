@@ -11,188 +11,184 @@
       <form [formGroup]="advancedSearchForm">
 
         <div *ngFor="let field of searchFields; trackBy:searchFieldTrackBy">
-          <ng-container *ngIf="((field.type === SearchFieldType.INPUT || field.type === SearchFieldType.TEXT_AREA || !field.type) && (!hideSearchFieldFilters || !!advancedSearchForm?.get(field.key)?.value)); else searchSelect">
-            <vds-form-field>
-              <label vdsLabel>{{field.label}}</label>
-              <input
-                vdsInput
-                [formControlName]="field.key"
-                [invalid]="advancedSearchForm.controls[field.key].invalid"
-              />
-            </vds-form-field>
-          </ng-container>
-          <vds-error 
-           *ngIf="field.type !== SearchFieldType.CUSTOM"
-            vdsErrorMessage 
-            [show]="advancedSearchForm.controls[field.key].invalid">{{
-              getError(field)
-            }}
-          </vds-error>
-
-          <ng-template #searchSelect>
-            <ng-container *ngIf="((field.type === SearchFieldType.SEARCH_SELECT) 
-            && ((!hideSearchFieldFilters || !!advancedSearchForm?.get(field.key)?.value) || (!!field.searchDependencies?.length 
-            && getAvailableDependencyValue(field)))); else dropdown">
-              <div
-                vds-combobox
-                [id]="tableId.concat('search-select-selection').concat(field.key)"
-                [formControlName]="field.key"
-                [type]="ComboboxType.MANUAL"
-                [invalid]="advancedSearchForm.controls[field.key].invalid"
-              >
-                <vds-form-field>
-                  <label vdsLabel>{{field.label}}</label>
-                  <input 
-                    vdsInput
-                  />
-                  <button
-                    vdsSuffix
-                    vds-button-icon
-                    role="button"
-                    [iconType]="ButtonIconType.LIGHT_TINY"
-                    [attr.aria-expanded]="searchSelectOpen"
-                  >
-                  <svg
-                    vds-icon
-                    icon="visa_arrow-expand"
-                    [tiny]="true"
-                  ></svg>
-                  </button>
-                </vds-form-field>
-                <vds-menu [isComboboxMenu]="true">
-                  <ul vds-listbox>
-                    <li
-                      vds-listbox-item
-                      *ngFor="let option of getOptionList(field)"
-                      [value]="option.value"
-                    >
-                    {{option.label}}
-                    </li>
-                  </ul>
-                </vds-menu>
-              </div>
-            </ng-container>
-          </ng-template>
-
-          <ng-template #dropdown>
-            <ng-container *ngIf="(field.type === SearchFieldType.DROPDOWN && (!hideSearchFieldFilters || !!advancedSearchForm?.get(field.key)?.value)); else date">
+          <ng-container *ngIf="(!hideSearchFieldFilters || !!advancedSearchForm?.get(field.key)?.value) || (!!field.searchDependencies?.length && getAvailableDependencyValue(field))">
+            <ng-container *ngIf="((field.type === SearchFieldType.INPUT) || (field.type === SearchFieldType.TEXT_AREA) || !field.type); else searchSelect">
               <vds-form-field>
                 <label vdsLabel>{{field.label}}</label>
-                <select 
-                  vdsSelect 
+                <input
+                  vdsInput
                   [formControlName]="field.key"
-                  [name]="'searchFiled-'+field.key"
+                  [invalid]="advancedSearchForm.controls[field.key].invalid"
+                />
+              </vds-form-field>
+            </ng-container>
+
+            <ng-template #searchSelect>
+              <ng-container *ngIf="((field.type === SearchFieldType.SEARCH_SELECT) ); else dropdown">
+                <div
+                  vds-combobox
+                  [id]="tableId.concat('search-select-selection').concat(field.key)"
+                  [formControlName]="field.key"
+                  [type]="ComboboxType.MANUAL"
                   [invalid]="advancedSearchForm.controls[field.key].invalid"
                 >
-                  <option
-                    *ngFor="let option of getOptionList(field)"
-                    [value]="option.value"
+                  <vds-form-field>
+                    <label vdsLabel>{{field.label}}</label>
+                    <input 
+                      vdsInput
+                    />
+                    <button
+                      vdsSuffix
+                      vds-button-icon
+                      role="button"
+                      [iconType]="ButtonIconType.LIGHT_TINY"
+                      [attr.aria-expanded]="searchSelectOpen"
                     >
-                    {{option.label}}
-                  </option>
-                </select>
-              </vds-form-field>
-            </ng-container>
-          </ng-template>
+                    <svg
+                      vds-icon
+                      icon="visa_arrow-expand"
+                      [tiny]="true"
+                    ></svg>
+                    </button>
+                  </vds-form-field>
+                  <vds-menu [isComboboxMenu]="true">
+                    <ul vds-listbox>
+                      <li
+                        vds-listbox-item
+                        *ngFor="let option of getOptionList(field)"
+                        [value]="option.value"
+                      >
+                      {{option.label}}
+                      </li>
+                    </ul>
+                  </vds-menu>
+                </div>
+              </ng-container>
+            </ng-template>
 
-          <ng-template #date>
-            <ng-container *ngIf="(((field.type === SearchFieldType.DATE) || (field.type === SearchFieldType.GMT_DATE)) && (!hideSearchFieldFilters || !!advancedSearchForm?.get(field.key)?.value)); else time">
-              <vds-date-selector
-                label="{{field.label}}"
-                [value]="this.advancedSearchForm.controls[field.key].value"
-                [formatInputValue]="DateFormat.MM_DD_YYYY"
-                (formattedDateChange)="onDateChange($event, field)"
-                [valid]="advancedSearchForm.controls[field.key].valid"
-                (formattedDateChange)="handleDateChange($event,field)"
-              ></vds-date-selector>
-            </ng-container>
-          </ng-template>
-
-          <ng-template #time>
-            <ng-container *ngIf="(field.type === SearchFieldType.TIME && (!hideSearchFieldFilters || !!advancedSearchForm?.get(field.key)?.value)); else checkbox">
-              <app-time-picker
-                aria-required="true"
-                [formControlName]="field.key"
-                [placeholder]="field.label"
-                [disabled]="!advancedSearchForm.get(field.searchDependencies![0].parentField)?.value"
-                [invalid]="advancedSearchForm.controls[field.key].invalid"
-              >
-              </app-time-picker>
-            </ng-container>
-          </ng-template>
-
-          <ng-template #checkbox>
-            <ng-container *ngIf="(field.type === SearchFieldType.CHECKBOX && (!hideSearchFieldFilters || !!advancedSearchForm?.get(field.key)?.value)); else radioGroup">
-              <vds-checkbox
-                [label]="field.label"
-                [formControlName]="field.key"
-                [nullBased]="false"
-                [invalid]="advancedSearchForm.controls[field.key].invalid"
-              ></vds-checkbox>
-            </ng-container>
-          </ng-template>
-
-          <ng-template #radioGroup>
-            <ng-container *ngIf="(field.type === SearchFieldType.RADIO && (!hideSearchFieldFilters || !!advancedSearchForm?.get(field.key)?.value)); else number">
-              <vds-radio-group 
-                role="radiogroup" 
-                [formControlName]="field.key"
-              >
-                <legend vdsLegend >{{field.label}}</legend>
-                <vds-radio 
-                    *ngFor="let option of getOptionList(field)"
-                    [label]="option.label"
-                    [checked]="option.value === advancedSearchForm.value[field.key]"
-                    [radioValue]="option.value"
-                    name="{{field.key}}radioName"
+            <ng-template #dropdown>
+              <ng-container *ngIf="(field.type === SearchFieldType.DROPDOWN); else date">
+                <vds-form-field>
+                  <label vdsLabel>{{field.label}}</label>
+                  <select 
+                    vdsSelect 
+                    [formControlName]="field.key"
+                    [name]="'searchFiled-'+field.key"
                     [invalid]="advancedSearchForm.controls[field.key].invalid"
                   >
-                </vds-radio>
+                    <option
+                      *ngFor="let option of getOptionList(field)"
+                      [value]="option.value"
+                      >
+                      {{option.label}}
+                    </option>
+                  </select>
+                </vds-form-field>
+              </ng-container>
+            </ng-template>
 
-            </vds-radio-group>
-            </ng-container>
-          </ng-template>
+            <ng-template #date>
+              <ng-container *ngIf="((field.type === SearchFieldType.DATE) || (field.type === SearchFieldType.GMT_DATE)); else time">
+                <vds-date-selector
+                  label="{{field.label}}"
+                  [value]="this.advancedSearchForm.controls[field.key].value"
+                  [formatInputValue]="DateFormat.MM_DD_YYYY"
+                  (formattedDateChange)="onDateChange($event, field)"
+                  [valid]="advancedSearchForm.controls[field.key].valid"
+                  (formattedDateChange)="handleDateChange($event,field)"
+                ></vds-date-selector>
+              </ng-container>
+            </ng-template>
 
-          <ng-template #number>
-            <ng-container *ngIf="(field.type === SearchFieldType.NUMBER && (!hideSearchFieldFilters || !!advancedSearchForm?.get(field.key)?.value)); else customFiled">
-              <vds-form-field>
-                <label vdsLabel>{{field.label}}</label>
-                <input
-                  vdsInput
-                  type="number"
-                  min="0"
+            <ng-template #time>
+              <ng-container *ngIf="(field.type === SearchFieldType.TIME); else checkbox">
+                <app-time-picker
+                  aria-required="true"
                   [formControlName]="field.key"
+                  [placeholder]="field.label"
+                  [disabled]="!advancedSearchForm.get(field.searchDependencies![0].parentField)?.value"
                   [invalid]="advancedSearchForm.controls[field.key].invalid"
-                />
-              </vds-form-field>
-            </ng-container>
-          </ng-template>
+                >
+                </app-time-picker>
+              </ng-container>
+            </ng-template>
 
-
-
-
-          <ng-template #customFiled>
-            <ng-container *ngIf="(!!field.templateRef && (field.type === SearchFieldType.CUSTOM) && (!hideSearchFieldFilters || !!advancedSearchForm?.get(field.key)?.value));else default"
-              [ngTemplateOutlet]="field.templateRef"
-              [ngTemplateOutletContext]="{advancedSearchForm: advancedSearchForm, resultFilter: true}"
-            >
-            </ng-container>
-          </ng-template>
-
-
-          <ng-template #default>
-            <ng-container *ngIf="!field.type && ((!hideSearchFieldFilters || !!advancedSearchForm?.get(field.key)?.value))">
-              <vds-form-field>
-                <label vdsLabel>{{field.label}}</label>
-                <input
-                  vdsInput
+            <ng-template #checkbox>
+              <ng-container *ngIf="(field.type === SearchFieldType.CHECKBOX); else radioGroup">
+                <vds-checkbox
+                  [label]="field.label"
                   [formControlName]="field.key"
+                  [nullBased]="false"
                   [invalid]="advancedSearchForm.controls[field.key].invalid"
-                />
-              </vds-form-field>
-            </ng-container>
-          </ng-template>
+                ></vds-checkbox>
+              </ng-container>
+            </ng-template>
 
+            <ng-template #radioGroup>
+              <ng-container *ngIf="(field.type === SearchFieldType.RADIO); else number">
+                <vds-radio-group 
+                  role="radiogroup" 
+                  [formControlName]="field.key"
+                >
+                  <legend vdsLegend >{{field.label}}</legend>
+                  <vds-radio 
+                      *ngFor="let option of getOptionList(field)"
+                      [label]="option.label"
+                      [checked]="option.value === advancedSearchForm.value[field.key]"
+                      [radioValue]="option.value"
+                      name="{{field.key}}radioName"
+                      [invalid]="advancedSearchForm.controls[field.key].invalid"
+                    >
+                  </vds-radio>
+
+              </vds-radio-group>
+              </ng-container>
+            </ng-template>
+
+            <ng-template #number>
+              <ng-container *ngIf="(field.type === SearchFieldType.NUMBER); else customFiled">
+                <vds-form-field>
+                  <label vdsLabel>{{field.label}}</label>
+                  <input
+                    vdsInput
+                    type="number"
+                    min="0"
+                    [formControlName]="field.key"
+                    [invalid]="advancedSearchForm.controls[field.key].invalid"
+                  />
+                </vds-form-field>
+              </ng-container>
+            </ng-template>
+
+            <ng-template #customFiled>
+              <ng-container *ngIf="!!field.templateRef && (field.type === SearchFieldType.CUSTOM);else default"
+                [ngTemplateOutlet]="field.templateRef"
+                [ngTemplateOutletContext]="{advancedSearchForm: advancedSearchForm, resultFilter: true}"
+              >
+              </ng-container>
+            </ng-template>
+
+
+            <ng-template #default>
+              <ng-container *ngIf="!field.type">
+                <vds-form-field>
+                  <label vdsLabel>{{field.label}}</label>
+                  <input
+                    vdsInput
+                    [formControlName]="field.key"
+                    [invalid]="advancedSearchForm.controls[field.key].invalid"
+                  />
+                </vds-form-field>
+              </ng-container>
+            </ng-template>
+        </ng-container>
+        <vds-error 
+            *ngIf="field.type !== SearchFieldType.CUSTOM"
+              vdsErrorMessage 
+              [show]="advancedSearchForm.controls[field.key].invalid">{{
+                getError(field)
+              }}
+            </vds-error>
         </div>
 
 
