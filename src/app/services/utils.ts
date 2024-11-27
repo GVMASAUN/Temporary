@@ -53,32 +53,29 @@ export class Utils {
     value: Array<any>,
     sortField: string,
     direction: SortDirection = SortDirection.ASC,
-    column: SearchTableColumn | null = null,
-    searchTableComponent: SearchTableComponent | null = null
   ): Array<any> {
     return value.sort((a, b) => {
-      let order = 0;
-
       const isFormGroupInstance: boolean = ((a instanceof FormGroup) && (b instanceof FormGroup));
 
-      let aSort = isFormGroupInstance ? a.value[sortField] : a[sortField];
-      let bSort = isFormGroupInstance ? b.value[sortField] : b[sortField];
+      const aSort = isFormGroupInstance ? a.value[sortField] : a[sortField];
+      const bSort = isFormGroupInstance ? b.value[sortField] : b[sortField];
 
-      if(column?.mapValue){
-        aSort = column.mapValue(a,searchTableComponent!);
-        bSort = column.mapValue(b,searchTableComponent!)
-      }
-
-      if ((typeof aSort === 'string') && (typeof bSort === 'string')) {
-        order = aSort.trim().localeCompare(bSort.trim());
-      } else if (isNaN(aSort) || isNaN(bSort)) {
-        order = aSort > bSort ? 1 : aSort < bSort ? -1 : 0;
-      } else {
-        order = aSort - bSort;
-      }
-
-      return direction === SortDirection.ASC ? order : -order;
+      return this.compareFields(aSort,bSort,direction);
     });
+  }
+
+  public static compareFields(aSort:any, bSort:any, direction: SortDirection): number {
+    let order = 0;
+
+    if ((typeof aSort === 'string') && (typeof bSort === 'string')) {
+      order = aSort.trim().localeCompare(bSort.trim());
+    } else if (isNaN(aSort) || isNaN(bSort)) {
+      order = aSort > bSort ? 1 : aSort < bSort ? -1 : 0;
+    } else {
+      order = aSort - bSort;
+    }
+
+    return direction === SortDirection.ASC ? order : -order;
   }
 
   public static titleCase(text: any) {

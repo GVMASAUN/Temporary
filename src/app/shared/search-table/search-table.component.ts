@@ -20,6 +20,7 @@ import { DateUtils } from 'src/app/services/util/dateUtils';
 import { Utils } from 'src/app/services/utils';
 import { PanelAction } from '../panel/panel.model';
 import { PaginationSizeValue, RowAction, SORT_DIRECTION_DESC, SORT_DIRECTION_ICON, SearchField, SearchFieldType, SearchTableAction, SearchTableColumn, SearchTableColumnType, SortDirection, SortType } from './search-table.model';
+import { SearchTableService } from './search-table.service';
 
 @Component({
   selector: 'app-search-table',
@@ -255,7 +256,8 @@ export class SearchTableComponent implements OnInit, OnChanges, AfterViewInit, O
     private viewContainerRef: ViewContainerRef,
     private alertService: ToggleAlertService,
     private readonly appStoreService: AppStoreService,
-    private readonly formService: FormService
+    private readonly formService: FormService,
+    private searchTableService: SearchTableService
   ) {
     this.status.getPanelStatus.pipe(takeUntil(this.destroy$)).subscribe({
       next: panelStatus => {
@@ -457,12 +459,11 @@ export class SearchTableComponent implements OnInit, OnChanges, AfterViewInit, O
       });
     }
 
-    return Utils.sortArray(
+    return this.searchTableService.sortArray(
       data,
       column.sortKey || column.key,
       column.sortDirection,
-      column,
-      this
+      column
     );
   }
 
