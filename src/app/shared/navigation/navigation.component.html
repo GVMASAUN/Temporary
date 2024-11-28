@@ -77,9 +77,9 @@
             vds-tab
             queryParamsHandling="merge"
             matTooltipPosition="right"
-            [class.vds-state--selected] ="selectedIndex == tabIndex"
-            [ngClass]="{'nav-selected': selectedIndex == tabIndex}"
-            [tabAsNavLink]="false"
+            [class.vds-state--selected] ="selectedIndex === tabIndex"
+            [ngClass]="{'nav-selected': selectedIndex === tabIndex}"
+            [tabAsNavLink]="true"
             [attr.aria-expanded]="!!menu.isSubMenuOpened"
             [attr.aria-label]="menu.module.uiName"
             [routerLink]="hasSubMenu(menu) ? router.url.split('?')[0]  : menu.module.baseUrl"
@@ -108,16 +108,18 @@
               vds-tab-list 
               [selectedIndex]="(selectedSubMenuIndex > -1) ? selectedSubMenuIndex : null" 
               [orientation]="TabsOrientation.VERTICAL"
+              [isTablistNavigation]="true"
               >
               <li vds-tab-item [isTabItemDisclosure]="true" *ngFor="let subMenu of (menu?.subMenus || []); let subTabIndex = index">
                 <a 
                   vds-tab 
                   queryParamsHandling="merge"
-                  [class.vds-state--selected] ="selectedSubMenuIndex == subTabIndex"
-                  [ngClass]="{'nav-selected': selectedSubMenuIndex == subTabIndex}"
+                  [class.vds-state--selected] ="selectedSubMenuIndex === subTabIndex"
+                  [ngClass]="{'nav-selected': selectedSubMenuIndex === subTabIndex}"
                   [disclosureLink]="true" 
-                  [tabAsNavLink]="true"             
+                  [tabAsNavLink]="true"  
                   [routerLink]="subMenu.url"
+                  [attr.aria-label]="subMenu.name"
                   (click)="setSubMenuState(subTabIndex)">
                   {{ subMenu.name }}
                 </a>
@@ -132,7 +134,7 @@
         vds-tab-list
         id="navigation-side-bar-back-link"
         *ngIf="isOverlay"
-      >
+        >
         <li vds-tab-item>
           <a
             vdsTab
