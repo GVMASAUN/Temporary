@@ -4,6 +4,7 @@ import { MerchantGroupEditComponent } from './merchant-groups/merchant-group-edi
 import { MerchantGroupViewMenuComponent } from './merchant-groups/merchant-group-view/merchant-group-view-menu/merchant-group-view-menu.component';
 import { MerchantGroupsListComponent } from './merchant-groups/merchant-groups-list/merchant-groups-list.component';
 import { EMPTY } from 'src/app/core/constants';
+import { Module } from 'src/app/core/models/module.model';
 
 const routes: Routes = [
   {
@@ -17,7 +18,8 @@ const routes: Routes = [
             'src/app/pages/merchant/merchant-groups/merchant-groups-list/merchant-groups-list.module'
           ).then(module => module.MerchantGroupsListModule)
       }
-    ]
+    ],
+    data: { title: Module.MERCHANT.uiName }
   },
   {
     path: 'view/:id',
@@ -29,7 +31,7 @@ const routes: Routes = [
           import(
             'src/app/pages/merchant/merchant-groups/merchant-group-view/merchant-group-view.module'
           ).then(module => module.MerchantGroupViewModule),
-        data: {title: 'Manage Merchant Group'}
+        data: { title: 'Manage Merchant Group' }
       }
     ]
   },
@@ -43,7 +45,7 @@ const routes: Routes = [
           import(
             'src/app/pages/merchant/merchant-groups/merchant-group-edit/merchant-group-edit.module'
           ).then(module => module.MerchantGroupEditModule),
-        data: {title: 'Edit Merchant Group'}
+        data: { title: 'Edit Merchant Group' }
       }
     ]
   },
@@ -56,7 +58,7 @@ const routes: Routes = [
           import(
             'src/app/pages/merchant/merchant-groups/merchant-group-create/merchant-group-create.module'
           ).then(module => module.MerchantGroupCreateModule),
-        data: {title: 'Create Merchant Group'}
+        data: { title: 'Create Merchant Group' }
       }
     ]
   }

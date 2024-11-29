@@ -69,8 +69,7 @@ const routes: Routes = [
   },
   {
     path: 'history',
-    component: MerchantGroupHistoryComponent,
-    data: {title: 'Merchant Group History'}
+    component: MerchantGroupHistoryComponent
   },
   {
     path: 'merchants/add-bin-caid',

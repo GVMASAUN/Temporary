@@ -3,11 +3,13 @@ import { RouterModule, Routes } from '@angular/router';
 import { EMPTY } from 'src/app/core/constants';
 import { ProgramsListComponent } from './list/programs-list.component';
 import { ProgramManageComponent } from './manage/program-manage.component';
+import { Module } from 'src/app/core/models/module.model';
 
 const routes: Routes = [
   {
     path: EMPTY,
     component: ProgramsListComponent,
+    data:{ title: Module.PROGRAM.uiName }
   },
   {
     path: 'manage/:id',

@@ -1,11 +1,15 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { ProgramsListComponent } from '../programs/list/programs-list.component';
 import { ClientListComponent } from './client-list/client-list.component';
+import { EMPTY } from 'src/app/core/constants';
+import { Module } from 'src/app/core/models/module.model';
 
 const routes: Routes = [
-  { path: '', component: ClientListComponent },
-  { path: 'program', component: ProgramsListComponent }
+  {
+    path: EMPTY,
+    component: ClientListComponent,
+    data: { title: Module.CLIENT.uiName }
+  }
 ];
 
 @NgModule({

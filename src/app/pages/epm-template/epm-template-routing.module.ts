@@ -4,21 +4,23 @@ import { EpmTemplateListComponent } from './list/epm-template-list.component';
 import { CreateEpmTemplateComponent } from './create/create-epm-template.component';
 import { ManageEpmTemplateComponent } from './manage/manage-epm-template.component';
 import { EMPTY } from 'src/app/core/constants';
+import { Module } from 'src/app/core/models/module.model';
 
 const routes: Routes = [
   {
     path: EMPTY,
-    component: EpmTemplateListComponent
+    component: EpmTemplateListComponent,
+    data: { title: Module.EPM_TEMPLATE.uiName }
   },
   {
     path: 'create',
     component: CreateEpmTemplateComponent,
-    data: {title: 'Create EPM Template'}
+    data: { title: 'Create EPM Template' }
   },
   {
     path: 'manage/:id',
     component: ManageEpmTemplateComponent,
-    data: {title: 'Manage EPM Template'}
+    data: { title: 'Manage EPM Template' }
   }
 ];
 

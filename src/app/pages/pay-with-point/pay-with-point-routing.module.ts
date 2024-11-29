@@ -12,40 +12,43 @@ const routes: Routes = [
   {
     path: EMPTY,
     component: PayWithPointListComponent,
+    data: {
+      title: `PWP-Plans`
+    }
   },
   {
     path: 'pwp-pan-eligibility',
     component: PwpPanEligibilityComponent,
     data: {
-      title: `pwp-pan-eligibility`
+      title: `PWP-Pan Eligibility`
     }
   },
   {
     path: 'pwp-transaction-search/:pan/:tenId/:subTenId',
     component: PwpTransactionSearchComponent,
     data: {
-      title: `pwp-transaction-search`
+      title: `PWP-Transaction Search`
     }
   },
   {
     path: 'pwp-transaction-search',
     component: PwpTransactionSearchComponent,
     data: {
-      title: `pwp-transaction-search`
+      title: `PWP-Transaction Search`
     }
   },
   {
     path: 'create',
     component: PayWithPointCreateComponent,
     data: {
-      title: `Create ${Module.PAY_WITH_POINT.name}`
+      title: `Create ${Module.PAY_WITH_POINT.name} Plan`
     }
   },
   {
     path: 'manage/:planId/:tenantEnrollmentId/:version',
     component: PayWithPointManageComponent,
     data: {
-      title: `Manage ${Module.PAY_WITH_POINT.name}`
+      title: `Manage ${Module.PAY_WITH_POINT.name} Plan`
     }
   }
 ];

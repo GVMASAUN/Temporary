@@ -10,16 +10,17 @@ const routes: Routes = [
   {
     path: EMPTY,
     component: EnrollmentCollectionListComponent,
+    data: { title: Module.ENROLLMENT_COLLECTION.uiName }
   },
   {
     path: 'create',
     component: EnrollmentCollectionCreateComponent,
-    title: `Create ${Module.ENROLLMENT_COLLECTION.name}`
+    data: { title: `Create ${Module.ENROLLMENT_COLLECTION.name}` }
   },
   {
     path: 'manage/:id/:tenantId',
     component: EnrollmentCollectionMangeComponent,
-    title: `Manage ${Module.ENROLLMENT_COLLECTION.name}`
+    data: { title: `Manage ${Module.ENROLLMENT_COLLECTION.name}` }
   }
 ];
 

@@ -28,14 +28,15 @@ export class AppComponent implements OnInit {
   }
 
   private updatePageConfigs(route: ActivatedRoute) {
-    const module: Module = route?.snapshot?.data?.['module'];
+    const baseUrl: string = route?.snapshot?.data?.['baseUrl'];
+    const title: string = route?.snapshot?.data?.['title'];
 
-    if (module) {
-      if (!!module?.uiName) {
-        this.title = module.uiName;
-      }
+    if(!!baseUrl) {
+      this.navStatusService.setModule(baseUrl);
+    }
 
-      this.navStatusService.setModule(module.baseUrl);
+    if(!!title) {
+      this.title = title;
     }
 
     this.titleService.setTitle(this.title);

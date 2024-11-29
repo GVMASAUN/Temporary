@@ -43,7 +43,7 @@ const routes: Routes = [
           import('src/app/pages/clients/clients.module').then(
             module => module.ClientsModule
           ),
-        data: { module: Module.CLIENT }
+        data: { baseUrl: Module.CLIENT.baseUrl }
       },
       {
         path: 'merchant',
@@ -51,7 +51,7 @@ const routes: Routes = [
           import('src/app/pages/merchant/merchant.module').then(
             module => module.MerchantModule
           ),
-        data: { module: Module.MERCHANT }
+        data: { baseUrl: Module.MERCHANT.baseUrl }
       },
       {
         path: Module.PROGRAM.baseUrl,
@@ -59,7 +59,7 @@ const routes: Routes = [
           import('src/app/pages/programs/programs.module').then(
             module => module.ProgramsModule
           ),
-        data: { module: Module.PROGRAM }
+        data: { baseUrl: Module.PROGRAM.baseUrl }
       },
       {
         path: Module.UNCATEGORIZED_OFFER.baseUrl,
@@ -67,7 +67,7 @@ const routes: Routes = [
           import(
             'src/app/pages/uncategorized-offers/uncategorized-offers.module'
           ).then(module => module.UncategorizedOffersModule),
-        data: { module: Module.UNCATEGORIZED_OFFER }
+        data: { baseUrl: Module.UNCATEGORIZED_OFFER.baseUrl }
       },
       {
         path: Module.EVENT_GROUP_TEMPLATE.baseUrl,
@@ -75,7 +75,7 @@ const routes: Routes = [
           import(
             'src/app/pages/event-group-template/event-group-template.module'
           ).then(module => module.EventGroupTemplateModule),
-        data: { module: Module.EVENT_GROUP_TEMPLATE, }
+        data: { baseUrl: Module.EVENT_GROUP_TEMPLATE.baseUrl }
       },
       {
         path: Module.PAY_WITH_POINT.baseUrl,
@@ -83,7 +83,7 @@ const routes: Routes = [
           import('src/app/pages/pay-with-point/pay-with-point.module').then(
             module => module.PayWithPointModule
           ),
-        data: { module: Module.PAY_WITH_POINT }
+        data: { baseUrl: Module.PAY_WITH_POINT.baseUrl }
       },
       {
         path: Module.ENROLLMENT_COLLECTION.baseUrl,
@@ -91,7 +91,7 @@ const routes: Routes = [
           import(
             'src/app/pages/enrollment-collection/enrollment-collection.module'
           ).then(module => module.EnrollmentCollectionModule),
-        data: { module: Module.ENROLLMENT_COLLECTION }
+        data: { baseUrl: Module.ENROLLMENT_COLLECTION.baseUrl }
       },
       {
         path: 'templates',
@@ -123,7 +123,7 @@ const routes: Routes = [
           import('src/app/pages/help-support/help-support.module').then(
             module => module.HelpSupportModule
           ),
-        data: { module: Module.SUPPORT }
+        data: { baseUrl: Module.SUPPORT.baseUrl }
       },
       {
         path: Module.ACTIVITY.baseUrl,
@@ -139,7 +139,7 @@ const routes: Routes = [
           import('src/app/pages/epm-template/epm-template.module').then(
             module => module.EpmTemplateModule
           ),
-        data: { module: Module.EPM_TEMPLATE }
+        data: { baseUrl: Module.EPM_TEMPLATE.baseUrl }
       },
       {
         path: Module.USER.baseUrl,
@@ -147,7 +147,7 @@ const routes: Routes = [
           import('src/app/pages/users/users.module').then(
             module => module.UsersModule
           ),
-        data: { module: Module.USER }
+        data: { baseUrl: Module.USER.baseUrl }
       }
     ]
   },

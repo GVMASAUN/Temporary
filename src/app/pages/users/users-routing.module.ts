@@ -3,16 +3,18 @@ import { RouterModule, Routes } from '@angular/router';
 import { EMPTY } from 'src/app/core/constants';
 import { UserListComponent } from './list/user-list.component';
 import { ManageUserComponent } from './manage/manage-user.component';
+import { Module } from 'src/app/core/models/module.model';
 
 const routes: Routes = [
   {
     path: EMPTY,
-    component: UserListComponent
+    component: UserListComponent,
+    data: { title: Module.USER.uiName }
   },
   {
     path: 'manage/:id',
     component: ManageUserComponent,
-    data: {title: 'Manage User'}
+    data: { title: 'Manage User' }
   }
 ];
 
