@@ -133,7 +133,7 @@ export class MerchantGroupsListComponent implements OnInit, OnDestroy {
       CreateDialogComponent,
       {
         width: '720px',
-        ariaLabel: 'confirm-delete-dialog',
+        ariaLabel: 'create-merchant-group',
         hasBackdrop: true, disableClose: true,
       }
     ).afterClosed()

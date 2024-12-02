@@ -22,7 +22,7 @@
     <app-epm-template-details
         [hidden]="hideTab(EpmTemplateStep.DETAILS)"
         [id]="getTabId(viewName,selectedTabIndex,EpmTemplateStep.DETAILS)"
-        [attr.aria-labelledby]="getTabLabelledById(viewName,selectedTabIndex,EpmTemplateStep.DETAILS)"
+        [attr.aria-label]="getTabLabelledById(viewName,selectedTabIndex,EpmTemplateStep.DETAILS)"
         [form]="epmTemplateForm"
         [mode]="MODE.Manage"
     ></app-epm-template-details>
@@ -31,14 +31,14 @@
         *ngIf="selectedTabIndex === tabs.indexOf(EpmTemplateStep.LINKED_EVENT_GROUPS)"
         [epmTemplateForm]="epmTemplateForm"
         [id]="getTabId(viewName,selectedTabIndex,EpmTemplateStep.LINKED_EVENT_GROUPS)"
-        [attr.aria-labelledby]="getTabLabelledById(viewName,selectedTabIndex,EpmTemplateStep.LINKED_EVENT_GROUPS)"
+        [attr.aria-label]="getTabLabelledById(viewName,selectedTabIndex,EpmTemplateStep.LINKED_EVENT_GROUPS)"
     ></app-linked-event-group>
 
     <app-epm-template-history
         *ngIf="selectedTabIndex === tabs.indexOf(EpmTemplateStep.HISTORY)"
         [epmTemplateForm]="epmTemplateForm"
         [id]="getTabId(viewName,selectedTabIndex,EpmTemplateStep.HISTORY)"
-        [attr.aria-labelledby]="getTabLabelledById(viewName,selectedTabIndex,EpmTemplateStep.HISTORY)"
+        [attr.aria-label]="getTabLabelledById(viewName,selectedTabIndex,EpmTemplateStep.HISTORY)"
     ></app-epm-template-history>
 </ng-container>
 

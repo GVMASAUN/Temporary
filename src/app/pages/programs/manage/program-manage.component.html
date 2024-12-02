@@ -26,7 +26,7 @@
     <app-program-summary
       *ngIf="selectedTabIndex === 0"
       [id]="getTabId(viewName,selectedTabIndex,ProgramStep.SUMMARY)"
-      [attr.aria-labelledby]="getTabLabelledById(viewName,selectedTabIndex,ProgramStep.SUMMARY)"
+      [attr.aria-label]="getTabLabelledById(viewName,selectedTabIndex,ProgramStep.SUMMARY)"
       [hidden]="selectedTabIndex !== 0"
       [mode]="mode"
       [form]="form"
@@ -36,7 +36,7 @@
     <ng-container *ngIf="editable">
       <app-program-basics
       [id]="getTabId(viewName,selectedTabIndex,ProgramStep.BASICS)"
-      [attr.aria-labelledby]="getTabLabelledById(viewName,selectedTabIndex,ProgramStep.BASICS)"
+      [attr.aria-label]="getTabLabelledById(viewName,selectedTabIndex,ProgramStep.BASICS)"
       [hidden]="selectedTabIndex !== 1"
       [mode]="mode"
       [form]="form"
@@ -46,7 +46,7 @@
     <app-program-event-group
       *ngIf="selectedTabIndex === 2"
       [id]="getTabId(viewName,selectedTabIndex,ProgramStep.EVENT_GROUPS)"
-      [attr.aria-labelledby]="getTabLabelledById(viewName,selectedTabIndex,ProgramStep.EVENT_GROUPS)"
+      [attr.aria-label]="getTabLabelledById(viewName,selectedTabIndex,ProgramStep.EVENT_GROUPS)"
       [hidden]="selectedTabIndex !== 2"
       [mode]="mode"
       [form]="form"
@@ -55,7 +55,7 @@
     <app-program-visual-builder
       *ngIf="selectedTabIndex === 3"
       [id]="getTabId(viewName,selectedTabIndex,ProgramStep.VISUAL_BUILDER)"
-      [attr.aria-labelledby]="getTabLabelledById(viewName,selectedTabIndex,ProgramStep.VISUAL_BUILDER)"
+      [attr.aria-label]="getTabLabelledById(viewName,selectedTabIndex,ProgramStep.VISUAL_BUILDER)"
       [mode]="mode"
       [form]="form"
       [hidden]="selectedTabIndex !== 3"

@@ -76,6 +76,7 @@
           >
             <li vds-tab-item *ngFor="let tab of tabs; let tabIndex = index">
               <button
+                role="button"
                 vdsTab
                 [selected]="selectedTabIndex === tabIndex"
                 (focus)="selectedTabIndex = tabIndex"
@@ -96,7 +97,7 @@
     <app-event-group-summary
       *ngIf="!hideTab(this.tabs.indexOf(EventGroupStep.SUMMARY))"
       [id]="getTabId(viewName,selectedTabIndex,EventGroupStep.SUMMARY)"
-      [attr.aria-labelledby]="getTabLabelledById(viewName,selectedTabIndex,EventGroupStep.SUMMARY)"
+      [attr.aria-label]="getTabLabelledById(viewName,selectedTabIndex,EventGroupStep.SUMMARY)"
       [form]="eventGroupForm"
       [mode]="mode"
       [isTemplateEventGroup]="true"
@@ -116,7 +117,7 @@
 
     <app-event-group-details
       [id]="getTabId(viewName,selectedTabIndex,EventGroupStep.DETAILS)"
-      [attr.aria-labelledby]="getTabLabelledById(viewName,selectedTabIndex,EventGroupStep.DETAILS)"
+      [attr.aria-label]="getTabLabelledById(viewName,selectedTabIndex,EventGroupStep.DETAILS)"
       [mode]="mode"
       [form]="eventGroupForm"
       [disabled]="!editable || this.editableForApproveVersion"
@@ -137,7 +138,7 @@
     <app-event-group-history 
       *ngIf="(mode !== DialogMode.CREATE) && !hideTab(this.tabs.indexOf(EventGroupStep.HISTORY))"
       [id]="getTabId(viewName,selectedTabIndex,EventGroupStep.HISTORY)"
-      [attr.aria-labelledby]="getTabLabelledById(viewName,selectedTabIndex,EventGroupStep.HISTORY)"
+      [attr.aria-label]="getTabLabelledById(viewName,selectedTabIndex,EventGroupStep.HISTORY)"
       [hidden]="hideTab(this.tabs.indexOf(EventGroupStep.HISTORY))"
       [eventGroup]="eventGroup"
     ></app-event-group-history>

@@ -53,7 +53,7 @@ screenTitle="Manage {{PAY_WITH_POINT.name}} - {{ tabs[selectedTabIndex] }}"
 <div class="row" *ngIf="initialized">
     <app-pay-with-point-details
       [id]="this.functionService.getTabId(viewName,selectedTabIndex,PayWithPointStep.Details)"
-      [attr.aria-labelledby]="this.functionService.getTabLabelledById(viewName,selectedTabIndex,PayWithPointStep.Details)"
+      [attr.aria-label]="this.functionService.getTabLabelledById(viewName,selectedTabIndex,PayWithPointStep.Details)"
       [mode]="Mode.Manage"
       [planForm]="planForm"
       [disabled]="!editable"

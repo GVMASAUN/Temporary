@@ -6,6 +6,7 @@
   >
     <img 
       [src]="VisaImage.QUESTION_MARK"
+      alt="Question Mark"
       width="16"
       height="16"
      /> 
@@ -963,26 +964,26 @@
     
               <div class="row">
                 <div class="col">
-                  <legend 
-                    vdsLegend
-                  >
-                    Partial Redemption Allowance
+                    <legend 
+                      vdsLegend
+                    >
+                      Partial Redemption Allowance
+                      <ng-container 
+                        [ngTemplateOutlet]="infoSuffix" 
+                        [ngTemplateOutletContext]="{tooltipText:'Indicates that Issuer allows cardholders to redeem points for a portion of the total transaction amount, when enabled by Merchant or Acceptance Enabler.'}">
+                      </ng-container>
+                    </legend>
+                    <vds-checkbox 
+                      label="Enable"
+                      name="partial-redemption"
+                      [formControl]="planForm.controls.partialRedemptionAllowance | controlConverter"
+                      [disabled]="disabled"
+                      [invalid]="!!payWithPointService.getErrorMessage(planForm, planForm.controls.partialRedemptionAllowance)"
+                    ></vds-checkbox> 
                     <ng-container 
-                      [ngTemplateOutlet]="infoSuffix" 
-                      [ngTemplateOutletContext]="{tooltipText:'Indicates that Issuer allows cardholders to redeem points for a portion of the total transaction amount, when enabled by Merchant or Acceptance Enabler.'}">
+                      [ngTemplateOutlet]="error" 
+                      [ngTemplateOutletContext]="{formControl:this.planForm.controls.partialRedemptionAllowance}">
                     </ng-container>
-                  </legend>
-                  <vds-checkbox 
-                    label="Enable"
-                    name="partial-redemption"
-                    [formControl]="planForm.controls.partialRedemptionAllowance | controlConverter"
-                    [disabled]="disabled"
-                    [invalid]="!!payWithPointService.getErrorMessage(planForm, planForm.controls.partialRedemptionAllowance)"
-                  ></vds-checkbox> 
-                  <ng-container 
-                    [ngTemplateOutlet]="error" 
-                    [ngTemplateOutletContext]="{formControl:this.planForm.controls.partialRedemptionAllowance}">
-                  </ng-container>                        
                 </div>
               </div>
             </div>
@@ -1050,9 +1051,6 @@
           </vds-accordion-heading>
           <vds-accordion-body>
             <div>
-              <div class="sub-title">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-              </div>
               <form class="vds-grid">
                 <div class="row">
                   <div class="col  col--no-gutter" *ngIf="!!termsAndConditionForm">
@@ -1068,8 +1066,6 @@
                         [maxRows]="8"
                         [invalid]="!!payWithPointService.getErrorMessage(termsAndConditionForm, termsAndConditionForm.controls.content)"
                       >       
-                      
-             
                     </textarea>
                     </vds-form-field>
                     <ng-container 

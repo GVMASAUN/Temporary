@@ -27,7 +27,7 @@
       *ngIf="!hideTab(EventGroupStep.BASICS)"
       [form]="form"
       [id]="getTabId(viewName,selectedTabIndex,EventGroupStep.BASICS)"
-      [attr.aria-labelledby]="getTabLabelledById(viewName,selectedTabIndex,EventGroupStep.BASICS)"
+      [attr.aria-label]="getTabLabelledById(viewName,selectedTabIndex,EventGroupStep.BASICS)"
       [mode]="mode"
       [userRole]="userRole"
       [currentUserId]="currentUserId"
@@ -41,7 +41,7 @@
       [editable]="editable"
       [form]="form"
       [id]="getTabId(viewName,selectedTabIndex,EventGroupStep.EVENTS)"
-      [attr.aria-labelledby]="getTabLabelledById(viewName,selectedTabIndex,EventGroupStep.EVENTS)"
+      [attr.aria-label]="getTabLabelledById(viewName,selectedTabIndex,EventGroupStep.EVENTS)"
       [mode]="mode"
       (onSubmitEvent)="ngOnInit()"
     ></app-event-group-template-events>    

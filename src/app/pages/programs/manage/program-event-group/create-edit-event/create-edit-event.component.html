@@ -50,7 +50,6 @@
           <li vds-tab-item *ngFor="let tab of tabs; let tabIndex = index">
             <button role="button" 
               vdsTab
-              vdsTab
               [selected]="selectedTabIndex === tabIndex"
               (focus)="selectedTabIndex = tabIndex"
             >
@@ -71,7 +70,7 @@
   <app-event-details
     *ngIf="initializeForm"
     [id]="getTabId(viewName,selectedTabIndex,EventStep.EVENT_DETAILS)"
-    [attr.aria-labelledby]="getTabLabelledById(viewName,selectedTabIndex,EventStep.EVENT_DETAILS)"
+    [attr.aria-label]="getTabLabelledById(viewName,selectedTabIndex,EventStep.EVENT_DETAILS)"
     [form]="eventForm"
     [eventGroupDetails]="eventGroup"
     [disabled]="disabled"
@@ -84,7 +83,7 @@
   <app-event-conditions
     *ngIf="initializeForm"
     [id]="getTabId(viewName,selectedTabIndex,EventStep.EVENT_CONDITIONS)"
-    [attr.aria-labelledby]="getTabLabelledById(viewName,selectedTabIndex,EventStep.EVENT_CONDITIONS)"
+    [attr.aria-label]="getTabLabelledById(viewName,selectedTabIndex,EventStep.EVENT_CONDITIONS)"
     [disabled]="disabled"
     [hidden]="hideTab(EventStep.EVENT_CONDITIONS)"
     [form]="eventForm"
@@ -95,7 +94,7 @@
   <app-event-relationships
     *ngIf="mode === DialogMode.EDIT"
     [id]="getTabId(viewName,selectedTabIndex,EventStep.EVENT_RELATIONSHIPS)"
-    [attr.aria-labelledby]="getTabLabelledById(viewName,selectedTabIndex,EventStep.EVENT_RELATIONSHIPS)"
+    [attr.aria-label]="getTabLabelledById(viewName,selectedTabIndex,EventStep.EVENT_RELATIONSHIPS)"
     [eventStageId]="eventDetails?.eventStageId"
     [eventGroupId]="eventDetails?.eventGroupId"
     [hidden]="hideTab(EventStep.EVENT_RELATIONSHIPS)"
@@ -104,7 +103,7 @@
   <app-event-actions
     *ngIf="initializeForm"
     [id]="getTabId(viewName,selectedTabIndex,EventStep.EVENT_ACTION)"
-    [attr.aria-labelledby]="getTabLabelledById(viewName,selectedTabIndex,EventStep.EVENT_ACTION)"
+    [attr.aria-label]="getTabLabelledById(viewName,selectedTabIndex,EventStep.EVENT_ACTION)"
     [hidden]="hideTab(EventStep.EVENT_ACTION)"
     [dialogMode]="mode"
     [parent]="{

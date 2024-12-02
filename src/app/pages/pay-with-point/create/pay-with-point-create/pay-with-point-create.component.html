@@ -25,7 +25,7 @@
   <div class="row">
     <app-pay-with-point-details
       [id]="this.functionService.getTabId(viewName, selectedTabIndex, PayWithPointStep.Details)"
-      [attr.aria-labelledby]="this.functionService.getTabLabelledById(viewName, selectedTabIndex, PayWithPointStep.Details)"
+      [attr.aria-label]="this.functionService.getTabLabelledById(viewName, selectedTabIndex, PayWithPointStep.Details)"
       [mode]="Mode.Create" 
       [planForm]="planForm"
     ></app-pay-with-point-details>

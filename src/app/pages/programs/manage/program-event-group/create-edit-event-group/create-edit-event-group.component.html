@@ -92,7 +92,7 @@
       *ngIf="initTab"
       tabindex="0"
       [id]="getTabId(viewName,selectedTabIndex,EventGroupStep.SUMMARY)"
-      [attr.aria-labelledby]="getTabLabelledById(viewName,selectedTabIndex,EventGroupStep.SUMMARY)"
+      [attr.aria-label]="getTabLabelledById(viewName,selectedTabIndex,EventGroupStep.SUMMARY)"
       [form]="eventGroupForm"
       [mode]="mode"
       [showDeactivatedEventGroupSummary]="(!this.selectedWorkflowVersion?.publishedVersion && !this.selectedWorkflowVersion?.hasDraft) && mode !== DialogMode.CREATE"
@@ -111,7 +111,7 @@
     <app-event-group-basics
       *ngIf="initTab"
       [id]="getTabId(viewName,selectedTabIndex,EventGroupStep.BASICS)"
-      [attr.aria-labelledby]="getTabLabelledById(viewName,selectedTabIndex,EventGroupStep.BASICS)"
+      [attr.aria-label]="getTabLabelledById(viewName,selectedTabIndex,EventGroupStep.BASICS)"
       [mode]="mode"
       [form]="eventGroupForm"
       [isPublishedVersion]="selectedWorkflowVersion?.publishedVersion"
@@ -128,7 +128,7 @@
 
     <app-event-group-events
       [id]="getTabId(viewName,selectedTabIndex,EventGroupStep.EVENTS)"
-      [attr.aria-labelledby]="getTabLabelledById(viewName,selectedTabIndex,EventGroupStep.EVENTS)"
+      [attr.aria-label]="getTabLabelledById(viewName,selectedTabIndex,EventGroupStep.EVENTS)"
       [form]="eventGroupForm"
       [mode]="mode"
       [program]="program"
@@ -139,7 +139,7 @@
 
     <app-event-group-history *ngIf="initTab && (mode !== DialogMode.CREATE) && (selectedTabIndex === tabs.indexOf(EventGroupStep.HISTORY))"
       [id]="getTabId(viewName,selectedTabIndex,EventGroupStep.HISTORY)"
-      [attr.aria-labelledby]="getTabLabelledById(viewName,selectedTabIndex,EventGroupStep.HISTORY)"
+      [attr.aria-label]="getTabLabelledById(viewName,selectedTabIndex,EventGroupStep.HISTORY)"
       [hidden]="!initTab || hideTab(this.tabs.indexOf(EventGroupStep.HISTORY))"
       [eventGroup]="eventGroup"
     ></app-event-group-history>

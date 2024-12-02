@@ -23,7 +23,7 @@
     <app-details
         [hidden]="hideTab(EpmTemplateStep.DETAILS)"
         [id]="getTabId(viewName,selectedTabIndex,EpmTemplateStep.DETAILS)"
-        [attr.aria-labelledby]="getTabLabelledById(viewName,selectedTabIndex,EpmTemplateStep.DETAILS)"
+        [attr.aria-label]="getTabLabelledById(viewName,selectedTabIndex,EpmTemplateStep.DETAILS)"
         [form]="epmTemplateForm"
         [mode]="MODE.Manage"
     ></app-details>
@@ -32,13 +32,13 @@
         [hidden]="hideTab(EpmTemplateStep.LINKED_EVENT_GROUPS)"
         [epmTemplateForm]="epmTemplateForm"
         [id]="getTabId(viewName,selectedTabIndex,EpmTemplateStep.LINKED_EVENT_GROUPS)"
-        [attr.aria-labelledby]="getTabLabelledById(viewName,selectedTabIndex,EpmTemplateStep.LINKED_EVENT_GROUPS)"
+        [attr.aria-label]="getTabLabelledById(viewName,selectedTabIndex,EpmTemplateStep.LINKED_EVENT_GROUPS)"
     ></app-linked-event-group>
 
     <!-- <app-history
         [hidden]="hideTab(EpmTemplateStep.HISTORY)"
         [id]="getTabId(viewName,selectedTabIndex,EpmTemplateStep.HISTORY)"
-        [attr.aria-labelledby]="getTabLabelledById(viewName,selectedTabIndex,EpmTemplateStep.HISTORY)"
+        [attr.aria-label]="getTabLabelledById(viewName,selectedTabIndex,EpmTemplateStep.HISTORY)"
     ></app-history> -->
 </ng-container>
 

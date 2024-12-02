@@ -27,14 +27,14 @@
     <app-event-group-template-basics
       *ngIf="!hideTab(EventGroupStep.BASICS)"
       [id]="getTabId(viewName,selectedTabIndex,EventGroupStep.BASICS)"
-      [attr.aria-labelledby]="getTabLabelledById(viewName,selectedTabIndex,EventGroupStep.BASICS)"
+      [attr.aria-label]="getTabLabelledById(viewName,selectedTabIndex,EventGroupStep.BASICS)"
       [form]="form"
     ></app-event-group-template-basics>
     <app-event-group-template-events
       *ngIf="!hideTab(EventGroupStep.EVENTS)"
       [form]="form"
       [id]="getTabId(viewName,selectedTabIndex,EventGroupStep.EVENTS)"
-      [attr.aria-labelledby]="getTabLabelledById(viewName,selectedTabIndex,EventGroupStep.EVENTS)"
+      [attr.aria-label]="getTabLabelledById(viewName,selectedTabIndex,EventGroupStep.EVENTS)"
     ></app-event-group-template-events>    
   </div>
 

@@ -25,7 +25,7 @@
 <app-details
     [hidden]="selectedTabIndex !==0"
     [id]="getTabId(viewName,selectedTabIndex,EpmTemplateStep.DETAILS)"
-    [attr.aria-labelledby]="getTabLabelledById(viewName,selectedTabIndex,EpmTemplateStep.DETAILS)"
+    [attr.aria-label]="getTabLabelledById(viewName,selectedTabIndex,EpmTemplateStep.DETAILS)"
     [form]="epmTemplateForm"
 ></app-details>
 

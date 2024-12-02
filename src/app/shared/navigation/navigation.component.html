@@ -141,6 +141,7 @@
             matTooltip="Back"
             matTooltipPosition="after"
             (click)="back()"
+            tabindex="0"
           >
             <svg
               vds-icon
@@ -177,7 +178,6 @@
           vds-button-split
           role="button"
           aria-label="menu"
-          aria-labelledby="expand-collapse-menu-tooltip"
           matTooltipPosition="right"
           [attr.aria-expanded]="isExpanded"
           [noButtonLabel]="true"
@@ -220,7 +220,6 @@
         class="nav-button"
         matTooltipPosition="after"
         aria-label="navigation control"
-        aria-labelledby="expand-collapse-navigation-tooltip"
         [noButtonLabel]="true"
         [color]="ButtonColor.NAV"
         [matTooltip]="navOpen ? 'Collapse navigation' : 'Expand navigation'"
