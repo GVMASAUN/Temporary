@@ -385,7 +385,12 @@
               vdsTh
               sticky
             >
-            Select
+            
+            <!-- For Checkbox scenario -->
+            <ng-container
+            *ngIf="!canSelectMultipleRow && hideSelectAll">
+              Select
+            </ng-container>
 
             <!-- Added label with 0 font-size for VGAR Requirement -->
             <!-- Table Header shouldn't be empty -->
