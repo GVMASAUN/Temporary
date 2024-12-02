@@ -85,7 +85,7 @@
                                 </vds-button-group>
         
                                 <div class="list-container" *ngIf="epmTemplate?.[EpmTemplateField.TEMPLATE_SYSTEM_DEFINED_FIELD_AS_LIST]?.length">
-                                    <ul vdsList>
+                                    <ul vdsList tabindex="0">
                                         <li vdsListItem *ngFor="let systemDefinedField of epmTemplate?.[EpmTemplateField.TEMPLATE_SYSTEM_DEFINED_FIELD_AS_LIST]"
                                             >{{ systemDefinedField }}
                                         </li>
