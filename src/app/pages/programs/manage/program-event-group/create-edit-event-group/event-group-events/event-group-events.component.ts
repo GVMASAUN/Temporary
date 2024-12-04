@@ -64,7 +64,7 @@ export class EventGroupEventsComponent implements OnInit, AfterViewInit, OnDestr
   selectedRowNumber: number = -1;
   isImportPanelOpen: boolean = false;
 
-  tableId: string = 'Reusable Elements List';
+  tableId: string = 'reusable-element-list';
   caption: string = EMPTY;
 
 

@@ -81,7 +81,7 @@ export class ProgramEventGroupComponent
 
   private destroy$ = new Subject<void>();
 
-  tableId: string = 'Reusable Elements List';
+  tableId: string = 'resuable-elements-list';
   caption: string = EMPTY;
 
   subscriptions: Subscription[] = [];

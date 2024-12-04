@@ -76,7 +76,7 @@
         [checked]="executeActionIf == 'ANY'"
       ></vds-radio>
       <vds-radio
-        label=""
+        label="custom"
         radioValue="OF"
         name="action"
         [checked]="executeActionIf == 'OF'"
@@ -84,9 +84,9 @@
     </vds-radio-group>
     <div class="custom-radio-section">
       <vds-form-field>
-        <label vdsLabel></label>
         <select
           vdsSelect
+          ariaLabel="custom-prerequisite-number"
           (changed)="selectCustomRadio($event)"
           [value]="executeActionIfNumber"
         >

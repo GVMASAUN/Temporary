@@ -94,6 +94,7 @@ export class Utils {
   public static generateCaptionMessage(columns: any, tableId: string) {
     let caption;
 
+    // VGAR- Each table with more than 4 THs has its layout described after the "title"
     if (columns && columns.length > 4) {
       const columnNames = columns.map((column: { label: any; }, index: number) => `column ${index + 1} ${column.label}`);
       caption = `${tableId} - ${columnNames.join(' - ')}`;

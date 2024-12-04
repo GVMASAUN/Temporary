@@ -46,7 +46,7 @@ export class EventRelationshipsComponent implements OnInit, AfterViewInit {
   buttonColor = ButtonColor;
 
   executeActionIf: string = 'ALL';
-  tableId: string = 'Event Dependency Table';
+  tableId: string = 'event-dependency-table';
   caption: string = EMPTY;
 
   executeActionIfNumber: number = 0;

@@ -35,6 +35,7 @@
     </div>
     <div 
       id="create-edit-action-dailog"
+      tabindex="0"
       vds-dialog-card-body class="detail-panel">
       <form [formGroup]="actionForm" class="vds-grid">
 
@@ -129,7 +130,6 @@
             <div vds-combobox [type]="comboboxType.AUTO">
 
               <vds-form-field>
-                <label vdsLabel></label>
                 <input vdsInput           
                   aria-required="true"
                   formControlName="selectedEndPointMsgId"

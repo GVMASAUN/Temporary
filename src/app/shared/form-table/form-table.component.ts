@@ -23,7 +23,7 @@ export class FormTableComponent implements OnInit, AfterViewInit, OnDestroy {
     errorMessages: any;
 
     @Input()
-    tableId: string = 'Form-Table';
+    tableId: string = 'form-table';
 
     @Input()
     hideSelectAll: boolean = false;
