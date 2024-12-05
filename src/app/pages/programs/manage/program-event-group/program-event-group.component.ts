@@ -276,24 +276,25 @@ export class ProgramEventGroupComponent
       .pipe(takeUntil(this.destroy$))
       .subscribe(response => {
         const selectedItem: EventGroupTemplate = response?.selectedTemplate;
-
-        const config: EventGroupByTemplateDialogConfig = {
-          dialogMode: DialogMode.CREATE,
-          eventGroupId: selectedItem.eventGroupId!,
-          eventGroupTemplateId: selectedItem.eventGroupTemplateId,
-          programStageId: this.program?.programStageId!
-        }
-
-        this.dialog.open(
-          CreateEditEventGroupByTemplateComponent,
-          {
-            hasBackdrop: true,
-            disableClose: true,
-            width: '1250px',
-            ariaLabel: 'create-edit-template-dialog',
-            data: config
+        if(!!selectedItem) {
+          const config: EventGroupByTemplateDialogConfig = {
+            dialogMode: DialogMode.CREATE,
+            eventGroupId: selectedItem.eventGroupId!,
+            eventGroupTemplateId: selectedItem.eventGroupTemplateId,
+            programStageId: this.program?.programStageId!
           }
-        );
+
+          this.dialog.open(
+            CreateEditEventGroupByTemplateComponent,
+            {
+              hasBackdrop: true,
+              disableClose: true,
+              width: '1250px',
+              ariaLabel: 'create-edit-template-dialog',
+              data: config
+            }
+          );
+        }
       });
   }
 
