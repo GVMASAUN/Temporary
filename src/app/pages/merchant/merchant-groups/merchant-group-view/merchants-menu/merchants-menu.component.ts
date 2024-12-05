@@ -593,6 +593,7 @@ export class MerchantsMenuComponent implements OnInit, OnDestroy {
       size: this.size,
       sort: `${this.sortColumnName},${this.sortColumnType}`,
       isDownload: true,
+      timezone: moment.tz.guess(),
       ...(this.searchActivate && formValues),
     };
 
