@@ -439,22 +439,10 @@
                                         <vds-accordion-item [id]="getEventActionAccordionViewId(action)" 
                                             *ngFor="let action of event?.eventActions">
                                             <vds-accordion-heading>
-                                                <vds-accordion-title >Event Action - {{action.eventActionName}}</vds-accordion-title>
+                                                <vds-accordion-title >Event Action</vds-accordion-title>
                                             </vds-accordion-heading>
                                             <vds-accordion-body>
                                                 <div class="left-line">
-                                                    <!-- action name -->
-                                                    <div class="row">
-                                                        <div class="col--lg-3">
-                                                            <span class="summary-field-heading">Action Name</span>
-                                                        </div>
-                                                        <div class="col--lg-9">
-                                                            <span class="summary-field-value">
-                                                                {{action?.eventActionName}}
-                                                            </span>
-                                                        </div>
-                                                    </div>
-        
                                                     <!-- action type -->
                                                     <div class="row">
                                                         <div class="col--lg-3">
