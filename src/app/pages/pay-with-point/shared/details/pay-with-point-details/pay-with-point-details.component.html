@@ -720,7 +720,7 @@
                 </div>
       
                 <div class="row">
-                  <div class="col">
+                  <vds-checkbox-set class="col">
                     <legend vdsLegend>
                       Settlement Notifications
                       <ng-container 
@@ -730,22 +730,26 @@
                           }"
                       ></ng-container>
                     </legend>
-                    <vds-checkbox 
-                      label="Enable" 
-                      name="settlement"
-                      [formControl]="planForm.controls.settlementNotification | controlConverter"
-                      [disabled]="disabled"
-                      [invalid]="!!payWithPointService.getErrorMessage(planForm, planForm.controls.settlementNotification)"
-                    ></vds-checkbox>
+                    <ul vdsCheckboxList>
+                      <li vdsCheckboxListItem>
+                        <vds-checkbox 
+                          label="Enable" 
+                          name="settlement"
+                          [formControl]="planForm.controls.settlementNotification | controlConverter"
+                          [disabled]="disabled"
+                          [invalid]="!!payWithPointService.getErrorMessage(planForm, planForm.controls.settlementNotification)"
+                        ></vds-checkbox>
+                      </li>
+                     </ul>
 
                     <ng-container 
                       [ngTemplateOutlet]="error" 
                       [ngTemplateOutletContext]="{formControl:this.planForm.controls.settlementNotification}">
                     </ng-container>                      
-                  </div>
+                  </vds-checkbox-set>
                 </div>
                 <div class="row">
-                  <div class="col">
+                  <vds-checkbox-set class="col">
                     <legend vdsLegend>
                       Cancellation Notifications
                       <ng-container 
@@ -755,19 +759,23 @@
                         }">
                       </ng-container>
                     </legend>
-                    <vds-checkbox 
-                      label="Enable" 
-                      name="cancellation"
-                      [formControl]="planForm.controls.cancellationNotification | controlConverter"
-                      [disabled]="disabled"
-                      [invalid]="!!payWithPointService.getErrorMessage(planForm, planForm.controls.cancellationNotification)"
-                    ></vds-checkbox>
+                    <ul vdsCheckboxList>
+                      <li vdsCheckboxListItem>
+                        <vds-checkbox 
+                          label="Enable" 
+                          name="cancellation"
+                          [formControl]="planForm.controls.cancellationNotification | controlConverter"
+                          [disabled]="disabled"
+                          [invalid]="!!payWithPointService.getErrorMessage(planForm, planForm.controls.cancellationNotification)"
+                        ></vds-checkbox>
+                      </li>
+                    </ul>
 
                     <ng-container 
                       [ngTemplateOutlet]="error" 
                       [ngTemplateOutletContext]="{formControl:this.planForm.controls.cancellationNotification}">
                     </ng-container>                      
-                  </div>
+                  </vds-checkbox-set>
                 </div>
               </form>
             </div>
@@ -963,7 +971,7 @@
               </div>
     
               <div class="row">
-                <div class="col">
+                <vds-checkbox-set class="col">
                     <legend 
                       vdsLegend
                     >
@@ -973,18 +981,22 @@
                         [ngTemplateOutletContext]="{tooltipText:'Indicates that Issuer allows cardholders to redeem points for a portion of the total transaction amount, when enabled by Merchant or Acceptance Enabler.'}">
                       </ng-container>
                     </legend>
-                    <vds-checkbox 
-                      label="Enable"
-                      name="partial-redemption"
-                      [formControl]="planForm.controls.partialRedemptionAllowance | controlConverter"
-                      [disabled]="disabled"
-                      [invalid]="!!payWithPointService.getErrorMessage(planForm, planForm.controls.partialRedemptionAllowance)"
-                    ></vds-checkbox> 
+                    <ul vdsCheckboxList>
+                      <li vdsCheckboxListItem>
+                        <vds-checkbox 
+                          label="Enable"
+                          name="partial-redemption"
+                          [formControl]="planForm.controls.partialRedemptionAllowance | controlConverter"
+                          [disabled]="disabled"
+                          [invalid]="!!payWithPointService.getErrorMessage(planForm, planForm.controls.partialRedemptionAllowance)"
+                        ></vds-checkbox> 
+                      </li>
+                    </ul>
                     <ng-container 
                       [ngTemplateOutlet]="error" 
                       [ngTemplateOutletContext]="{formControl:this.planForm.controls.partialRedemptionAllowance}">
                     </ng-container>
-                </div>
+                </vds-checkbox-set>
               </div>
             </div>
           </vds-accordion-body>
