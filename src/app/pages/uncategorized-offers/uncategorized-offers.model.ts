@@ -11,6 +11,7 @@ export interface UnsupportedFeatureList {
     locationPropertyField: any[]
     subPropertyField: any[]
     typeField: string
+    vopId: string
 }
 
 export class UncategorizedOffer extends EventGroup {

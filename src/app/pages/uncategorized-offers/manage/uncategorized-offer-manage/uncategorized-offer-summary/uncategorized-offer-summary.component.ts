@@ -56,6 +56,10 @@ export class UncategorizedOfferSummaryComponent implements AfterViewInit, OnInit
 
   columns: SearchTableColumn[] = [
     {
+      key: 'vopId',
+      label: 'Event Id'
+    },
+    {
       key: 'typeField',
       label: 'Type'
     },
