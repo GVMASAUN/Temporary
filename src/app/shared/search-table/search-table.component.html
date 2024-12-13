@@ -183,12 +183,12 @@
             </ng-template>
         </ng-container>
         <vds-error 
-            *ngIf="field.type !== SearchFieldType.CUSTOM"
-              vdsErrorMessage 
-              [show]="advancedSearchForm.controls[field.key].invalid">{{
-                getError(field)
-              }}
-            </vds-error>
+          *ngIf="field.type !== SearchFieldType.CUSTOM"
+            vdsErrorMessage 
+            [show]="advancedSearchForm.controls[field.key].invalid">{{
+              getError(field)
+            }}
+        </vds-error>
         </div>
 
 

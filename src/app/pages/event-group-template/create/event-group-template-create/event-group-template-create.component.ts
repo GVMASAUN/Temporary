@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { AlertType, ButtonColor, TabsOrientation } from '@visa/vds-angular';
 import { SUCCESS, SUCCESS_CODE } from 'src/app/core/constants';
 import { ResponseError } from 'src/app/core/models/pagination-response.model';
@@ -61,7 +61,8 @@ export class EventGroupTemplateCreateComponent implements OnInit, OnDestroy {
     private functionService: FunctionsService,
     private eventGroupTemplateService: EventGroupTemplateService,
     private epmTemplateService: EpmTemplateService,
-    private viewContainerRef: ViewContainerRef
+    private viewContainerRef: ViewContainerRef,
+    private elementRef: ElementRef
   ) { }
 
   private setAlertMessage() {
@@ -147,6 +148,7 @@ export class EventGroupTemplateCreateComponent implements OnInit, OnDestroy {
         }
       });
     } else {
+      Utils.setFocusOnFirstInvalid(this.elementRef);
       this.toggleAlertService.showError();
     }
   }

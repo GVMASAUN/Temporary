@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
 import { AbstractControl, UntypedFormBuilder, UntypedFormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
@@ -41,7 +41,8 @@ export class CreateProgramDialogComponent implements OnInit, AfterViewInit, OnDe
     private router: Router,
     private dialogService: DialogService,
     private viewContainerRef: ViewContainerRef,
-    private dialogRef: MatDialogRef<CreateProgramDialogComponent>
+    private dialogRef: MatDialogRef<CreateProgramDialogComponent>,
+    private elementRef: ElementRef
   ) {
     this.dialogService.setDialogEventListeners(
       this.dialogRef,
@@ -146,6 +147,7 @@ export class CreateProgramDialogComponent implements OnInit, AfterViewInit, OnDe
         }
       });
     } else {
+      Utils.setFocusOnFirstInvalid(this.elementRef);
       this.alertService.showError();
     }
   }

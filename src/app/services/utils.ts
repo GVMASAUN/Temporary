@@ -1,6 +1,6 @@
+import { ElementRef } from '@angular/core';
 import { ANY, EMPTY, LABEL, SPACE } from '../core/constants';
-import { SearchTableComponent } from '../shared/search-table/search-table.component';
-import { SearchTableColumn, SortDirection } from '../shared/search-table/search-table.model';
+import { SortDirection } from '../shared/search-table/search-table.model';
 import { FormGroup } from '@angular/forms';
 import { Option } from "src/app/core/models/option.model";
 
@@ -103,6 +103,14 @@ export class Utils {
     }
 
     return caption;
+  }
+
+  public static setFocusOnFirstInvalid(elementRef: ElementRef | null = null) {
+    if(!!elementRef) {
+      setTimeout(() => {
+      elementRef.nativeElement.querySelector('[aria-invalid="true"]')?.focus();
+      }, 0);
+    }
   }
 
   public static downloadFile(data: any): void {

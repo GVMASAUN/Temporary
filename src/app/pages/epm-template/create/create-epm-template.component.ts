@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { UntypedFormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ButtonColor, ButtonIconType, TabsOrientation } from '@visa/vds-angular';
@@ -55,7 +55,8 @@ export class CreateEpmTemplateComponent implements OnInit, OnDestroy {
     private functionService: FunctionsService,
     private templateService: EpmTemplateService,
     private navStatusService: NavStatusService,
-    private viewContainerRef: ViewContainerRef
+    private viewContainerRef: ViewContainerRef,
+    private elementRef: ElementRef
   ) { }
 
   private setErrorMessages(responseErrors: ResponseError[]) {
@@ -117,6 +118,7 @@ export class CreateEpmTemplateComponent implements OnInit, OnDestroy {
           }
         });
     } else {
+      Utils.setFocusOnFirstInvalid(this.elementRef);
       this.alertService.showError();
     }
   }

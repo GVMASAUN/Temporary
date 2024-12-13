@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, OnDestroy, OnInit, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, OnDestroy, OnInit, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
 import { AbstractControl, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
@@ -266,9 +266,10 @@ export class EnrollmentCollectionDetailComponent implements OnInit, AfterViewIni
 
                     if (Utils.isMinNumber(form.get('rangeEnd')?.value, form.get(field.key)?.value)) {
                         validations.push(() => ({ invalidStartRange: true }));
-                    } else {
-                        form.get(field.key)?.setErrors(null);
                     }
+                    //  else {
+                    //     form.get(field.key)?.setErrors(null);
+                    // }
 
                     return validations;
 
@@ -284,9 +285,10 @@ export class EnrollmentCollectionDetailComponent implements OnInit, AfterViewIni
 
                     if (Utils.isMinNumber(form.get(field.key)?.value, form.get('rangeStart')?.value)) {
                         validations.push(() => ({ invalidEndRange: true }));
-                    } else {
-                        form.get(field.key)?.setErrors(null);
                     }
+                    //  else {
+                    //     form.get(field.key)?.setErrors(null);
+                    // }
 
                     return validations;
                 }

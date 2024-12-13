@@ -1,5 +1,5 @@
 import { HttpStatusCode } from '@angular/common/http';
-import { Component, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { ButtonColor, TabsOrientation } from '@visa/vds-angular';
 import { Subject } from 'rxjs';
 import { Mode } from 'src/app/core/models/mode.model';
@@ -65,6 +65,7 @@ export class PayWithPointCreateComponent implements OnInit, OnDestroy {
     private authorizationService: AuthorizationService,
     protected functionService: FunctionsService,
     protected payWithPointService: PayWithPointService,
+    private elementRef: ElementRef
   ) { }
 
   private setCurrentTab(index: number = this.tabs.indexOf(PayWithPointStep.Details)) {
@@ -102,6 +103,7 @@ export class PayWithPointCreateComponent implements OnInit, OnDestroy {
         }
       });
     } else {
+      Utils.setFocusOnFirstInvalid(this.elementRef);
       this.alertService.showError();
     }
   }

@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewContainerRef } from "@angular/core";
+import { Component, ElementRef, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewContainerRef } from "@angular/core";
 import { FormField, FormFieldDependency, FormFieldType } from "./dynamic-form.model";
 import { CustomFormGroup, FormBuilder, FormService } from "src/app/services/form-service/form.service";
 import { ASTERISK, DateTimeFormat, EMPTY, VALIDATION_FAIL_ERROR, VisaIcon, VisaImage } from "src/app/core/constants";
@@ -43,7 +43,8 @@ export class DynamicFormComponent implements OnInit, OnChanges, OnDestroy {
         private formBuilder: FormBuilder,
         private viewContainerRef: ViewContainerRef,
         private formService: FormService,
-        private alertService: ToggleAlertService
+        private alertService: ToggleAlertService,
+        private elementRef: ElementRef
     ) { }
 
     private getFieldValidations(field: FormField): Array<ValidatorFn> | null {
@@ -204,7 +205,8 @@ export class DynamicFormComponent implements OnInit, OnChanges, OnDestroy {
 
         if (valid) {
             return this.dynamicForm.getRawValue();
-        } else {
+        } else {       
+            Utils.setFocusOnFirstInvalid(this.elementRef);
             this.alertService.showError(VALIDATION_FAIL_ERROR);
         }
 

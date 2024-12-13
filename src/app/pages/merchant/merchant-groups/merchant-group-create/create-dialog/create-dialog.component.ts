@@ -1,4 +1,4 @@
-import { Component, HostListener, Inject, OnInit } from '@angular/core';
+import { Component, ElementRef, HostListener, Inject, OnInit } from '@angular/core';
 import { AbstractControl, UntypedFormBuilder, ValidatorFn, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
@@ -44,6 +44,7 @@ export class CreateDialogComponent implements OnInit {
     private formService: FormService,
     private alertService: ToggleAlertService,
     private dataPool: TableDataCountService,
+    private elementRef: ElementRef,
     @Inject(MAT_DIALOG_DATA) private dialogConfig: any
   ) { }
 
@@ -125,6 +126,7 @@ export class CreateDialogComponent implements OnInit {
           }
         });
     } else {
+      Utils.setFocusOnFirstInvalid(this.elementRef);
       this.alertService.showError();
     }
   }

@@ -1,7 +1,7 @@
 import { SelectionModel } from '@angular/cdk/collections';
 import { HttpStatusCode } from '@angular/common/http';
 import { AfterViewInit, Component, ElementRef, EventEmitter, HostListener, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild, ViewContainerRef } from '@angular/core';
-import { AbstractControl, UntypedFormBuilder, UntypedFormGroup, ValidatorFn } from '@angular/forms';
+import { AbstractControl, FormArray, FormControl, FormGroup, UntypedFormBuilder, UntypedFormGroup, ValidatorFn } from '@angular/forms';
 import { BadgeType, ButtonColor, ButtonIconType, ComboboxType, PageEvent, TooltipPosition } from '@visa/vds-angular';
 import { cloneDeep, isEmpty, isEqual } from 'lodash';
 import * as moment from 'moment';
@@ -257,7 +257,8 @@ export class SearchTableComponent implements OnInit, OnChanges, AfterViewInit, O
     private alertService: ToggleAlertService,
     private readonly appStoreService: AppStoreService,
     private readonly formService: FormService,
-    private searchTableService: SearchTableService
+    private searchTableService: SearchTableService,
+    private elementRef: ElementRef
   ) {
     this.status.getPanelStatus.pipe(takeUntil(this.destroy$)).subscribe({
       next: panelStatus => {
@@ -520,6 +521,8 @@ export class SearchTableComponent implements OnInit, OnChanges, AfterViewInit, O
       this.performSearch(0);
       this.searchActivate = true;
 
+    } else {
+      Utils.setFocusOnFirstInvalid(this.elementRef);
     }
   }
 

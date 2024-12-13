@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild, ViewContainerRef } from '@angular/core';
 import { TabsOrientation, ButtonColor } from '@visa/vds-angular';
 import { EnrollmentCollection, EnrollmentCollectionResponse, EnrollmentCollectionStep, Tenant } from '../enrollment-collection.model';
 import { Module } from 'src/app/core/models/module.model';
@@ -65,7 +65,8 @@ export class EnrollmentCollectionCreateComponent implements OnInit, OnDestroy {
         private formBuilder: FormBuilder,
         private alertService: ToggleAlertService,
         private viewContainerRef: ViewContainerRef,
-        private enrollmentCollectionService: EnrollmentCollectionService
+        private enrollmentCollectionService: EnrollmentCollectionService,
+        private elementRef: ElementRef
     ) { }
 
     private init(): void {
@@ -116,6 +117,8 @@ export class EnrollmentCollectionCreateComponent implements OnInit, OnDestroy {
                     console.log(error);
                 }
             });
+        } else {
+            Utils.setFocusOnFirstInvalid(this.elementRef);
         }
     }
 
