@@ -18,7 +18,7 @@ import { Utils } from 'src/app/services/utils';
 import { PanelComponent } from 'src/app/shared/panel/panel.component';
 import { PanelAction } from 'src/app/shared/panel/panel.model';
 import { SearchTableComponent } from 'src/app/shared/search-table/search-table.component';
-import { SearchTableColumn, SortType } from 'src/app/shared/search-table/search-table.model';
+import { SearchTableColumn, SortDirection, SortType } from 'src/app/shared/search-table/search-table.model';
 import { UncategorizedOffer } from '../../../uncategorized-offers.model';
 
 @Component({
@@ -57,7 +57,8 @@ export class UncategorizedOfferSummaryComponent implements AfterViewInit, OnInit
   columns: SearchTableColumn[] = [
     {
       key: 'vopId',
-      label: 'Event Id'
+      label: 'VOP Id',
+      sortDirection: SortDirection.ASC
     },
     {
       key: 'typeField',
