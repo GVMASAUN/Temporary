@@ -265,7 +265,9 @@ export class SearchTableComponent implements OnInit, OnChanges, AfterViewInit, O
         if (this.isPanelOpen) {
           this.searchActivate = true;
         }
-        this.isPanelOpen = panelStatus;
+        if(panelStatus === false) {
+          this.isPanelOpen = panelStatus;
+        }
       }
     });
   }
@@ -618,12 +620,41 @@ export class SearchTableComponent implements OnInit, OnChanges, AfterViewInit, O
     return DateUtils.getTimeZone();
   }
 
+  // @HostListener('document:keydown.enter',['$event'])
+  // enterEvent(event: any) {
+  //   const targetElement = event.target as HTMLElement;
+  //   console.log(targetElement);
+  //   // if(targetElement === )
+    
+  // }
+
+  protected handleKeyDown(event: KeyboardEvent, item: any): void {
+    console.log('hey',item);
+    if(!!item.fixed && event.key === 'Enter') {
+      console.log("hello");
+      
+      event.preventDefault();
+      return;
+    }
+    
+    if(event.key === 'Enter') {
+      item.hidden = !item.hidden;
+    }
+  }
+
+  protected doSomething(value: any): void {
+    console.log(value.selected);
+    // value.disabled
+  }
+
   protected changeMultiSelectPreSelected(selectedValues: any): void {
     this.columns.forEach((column: any) => {
       if (selectedValues.find((selectedValue: any) => selectedValue === column.key)) {
         column.hidden = false;
       } else {
-        column.hidden = true;
+        if(!!!column.fixed) {
+          column.hidden = true;
+        }
       }
     });
 
@@ -657,6 +688,9 @@ export class SearchTableComponent implements OnInit, OnChanges, AfterViewInit, O
     this.panelSection = option;
 
     this.status.togglePanel(false); //make sure panel must be close
+
+    this.isPanelOpen = true;
+
     this.status.togglePanel(true);
 
     this.previousSearchFilters = cloneDeep(this.advancedSearchForm.getRawValue());

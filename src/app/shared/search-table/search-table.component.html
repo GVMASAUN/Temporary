@@ -338,7 +338,6 @@
                     id="search-table-colums-listbox"
                     role="listbox"
                     [multiselect]="true"
-                    (change)="changeMultiSelectPreSelected($event)"
                   >
                     <li
                       *ngFor="let item of columns; let columnIndex = index; trackBy:columnTrackBy"
@@ -346,6 +345,8 @@
                       [value]="item.key"
                       [selected]="!item.hidden"
                       [disabled]="!!item.fixed"
+                      (keydown)="handleKeyDown($event,item)"
+                      tabindex="0"
                     >
                       <label vdsCheckboxLabel>
                         {{ item.label }}
