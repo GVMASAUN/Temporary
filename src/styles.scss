@@ -106,11 +106,18 @@ a:hover {
   cursor: pointer;
 }
 
-.sub-title {
+.sub-title-h2 {
   margin-top: 10px;
   font-weight: 510;
   font-size: 18px;
   line-height: 0px;
+  cursor: default;
+  color: #1a1a1a;
+}
+
+.sub-title-h3 {
+  margin-top: 10px;
+  font-size: 15px;
   cursor: default;
   color: #1a1a1a;
 }

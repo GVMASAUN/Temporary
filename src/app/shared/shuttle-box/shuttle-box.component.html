@@ -6,17 +6,9 @@
     *ngIf="placeholder"
     class="row"
   >
-    <label
-      vdsLabel
-      [attr.aria-required]="isRequired"
-    >{{placeholder}}
-      <svg
-        *ngIf="locked"
-        vds-icon
-        [icon]="VisaIcon.LOCK"
-        [tiny]="true"
-      ></svg>
-    </label>
+    <div>{{placeholder}}
+      <svg *ngIf="locked" vds-icon [icon]="VisaIcon.LOCK" [tiny]="true"></svg>
+    </div>
   </div>
   <div class="row">
     <vds-error

@@ -11,7 +11,7 @@ import { PwpCsrService } from 'src/app/services/pay-with-point/pwp-csr.service';
 import { ToggleAlertService } from 'src/app/services/toggle-alert/toggle-alert.service';
 import { Utils } from 'src/app/services/utils';
 import { SearchTableComponent } from 'src/app/shared/search-table/search-table.component';
-import { SearchField, SearchFieldType, SearchTableColumn, SearchTableColumnType } from 'src/app/shared/search-table/search-table.model';
+import { SearchField, SearchFieldType, SearchTableColumn, SearchTableColumnType, SortType } from 'src/app/shared/search-table/search-table.model';
 import { Tenant, TenantType } from '../../enrollment-collection/enrollment-collection.model';
 import { PAN_ELIGIBILITY_STATUS_BADGE_TYPE, PAN_ELIGIBILITY_STATUS_DESC, PanEligibilityStatus, PwpPanCardEligibility } from '../pwp-pan-elibility.model';
 import { MULTIPLE_PANS_PATTERN, PWP_TRANSACTION_SEARCH_URL } from '../pwpConstants';
@@ -33,6 +33,8 @@ export class PwpPanEligibilityComponent implements OnInit, AfterViewInit, OnDest
   showSearchTable: boolean = false;
 
   tenantList!: Tenant[];
+
+  SortType = SortType;
 
   advancedSearchFields: ReadonlyArray<SearchField> = [];
   tableColumns: ReadonlyArray<SearchTableColumn> = [];

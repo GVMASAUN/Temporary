@@ -3,7 +3,7 @@ import { AbstractControl, ValidationErrors, ValidatorFn, Validators } from '@ang
 import { ActivatedRoute } from '@angular/router';
 import { BadgeType } from '@visa/vds-angular';
 import { distinctUntilChanged, map, merge, Observable, of, Subject, takeUntil } from 'rxjs';
-import { COMMA, REQUIRED_FIELD, SUCCESS_CODE } from 'src/app/core/constants';
+import { COMMA, NEWLINE, REQUIRED_FIELD, SPACE, SUCCESS_CODE } from 'src/app/core/constants';
 import { DialogConfig } from 'src/app/core/dialog/dialog.model';
 import { Option } from 'src/app/core/models/option.model';
 import { PaginationResponse } from 'src/app/core/models/pagination-response.model';
@@ -19,7 +19,7 @@ import { SearchTableComponent } from 'src/app/shared/search-table/search-table.c
 import { SearchField, SearchFieldType, SearchTableColumn, SearchTableColumnType, SortType } from 'src/app/shared/search-table/search-table.model';
 import { Tenant, TenantType } from '../../enrollment-collection/enrollment-collection.model';
 import { PWP_TRANSACTION_SEARCH_TYPE, PwPCSRTxResult } from '../pwp-pan-elibility.model';
-import { MAX_TRANSACTION_IDS_LIMIT, MULTIPLE_TRANSACTION_IDS_PATTERN, PAN_PATTERN } from '../pwpConstants';
+import { MAX_TRANSACTION_IDS_LIMIT, MULTIPLE_TRANSACTION_IDS_PATTERN, PAN_PATTERN, SPLIT_PATTERN } from '../pwpConstants';
 import { PwpTransactionDetailsDialogComponent } from './pwp-transaction-details-dialog/pwp-transaction-details-dialog.component';
 
 @Component({
@@ -125,8 +125,8 @@ export class PwpTransactionSearchComponent implements AfterViewInit, OnInit, OnD
 
 
   private transactionIdValidator(control: AbstractControl): ValidationErrors | null {
-    const transactionIds: string[] = String(control.value || '').split(COMMA);
-
+    const transactionIds: string[] = String(control.value || '').split(SPLIT_PATTERN);
+    console.log(transactionIds)
     if (transactionIds.length > MAX_TRANSACTION_IDS_LIMIT) {
       return { maxTransactionIds: true };
     }
@@ -394,6 +394,8 @@ export class PwpTransactionSearchComponent implements AfterViewInit, OnInit, OnD
       if (this.searchBy === PWP_TRANSACTION_SEARCH_TYPE.TRANSACTION_ID) {
         if (control.errors['maxTransactionIds']) {
           return `Maximum ${MAX_TRANSACTION_IDS_LIMIT} transaction Ids are allowed.`;
+        } else if(control.errors['pattern']) {
+          return `Only alphanumeric characters, '-' space linefeed and commas are allowed`;
         }
         return 'Invalid Transactions Ids';
       }

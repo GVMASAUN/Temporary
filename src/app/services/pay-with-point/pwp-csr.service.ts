@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { PaginationResponse } from 'src/app/core/models/pagination-response.model';
 import { PwPCSRTxResult, PwpPanCardEligibility } from 'src/app/pages/pay-with-point/pwp-pan-elibility.model';
 import { ApiConfigService } from '../api-config.service';
+import { SPLIT_PATTERN } from 'src/app/pages/pay-with-point/pwpConstants';
 
 @Injectable({
   providedIn: 'root'
@@ -39,7 +40,7 @@ export class PwpCsrService {
   }
 
   public getTransactions(filters: { [key: string]: string; }): Observable<PaginationResponse<PwPCSRTxResult[]>> {
-    const trxtIds = (filters?.['trxtIds'] || '').split(',');
+    const trxtIds = (filters?.['trxtIds'] || '').split(SPLIT_PATTERN);
     const enrollmentId: string = filters?.['subTenantId'] || filters?.['tenantId'];
 
     const params: any = {
