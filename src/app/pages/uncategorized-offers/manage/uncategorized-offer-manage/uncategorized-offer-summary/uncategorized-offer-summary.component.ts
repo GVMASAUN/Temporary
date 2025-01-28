@@ -41,7 +41,7 @@ export class UncategorizedOfferSummaryComponent implements AfterViewInit, OnInit
 
   DateTimeFormat = DateTimeFormat;
   StatusCode = StatusCode;
-  VisaIcon = VisaIcon
+  VisaIcon = VisaIcon;
   ButtonColor = ButtonColor;
   SortType = SortType;
 
@@ -55,6 +55,11 @@ export class UncategorizedOfferSummaryComponent implements AfterViewInit, OnInit
   isImportPanelOpen: boolean = false;
 
   columns: SearchTableColumn[] = [
+    {
+      key: 'vopId',
+      label: 'VOP Id',
+      sortDirection: SortDirection.ASC
+    },
     {
       key: 'vopId',
       label: 'VOP Id',
@@ -88,7 +93,7 @@ export class UncategorizedOfferSummaryComponent implements AfterViewInit, OnInit
       label: 'Cancel',
       buttonColor: ButtonColor.SECONDARY,
       click: () => {
-        this.closeImportPanel()
+        this.closeImportPanel();
       }
     }
   ];

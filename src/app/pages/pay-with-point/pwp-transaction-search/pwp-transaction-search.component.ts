@@ -231,17 +231,24 @@ export class PwpTransactionSearchComponent implements AfterViewInit, OnInit, OnD
         type: SearchTableColumnType.LINK,
         fixed: true,
         click: (row, table) => {
-          const dialogConfig: DialogConfig<PwPCSRTxResult> = {
-            data: row
-          };
 
-          this.dialogService.openDialog(
-            PwpTransactionDetailsDialogComponent,
-            {
-              width: '70vw',
-              data: dialogConfig
-            }
-          );
+          if(!row.isExist) {
+            return undefined;
+          } else {
+
+            const dialogConfig: DialogConfig<PwPCSRTxResult> = {
+              data: row
+            };
+
+            this.dialogService.openDialog(
+              PwpTransactionDetailsDialogComponent,
+              {
+                width: '70vw',
+                data: dialogConfig
+              }
+            );
+            return;
+          }
         },
       },
       {
@@ -420,6 +427,10 @@ export class PwpTransactionSearchComponent implements AfterViewInit, OnInit, OnD
       return this.pwpScrService.getTransactions(params).pipe(map(response => {
         for (const item of response.data) {
           item.isExist = !!item.merchantCategoryCode && !!item.merchantName;
+
+          if(!item.isExist) {
+            item.isClickable = false;
+          }
         }
 
         return response;

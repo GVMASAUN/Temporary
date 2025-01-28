@@ -9,6 +9,9 @@
 >
   <div
     *ngIf="globalAlertShown"
+    cdkTrapFocus
+    [cdkTrapFocusAutoCapture]="true"
+
     class="vds-grid"
   >
     <div class="row">
@@ -69,6 +72,7 @@
           [direction]="ButtonDirection.REVERSE"
         >
           <button
+            #closeButton
             vds-button-icon
             role="button"
             aria-label="Close alert"

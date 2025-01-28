@@ -1,6 +1,6 @@
 
 <ng-template #infoSuffix let-tooltipText="tooltipText">
-  <label 
+  <span 
     [matTooltip]="tooltipText"  
     [matTooltipPosition]="tooltipPosition"
   >
@@ -10,7 +10,7 @@
       width="16"
       height="16"
      /> 
-  </label>
+  </span>
 </ng-template>
 
 
@@ -259,7 +259,7 @@
                 </div>
                 <div class="col">
                   <div class="row">
-                    <label 
+                    <span 
                     class="timezone-label"
                     vdsLabel 
                     [ngTemplateOutlet]="infoSuffix" 
@@ -269,7 +269,7 @@
                       }
                     "
                   >Timezone
-                  </label>
+                  </span>
                   </div>
                   <div class="row">
 
@@ -312,7 +312,7 @@
                 </div>
                 <div class="col">
                   <div class="row">
-                    <label 
+                    <span 
                     class="timezone-label"
                     vdsLabel 
                     [ngTemplateOutlet]="infoSuffix" 
@@ -322,7 +322,7 @@
                       }
                     "
                   >Timezone
-                  </label>
+                  </span>
                   </div>
                   <div class="row">
 

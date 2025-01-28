@@ -134,6 +134,8 @@ export class EnrollmentCollectionMangeComponent implements OnInit, OnDestroy {
 
     ngOnDestroy(): void {
 
+        this.navStatusService.setOverlayStatus(false);
+
         GarbageCollectorService.clearDetachedDOMElements(
             this,
             this.viewContainerRef

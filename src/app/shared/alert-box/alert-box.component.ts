@@ -1,13 +1,13 @@
-import { Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
-import { ButtonIconType, AlertType, AlertPosition, AlertSideNav } from '@visa/vds-angular';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { AlertPosition, AlertSideNav, AlertType, ButtonIconType } from '@visa/vds-angular';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { STRING, VisaIcon } from 'src/app/core/constants';
+import { ButtonDirection } from 'src/app/core/models/dialog-button-direction.model';
 import { GarbageCollectorService } from 'src/app/services/garbage-collector.service';
 import { NavStatusService } from 'src/app/services/nav-status/nav-status.service';
 import { ToggleAlertService } from 'src/app/services/toggle-alert/toggle-alert.service';
 import { AlertConfig, AlertIcon, AlertMode } from './alert-box.model';
-import { STRING, VisaIcon } from 'src/app/core/constants';
-import { ButtonDirection } from 'src/app/core/models/dialog-button-direction.model';
 
 @Component({
   selector: 'app-alert-box',
@@ -32,6 +32,10 @@ export class AlertBoxComponent implements OnInit, OnDestroy {
 
   isSideNavOpen = this.navStatusService.isNavigationActive;
 
+  private lastFocusedElement: HTMLElement | null = null;
+
+  @ViewChild('closeButton', { static: false, read: ElementRef }) closeButton!: ElementRef<HTMLButtonElement>;
+
   constructor(
     private toggleAlertService: ToggleAlertService,
     private navStatusService: NavStatusService,
@@ -42,17 +46,26 @@ export class AlertBoxComponent implements OnInit, OnDestroy {
         next: (data: any) => {
           document.querySelector('app-root')?.removeAttribute('aria-hidden');
 
-          this.alertConfig = data;
-          this.globalAlertShown = true;
+          if (data) {
+            this.alertConfig = data;
+            this.globalAlertShown = true;
+            this.lastFocusedElement = document.activeElement as HTMLElement;
 
-          if (this.alertConfig.type == AlertType.SUCCESS) {
             setTimeout(() => {
-              this.closeAlert();
-            }, 4000);
-          }
+              if (!!this.closeButton.nativeElement) {
+                this.closeButton.nativeElement?.focus();
+              }
+            }, 0);
 
-          if (this.alertConfig.type) {
-            this.AlertType = this.alertConfig.type;
+            if (this.alertConfig.type == AlertType.SUCCESS) {
+              setTimeout(() => {
+                this.closeAlert();
+              }, 4000);
+            }
+
+            if (this.alertConfig.type) {
+              this.AlertType = this.alertConfig.type;
+            }
           }
         }
       });
@@ -76,6 +89,12 @@ export class AlertBoxComponent implements OnInit, OnDestroy {
 
   closeAlert(): void {
     this.globalAlertShown = false;
+
+    if (this.lastFocusedElement) {
+      setTimeout(() => {
+        this.lastFocusedElement?.focus();
+      }, 0);
+    }
   }
 
   ngOnDestroy(): void {

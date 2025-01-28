@@ -118,6 +118,7 @@ export class ClientListComponent implements OnInit, OnDestroy {
 
   private navigateToProgram(communityName: string): void {
     if (this.viewType === 'dialog') {
+      this._statusService.toggleNavigation(true);
       this._router.navigateByUrl('/', { skipLocationChange: true }).then(() =>
         this._router.navigate(
           [Module.PROGRAM.baseUrl],

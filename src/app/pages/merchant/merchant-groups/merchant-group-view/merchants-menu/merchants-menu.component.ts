@@ -340,7 +340,7 @@ export class MerchantsMenuComponent implements OnInit, OnDestroy {
       );
     }
     this.sortColumnName = col;
-    this.sortColumnType = this.sortBy[indx] == '-descending' ? 'desc' : 'asc';
+    this.sortColumnType = (this.sortBy[indx] == '-descending') !== (this.sortColumnName === 'isActive') ? 'desc' : 'asc';
     this.searchMerchant();
   }
 

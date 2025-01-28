@@ -499,7 +499,7 @@
               </ng-container>
 
               <ng-template #link>
-                <ng-container *ngIf="((column.type === SearchTableColumnType.LINK) && !column.hidden); else email">
+                <ng-container *ngIf="((column.type === SearchTableColumnType.LINK) && !column.hidden && ((row?.isClickable === undefined || row.isClickable === true))); else email">
                   <td
                     vdsTd
                     sticky

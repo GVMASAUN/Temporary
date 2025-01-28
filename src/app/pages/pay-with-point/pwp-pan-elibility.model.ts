@@ -50,6 +50,7 @@ export interface PwPCSRTxResult {
 
     //only for Ui
     isExist?: boolean;
+    isClickable?: boolean;
 }
 
 export interface PointsEnquiry {

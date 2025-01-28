@@ -12,7 +12,7 @@
         [class.disabled-bar]="disabled"
     >
         <input
-            aria-label="time-picker"
+            [attr.aria-labelledby]="placeholder.concat('label')"
             type="time"
             [step]="step"
             [class.invalid]="invalid"

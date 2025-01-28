@@ -265,7 +265,7 @@ export class SearchTableComponent implements OnInit, OnChanges, AfterViewInit, O
         if (this.isPanelOpen) {
           this.searchActivate = true;
         }
-        if(panelStatus === false) {
+        if (!panelStatus) {
           this.isPanelOpen = panelStatus;
         }
       }
